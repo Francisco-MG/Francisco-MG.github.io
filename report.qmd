@@ -12,8 +12,8 @@ Institutional dropout and educational persistence analysis, including:
 
 - An audit-style compliance crosswalk linking requirements to implementation status, evidence, risks and corrective actions (France / EU / UNESCO–UNICEF–CRC)
 
-<a class="btn btn-primary" href="files/crosswalk-fr.pdf" target="_blank">Crosswalk-fr</a>
-<a class="btn btn-primary" href="files/crosswalk-en.pdf" target="_blank">Crosswalk-en</a>
+<a class="btn btn-primary" href="files/Crosswalk-fr.pdf" target="_blank">Crosswalk-fr</a>
+<a class="btn btn-primary" href="files/Crosswalk-en.pdf" target="_blank">Crosswalk-en</a>
 
 - An SDG4 / Education 2030-aligned SERA/MEAL results framework (ToC/logframe), indicator dictionary and baseline approach with equity disaggregation (sex/age/territory/IPS/track) for monitoring and reporting
 
