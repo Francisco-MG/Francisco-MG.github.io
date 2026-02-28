@@ -1,0 +1,28 @@
+project:
+  type: website
+  resources:
+    - "files/**"
+
+website:
+  title: "Francisco MG"
+  navbar:
+    left:
+      - href: viridis-colors.qmd
+      - text: "REPORTS"
+        href: report.qmd
+      - text: "DATA SCIENCE"
+        href: data-science.qmd
+    right:
+      - icon: github
+        href: https://github.com/Francisco-MG
+      - icon: linkedin
+        href: https://www.linkedin.com/in/TON-LINKEDIN
+
+format:
+  html:
+    theme: flatly
+    toc: true
+    toc_float: true
+    pdf: default
+    docx: default
+

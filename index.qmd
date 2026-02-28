@@ -1,0 +1,8 @@
+---
+title: "Francisco Martin-Gomez - Portfolio"
+subtitle: "Learning Analytics Researcher | PhD Cognitive Psychology — Education, Learning & Impact Evaluation"
+---
+
+I work at the intersection of data science and learning design. I use data analysis, statistics, and ML/DL to model learning processes in digital environments (LMS/LXP), evaluate interventions, and generate actionable insights to improve learning outcomes.
+
+Alongside my research, I support organizations with evidence-driven education work: learning data audits, impact measurement, and decision-ready reporting. I build models and AI agents (prediction, scoring, recommendation, RAG/LLM) to operationalize analytics, and I contribute to Results-Based Management (RBM) deliverables (Theory of Change, logframe, indicator frameworks, dashboards). I am open to any MEL/SERA consulting assignments spanning monitoring & evaluation, accountability, and organizational learning/knowledge management across education programs and policies.
