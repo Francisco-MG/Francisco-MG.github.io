@@ -20,10 +20,10 @@ Institutional dropout and educational persistence analysis, including:
 <a class="btn btn-primary" href="files/TOC_logframe-fr.xlsx" target="_blank">TOC_logframe-fr</a>
 <a class="btn btn-primary" href="files/TOC_logframe-en.xlsx" target="_blank">TOC_logframe-en</a>
 
-- An accountability and learning loop (review cycles, decision log, lessons learned) to support continuous improvement and governance
+- Key excerpts from the internal French report, translated into English for international monitoring. They address dropout prevention and alignment with SDG 4 and UNESCO Education 2030.
 
-<a class="btn btn-primary" href="files/dropout-gironde-fr.pdf" target="_blank">Report sample (fr)</a>
-<a class="btn btn-primary" href="files/dropout-gironde-en.pdf" target="_blank">Report sample (en)</a>
+<a class="btn btn-primary" href="files/dropout-gironde-fr.pdf" target="_blank">Report (fr)</a>
+<a class="btn btn-primary" href="files/dropout-gironde-en.pdf" target="_blank">Report (en)</a>
 
 
 
