@@ -30,6 +30,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-listing/list.min.js"></script>
+<script src="site_libs/quarto-listing/quarto-listing.js"></script>
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -66,7 +68,65 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<script>
 
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    const listingTargetEl = window.document.querySelector('#listing-listing .list');
+    if (!listingTargetEl) {
+      // No listing discovered, do not attach.
+      return; 
+    }
+
+    const options = {
+      valueNames: ['listing-title','listing-description','listing-categories','listing-date',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
+      
+      searchColumns: ["listing-title","listing-author","listing-date","listing-image","listing-description"],
+    };
+
+    window['quarto-listings'] = window['quarto-listings'] || {};
+    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
+
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  });
+
+  window.addEventListener('hashchange',() => {
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  })
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -147,10 +207,420 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
+<p>Sélection de projets (code + visualisations).</p>
 
 
 
-</main> <!-- /main -->
+
+<div class="quarto-listing quarto-listing-container-grid" id="listing-listing">
+<div class="list grid quarto-listing-cols-3">
+<div class="g-col-1" data-index="0" data-categories="R,Psychometrics,LLM,Automated Scoring,Reliability,AI Assessment" data-listing-date-sort="1774738800000" data-listing-file-modified-sort="1775572816740" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="76" data-listing-word-count-sort="15051">
+<a href="./projects/06_LLM_scoring_pipeline(v3b).html" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<div class="card-body post-contents">
+<h5 class="no-anchor card-title listing-title">
+LLM-Assisted Scoring of psychological tests (Open-Ended &amp; closed-Ended Responses)
+</h5>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
+R
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Psychometrics'); return false;">
+Psychometrics
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('LLM'); return false;">
+LLM
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Automated Scoring'); return false;">
+Automated Scoring
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Reliability'); return false;">
+Reliability
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('AI Assessment'); return false;">
+AI Assessment
+</div>
+</div>
+<div class="card-text listing-description">
+Reproducible pipeline for structured prompting-based scoring of open-ended critical thinking disposition test (CTD) responses using a large language model API. Demonstrates…
+</div>
+<div class="card-attribution card-text-small end">
+<div class="listing-date">
+Mar 29, 2026
+</div>
+</div>
+</div>
+</div>
+</a>
+</div>
+<div class="g-col-1" data-index="1" data-categories="R,Statistics,Multilevel,Mixed Models,lme4,Hierarchical Data" data-listing-date-sort="1774652400000" data-listing-file-modified-sort="1775216376835" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="29" data-listing-word-count-sort="5788">
+<a href="./projects/08_multilevel_mixed_models.html" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<div class="card-body post-contents">
+<h5 class="no-anchor card-title listing-title">
+Multilevel / Mixed-Effects Modelling
+</h5>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
+R
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Statistics'); return false;">
+Statistics
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Multilevel'); return false;">
+Multilevel
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Mixed Models'); return false;">
+Mixed Models
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('lme4'); return false;">
+lme4
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Hierarchical Data'); return false;">
+Hierarchical Data
+</div>
+</div>
+<div class="card-text listing-description">
+Hierarchical linear modelling on nested educational data using lme4. Demonstrates random intercept and random slope models, ICC decomposition, model comparison via…
+</div>
+<div class="card-attribution card-text-small end">
+<div class="listing-date">
+Mar 28, 2026
+</div>
+</div>
+</div>
+</div>
+</a>
+</div>
+<div class="g-col-1" data-index="2" data-categories="R,Statistics,Ordinal Regression,CLM,Likert,Survey Data" data-listing-date-sort="1774652400000" data-listing-file-modified-sort="1775245706382" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="20" data-listing-word-count-sort="3970">
+<a href="./projects/09_ordinal_regression.html" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<div class="card-body post-contents">
+<h5 class="no-anchor card-title listing-title">
+Ordinal Regression: Modelling Likert-Scale Outcomes
+</h5>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
+R
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Statistics'); return false;">
+Statistics
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Ordinal Regression'); return false;">
+Ordinal Regression
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('CLM'); return false;">
+CLM
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Likert'); return false;">
+Likert
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Survey Data'); return false;">
+Survey Data
+</div>
+</div>
+<div class="card-text listing-description">
+Cumulative link models (CLM) for ordinal response data using the ordinal package. Demonstrates proportional odds assumption testing, threshold visualisation, partial…
+</div>
+<div class="card-attribution card-text-small end">
+<div class="listing-date">
+Mar 28, 2026
+</div>
+</div>
+</div>
+</div>
+</a>
+</div>
+<div class="g-col-1" data-index="3" data-categories="R,Statistics,Bayesian,brms,Multilevel,MCMC,Stan" data-listing-date-sort="1774652400000" data-listing-file-modified-sort="1775511956881" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="18" data-listing-word-count-sort="3506">
+<a href="./projects/10_bayesian_modelling(v2).html" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<div class="card-body post-contents">
+<h5 class="no-anchor card-title listing-title">
+Bayesian Multilevel Modelling with brms
+</h5>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
+R
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Statistics'); return false;">
+Statistics
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Bayesian'); return false;">
+Bayesian
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('brms'); return false;">
+brms
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Multilevel'); return false;">
+Multilevel
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('MCMC'); return false;">
+MCMC
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Stan'); return false;">
+Stan
+</div>
+</div>
+<div class="card-text listing-description">
+Bayesian replication of the multilevel analysis from Project 08 using brms. Demonstrates prior specification, posterior predictive checks, MCMC diagnostics (R-hat, ESS…
+</div>
+<div class="card-attribution card-text-small end">
+<div class="listing-date">
+Mar 28, 2026
+</div>
+</div>
+</div>
+</div>
+</a>
+</div>
+<div class="g-col-1" data-index="4" data-categories="R,Psychometrics,CAT,IRT,Adaptive Testing,Simulation" data-listing-date-sort="1774220400000" data-listing-file-modified-sort="1774284263382" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="29" data-listing-word-count-sort="5800">
+<a href="./projects/04_CAT_simulation.html" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<div class="card-body post-contents">
+<h5 class="no-anchor card-title listing-title">
+Computerised Adaptive Testing (CAT) Simulation
+</h5>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
+R
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Psychometrics'); return false;">
+Psychometrics
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('CAT'); return false;">
+CAT
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('IRT'); return false;">
+IRT
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Adaptive Testing'); return false;">
+Adaptive Testing
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Simulation'); return false;">
+Simulation
+</div>
+</div>
+<div class="card-text listing-description">
+Proof-of-concept CAT simulation built on a 2PL-calibrated item bank. Demonstrates maximum information item selection, SE-based stopping rules, ability estimation accuracy…
+</div>
+<div class="card-attribution card-text-small end">
+<div class="listing-date">
+Mar 23, 2026
+</div>
+</div>
+</div>
+</div>
+</a>
+</div>
+<div class="g-col-1" data-index="5" data-categories="R,Psychometrics,Test Equating,IRT,Score Linking,Measurement" data-listing-date-sort="1774220400000" data-listing-file-modified-sort="1774436625636" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="36" data-listing-word-count-sort="7019">
+<a href="./projects/05_test_equating.html" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<div class="card-body post-contents">
+<h5 class="no-anchor card-title listing-title">
+Test Equating: Linking Scores Across Test Forms
+</h5>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
+R
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Psychometrics'); return false;">
+Psychometrics
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Test Equating'); return false;">
+Test Equating
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('IRT'); return false;">
+IRT
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Score Linking'); return false;">
+Score Linking
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Measurement'); return false;">
+Measurement
+</div>
+</div>
+<div class="card-text listing-description">
+Demonstration of observed-score and IRT-based test equating methods under a Non-Equivalent groups with Anchor Test (NEAT) design. Uses the Kolen &amp; observed-score methods)…
+</div>
+<div class="card-attribution card-text-small end">
+<div class="listing-date">
+Mar 23, 2026
+</div>
+</div>
+</div>
+</div>
+</a>
+</div>
+<div class="g-col-1" data-index="6" data-categories="R,Psychometrics,Reliability,Alpha,Omega,SEM,CFA,Composite Reliability,AVE,HTMT,Measurement" data-listing-date-sort="1774220400000" data-listing-file-modified-sort="1775569588702" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="48" data-listing-word-count-sort="9488">
+<a href="./projects/07_reliability_deep_dive_sem_addendum.html" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<div class="card-body post-contents">
+<h5 class="no-anchor card-title listing-title">
+Reliability Deep Dive: Beyond Cronbach’s Alpha
+</h5>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
+R
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Psychometrics'); return false;">
+Psychometrics
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Reliability'); return false;">
+Reliability
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Alpha'); return false;">
+Alpha
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Omega'); return false;">
+Omega
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('SEM'); return false;">
+SEM
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('CFA'); return false;">
+CFA
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Composite Reliability'); return false;">
+Composite Reliability
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('AVE'); return false;">
+AVE
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('HTMT'); return false;">
+HTMT
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Measurement'); return false;">
+Measurement
+</div>
+</div>
+<div class="card-text listing-description">
+Comprehensive reliability analysis on the Big Five Inventory (BFI) dataset (N ≈ 2,800). Covers Cronbach’s α with confidence intervals, McDonald’s ω (total and hierarchical)…
+</div>
+<div class="card-attribution card-text-small end">
+<div class="listing-date">
+Mar 23, 2026
+</div>
+</div>
+</div>
+</div>
+</a>
+</div>
+<div class="g-col-1" data-index="7" data-categories="R,Psychometrics,DIF,Fairness,IRT,Measurement Bias" data-listing-date-sort="1713909600000" data-listing-file-modified-sort="1775558768055" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="43" data-listing-word-count-sort="8574">
+<a href="./projects/03_DIF_fairness.html" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<div class="card-body post-contents">
+<h5 class="no-anchor card-title listing-title">
+Differential Item Functioning &amp; Fairness Analysis
+</h5>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
+R
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Psychometrics'); return false;">
+Psychometrics
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('DIF'); return false;">
+DIF
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Fairness'); return false;">
+Fairness
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('IRT'); return false;">
+IRT
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Measurement Bias'); return false;">
+Measurement Bias
+</div>
+</div>
+<div class="card-text listing-description">
+Detection and interpretation of Differential Item Functioning (DIF) using IRT-based approaches. Applied to the verbal aggression dataset with gender as the grouping…
+</div>
+<div class="card-attribution card-text-small end">
+<div class="listing-date">
+Apr 24, 2024
+</div>
+</div>
+</div>
+</div>
+</a>
+</div>
+<div class="g-col-1" data-index="8" data-categories="R,Psychometrics,IRT Item Calibration &amp; Distractor Analysis" data-listing-date-sort="1713823200000" data-listing-file-modified-sort="1774439848193" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="31" data-listing-word-count-sort="6097">
+<a href="./projects/01_IRT_item_calibration.html" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<div class="card-body post-contents">
+<h5 class="no-anchor card-title listing-title">
+IRT Item Calibration &amp; Distractor Analysis
+</h5>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
+R
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Psychometrics'); return false;">
+Psychometrics
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('IRT Item Calibration &amp; Distractor Analysis'); return false;">
+IRT Item Calibration &amp; Distractor Analysis
+</div>
+</div>
+<div class="card-text listing-description">
+Fitting 1PL, 2PL, and 3PL Item Response Theory models on real (LSAT7) and simulated assessment data. Includes Classical Test Theory comparison, item and test information…
+</div>
+<div class="card-attribution card-text-small end">
+<div class="listing-date">
+Apr 23, 2024
+</div>
+</div>
+</div>
+</div>
+</a>
+</div>
+<div class="g-col-1" data-index="9" data-categories="R,Psychometrics,CFA,EFA,SEM,Reliability,Measurement Invariance" data-listing-date-sort="1713823200000" data-listing-file-modified-sort="1774703849488" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="32" data-listing-word-count-sort="6361">
+<a href="./projects/02_CFA_construct_validity.html" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<div class="card-body post-contents">
+<h5 class="no-anchor card-title listing-title">
+Construct Validity: Exploratory &amp; Confirmatory Factor Analysis
+</h5>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
+R
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Psychometrics'); return false;">
+Psychometrics
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('CFA'); return false;">
+CFA
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('EFA'); return false;">
+EFA
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('SEM'); return false;">
+SEM
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Reliability'); return false;">
+Reliability
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Measurement Invariance'); return false;">
+Measurement Invariance
+</div>
+</div>
+<div class="card-text listing-description">
+Full construct validation workflow on the HolzingerSwineford1939 dataset: Exploratory Factor Analysis (EFA) with parallel analysis, Confirmatory Factor Analysis (CFA) with…
+</div>
+<div class="card-attribution card-text-small end">
+<div class="listing-date">
+Apr 23, 2024
+</div>
+</div>
+</div>
+</div>
+</a>
+</div>
+</div>
+<div class="listing-no-matching d-none">
+No matching items
+</div>
+</div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

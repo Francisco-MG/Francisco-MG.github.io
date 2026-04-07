@@ -2,18 +2,58 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://Francisco-MG.github.io/report.html</loc>
-    <lastmod>2026-02-28T18:43:23.983Z</lastmod>
+    <lastmod>2026-04-02T12:51:02.972Z</lastmod>
+  </url>
+  <url>
+    <loc>https://Francisco-MG.github.io/projects/09_ordinal_regression.html</loc>
+    <lastmod>2026-04-03T19:48:26.382Z</lastmod>
+  </url>
+  <url>
+    <loc>https://Francisco-MG.github.io/projects/07_reliability_deep_dive_sem_addendum.html</loc>
+    <lastmod>2026-04-07T13:46:28.702Z</lastmod>
+  </url>
+  <url>
+    <loc>https://Francisco-MG.github.io/projects/05_test_equating.html</loc>
+    <lastmod>2026-03-25T11:03:45.636Z</lastmod>
+  </url>
+  <url>
+    <loc>https://Francisco-MG.github.io/projects/03_DIF_fairness.html</loc>
+    <lastmod>2026-04-07T10:46:08.055Z</lastmod>
+  </url>
+  <url>
+    <loc>https://Francisco-MG.github.io/projects/01_IRT_item_calibration.html</loc>
+    <lastmod>2026-03-25T11:57:28.193Z</lastmod>
   </url>
   <url>
     <loc>https://Francisco-MG.github.io/data-science.html</loc>
-    <lastmod>2026-02-27T23:27:39.444Z</lastmod>
+    <lastmod>2026-04-07T14:36:52.037Z</lastmod>
   </url>
   <url>
     <loc>https://Francisco-MG.github.io/about.html</loc>
-    <lastmod>2026-02-27T22:17:03.895Z</lastmod>
+    <lastmod>2026-04-02T12:51:02.950Z</lastmod>
   </url>
   <url>
     <loc>https://Francisco-MG.github.io/index.html</loc>
-    <lastmod>2026-02-28T08:23:40.745Z</lastmod>
+    <lastmod>2026-04-02T12:51:02.971Z</lastmod>
+  </url>
+  <url>
+    <loc>https://Francisco-MG.github.io/projects/02_CFA_construct_validity.html</loc>
+    <lastmod>2026-03-28T13:17:29.488Z</lastmod>
+  </url>
+  <url>
+    <loc>https://Francisco-MG.github.io/projects/04_CAT_simulation.html</loc>
+    <lastmod>2026-03-23T16:44:23.382Z</lastmod>
+  </url>
+  <url>
+    <loc>https://Francisco-MG.github.io/projects/06_LLM_scoring_pipeline(v3b).html</loc>
+    <lastmod>2026-04-07T14:40:16.740Z</lastmod>
+  </url>
+  <url>
+    <loc>https://Francisco-MG.github.io/projects/08_multilevel_mixed_models.html</loc>
+    <lastmod>2026-04-03T11:39:36.835Z</lastmod>
+  </url>
+  <url>
+    <loc>https://Francisco-MG.github.io/projects/10_bayesian_modelling(v2).html</loc>
+    <lastmod>2026-04-06T21:45:56.881Z</lastmod>
   </url>
 </urlset>

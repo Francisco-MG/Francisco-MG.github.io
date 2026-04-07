@@ -1,0 +1,17 @@
+[
+  {
+    "listing": "/data-science.html",
+    "items": [
+      "/projects/06_LLM_scoring_pipeline(v3b).html",
+      "/projects/08_multilevel_mixed_models.html",
+      "/projects/09_ordinal_regression.html",
+      "/projects/10_bayesian_modelling(v2).html",
+      "/projects/04_CAT_simulation.html",
+      "/projects/05_test_equating.html",
+      "/projects/07_reliability_deep_dive_sem_addendum.html",
+      "/projects/03_DIF_fairness.html",
+      "/projects/01_IRT_item_calibration.html",
+      "/projects/02_CFA_construct_validity.html"
+    ]
+  }
+]
