@@ -2,7 +2,31 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://Francisco-MG.github.io/report.html</loc>
-    <lastmod>2026-04-02T12:51:02.972Z</lastmod>
+    <lastmod>2026-05-03T13:58:14.520Z</lastmod>
+  </url>
+  <url>
+    <loc>https://Francisco-MG.github.io/projects/projet25_ema_physio_adarp.html</loc>
+    <lastmod>2026-05-04T01:37:14.546Z</lastmod>
+  </url>
+  <url>
+    <loc>https://Francisco-MG.github.io/projects/projet25b_feature_extraction.html</loc>
+    <lastmod>2026-04-30T23:05:32.716Z</lastmod>
+  </url>
+  <url>
+    <loc>https://Francisco-MG.github.io/projects/about.html</loc>
+    <lastmod>2026-04-02T12:51:02.950Z</lastmod>
+  </url>
+  <url>
+    <loc>https://Francisco-MG.github.io/projects/19_Time_Series_Forecasting.html</loc>
+    <lastmod>2026-04-13T22:35:30.417Z</lastmod>
+  </url>
+  <url>
+    <loc>https://Francisco-MG.github.io/projects/13_ML_prediction_XAI.html</loc>
+    <lastmod>2026-05-03T23:56:18.126Z</lastmod>
+  </url>
+  <url>
+    <loc>https://Francisco-MG.github.io/projects/11_fuzzy_clustering_profiles(soa).html</loc>
+    <lastmod>2026-05-03T15:26:34.098Z</lastmod>
   </url>
   <url>
     <loc>https://Francisco-MG.github.io/projects/09_ordinal_regression.html</loc>
@@ -25,12 +49,20 @@
     <lastmod>2026-03-25T11:57:28.193Z</lastmod>
   </url>
   <url>
+    <loc>https://Francisco-MG.github.io/files/projet_25/DMP.html</loc>
+    <lastmod>2026-04-21T14:50:52.889Z</lastmod>
+  </url>
+  <url>
     <loc>https://Francisco-MG.github.io/data-science.html</loc>
-    <lastmod>2026-04-07T14:36:52.037Z</lastmod>
+    <lastmod>2026-04-07T22:40:52.801Z</lastmod>
   </url>
   <url>
     <loc>https://Francisco-MG.github.io/about.html</loc>
     <lastmod>2026-04-02T12:51:02.950Z</lastmod>
+  </url>
+  <url>
+    <loc>https://Francisco-MG.github.io/files/projet_20/README_bertopic.html</loc>
+    <lastmod>2026-04-20T08:44:31.711Z</lastmod>
   </url>
   <url>
     <loc>https://Francisco-MG.github.io/index.html</loc>
@@ -54,6 +86,30 @@
   </url>
   <url>
     <loc>https://Francisco-MG.github.io/projects/10_bayesian_modelling(v2).html</loc>
-    <lastmod>2026-04-06T21:45:56.881Z</lastmod>
+    <lastmod>2026-04-08T20:24:37.326Z</lastmod>
+  </url>
+  <url>
+    <loc>https://Francisco-MG.github.io/projects/12_SEM_path_mediation.html</loc>
+    <lastmod>2026-04-12T23:09:47.033Z</lastmod>
+  </url>
+  <url>
+    <loc>https://Francisco-MG.github.io/projects/14_composite_index_engineering.html</loc>
+    <lastmod>2026-03-28T17:59:45.755Z</lastmod>
+  </url>
+  <url>
+    <loc>https://Francisco-MG.github.io/projects/20_NLP_topic_sentiment.html</loc>
+    <lastmod>2026-04-20T10:55:04.830Z</lastmod>
+  </url>
+  <url>
+    <loc>https://Francisco-MG.github.io/projects/data-science.html</loc>
+    <lastmod>2026-04-07T22:40:52.801Z</lastmod>
+  </url>
+  <url>
+    <loc>https://Francisco-MG.github.io/projects/projet25c_modelling_v2.html</loc>
+    <lastmod>2026-05-03T12:59:44.843Z</lastmod>
+  </url>
+  <url>
+    <loc>https://Francisco-MG.github.io/projects/report.html</loc>
+    <lastmod>2026-05-03T13:58:14.520Z</lastmod>
   </url>
 </urlset>

@@ -2,16 +2,32 @@
   {
     "listing": "/data-science.html",
     "items": [
+      "/projects/about.html",
+      "/projects/data-science.html",
+      "/projects/report.html",
+      "/projects/projet25b_feature_extraction.html",
+      "/projects/projet25c_modelling_v2.html",
+      "/projects/projet25_ema_physio_adarp.html",
+      "/projects/20_NLP_topic_sentiment.html",
+      "/projects/19_Time_Series_Forecasting.html",
       "/projects/06_LLM_scoring_pipeline(v3b).html",
       "/projects/08_multilevel_mixed_models.html",
       "/projects/09_ordinal_regression.html",
       "/projects/10_bayesian_modelling(v2).html",
+      "/projects/11_fuzzy_clustering_profiles(soa).html",
+      "/projects/13_ML_prediction_XAI.html",
+      "/projects/14_composite_index_engineering.html",
       "/projects/04_CAT_simulation.html",
       "/projects/05_test_equating.html",
       "/projects/07_reliability_deep_dive_sem_addendum.html",
+      "/projects/12_SEM_path_mediation.html",
       "/projects/03_DIF_fairness.html",
       "/projects/01_IRT_item_calibration.html",
       "/projects/02_CFA_construct_validity.html"
     ]
+  },
+  {
+    "listing": "/projects/data-science.html",
+    "items": []
   }
 ]

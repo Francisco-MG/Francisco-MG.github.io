@@ -1,0 +1,1919 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.36">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2026-03-28">
+<meta name="description" content="End-to-end predictive modelling pipeline with explainable AI using tidymodels and DALEX. Covers data splitting, preprocessing, model training (random forest, xgboost), hyperparameter tuning, performance evaluation (RMSE, R², ROC-AUC), and post-hoc explainability: SHAP values, PDP/ALE plots, ICE curves, and variable importance. Applied to the Ames housing dataset.">
+
+<title>Machine Learning Prediction &amp; Explainability (XAI) – Francisco MG</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-845c23b38eaddc0f92fda52bfe77a8c8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-6b423f165eeea3787de40cb4f8e821c3.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Francisco MG</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="../viridis-colors.qmd"> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../report.html"> 
+<span class="menu-text">REPORTS</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../data-science.html"> 
+<span class="menu-text">DATA SCIENCE</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/Francisco-MG"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/TON-LINKEDIN"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#context" id="toc-context" class="nav-link active" data-scroll-target="#context"><span class="header-section-number">0.1</span> Context</a></li>
+  <li><a href="#key-results" id="toc-key-results" class="nav-link" data-scroll-target="#key-results"><span class="header-section-number">0.2</span> Key Results</a></li>
+  <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup"><span class="header-section-number">0.3</span> Setup</a></li>
+  <li><a href="#part-a-data-preparation" id="toc-part-a-data-preparation" class="nav-link" data-scroll-target="#part-a-data-preparation"><span class="header-section-number">1</span> PART A — Data Preparation</a>
+  <ul class="collapse">
+  <li><a href="#preprocessing-recipe" id="toc-preprocessing-recipe" class="nav-link" data-scroll-target="#preprocessing-recipe"><span class="header-section-number">1.1</span> Preprocessing recipe</a></li>
+  </ul></li>
+  <li><a href="#part-b-model-training" id="toc-part-b-model-training" class="nav-link" data-scroll-target="#part-b-model-training"><span class="header-section-number">2</span> PART B — Model Training</a>
+  <ul class="collapse">
+  <li><a href="#random-forest" id="toc-random-forest" class="nav-link" data-scroll-target="#random-forest"><span class="header-section-number">2.1</span> Random Forest</a></li>
+  <li><a href="#xgboost" id="toc-xgboost" class="nav-link" data-scroll-target="#xgboost"><span class="header-section-number">2.2</span> XGBoost</a></li>
+  </ul></li>
+  <li><a href="#part-c-performance-evaluation" id="toc-part-c-performance-evaluation" class="nav-link" data-scroll-target="#part-c-performance-evaluation"><span class="header-section-number">3</span> PART C — Performance Evaluation</a></li>
+  <li><a href="#part-d-explainability-xai" id="toc-part-d-explainability-xai" class="nav-link" data-scroll-target="#part-d-explainability-xai"><span class="header-section-number">4</span> PART D — Explainability (XAI)</a>
+  <ul class="collapse">
+  <li><a href="#create-dalex-explainers" id="toc-create-dalex-explainers" class="nav-link" data-scroll-target="#create-dalex-explainers"><span class="header-section-number">4.1</span> Create DALEX explainers</a></li>
+  <li><a href="#variable-importance" id="toc-variable-importance" class="nav-link" data-scroll-target="#variable-importance"><span class="header-section-number">4.2</span> Variable importance</a></li>
+  <li><a href="#partial-dependence-ale" id="toc-partial-dependence-ale" class="nav-link" data-scroll-target="#partial-dependence-ale"><span class="header-section-number">4.3</span> Partial Dependence &amp; ALE</a>
+  <ul class="collapse">
+  <li><a href="#interpretation" id="toc-interpretation" class="nav-link" data-scroll-target="#interpretation"><span class="header-section-number">4.3.1</span> Interpretation</a></li>
+  </ul></li>
+  <li><a href="#shap-values-local-explainability" id="toc-shap-values-local-explainability" class="nav-link" data-scroll-target="#shap-values-local-explainability"><span class="header-section-number">4.4</span> SHAP values (local explainability)</a>
+  <ul class="collapse">
+  <li><a href="#interpretation-1" id="toc-interpretation-1" class="nav-link" data-scroll-target="#interpretation-1"><span class="header-section-number">4.4.1</span> Interpretation</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#technical-summary" id="toc-technical-summary" class="nav-link" data-scroll-target="#technical-summary"><span class="header-section-number">5</span> Technical Summary</a>
+  <ul class="collapse">
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">5.1</span> References</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">Machine Learning Prediction &amp; Explainability (XAI)</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+  <div class="quarto-categories">
+    <div class="quarto-category">R</div>
+    <div class="quarto-category">Machine Learning</div>
+    <div class="quarto-category">XAI</div>
+    <div class="quarto-category">SHAP</div>
+    <div class="quarto-category">Random Forest</div>
+    <div class="quarto-category">XGBoost</div>
+    <div class="quarto-category">tidymodels</div>
+    <div class="quarto-category">DALEX</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    <p>End-to-end predictive modelling pipeline with explainable AI using tidymodels and DALEX. Covers data splitting, preprocessing, model training (random forest, xgboost), hyperparameter tuning, performance evaluation (RMSE, R², ROC-AUC), and post-hoc explainability: SHAP values, PDP/ALE plots, ICE curves, and variable importance. Applied to the Ames housing dataset.</p>
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">March 28, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="context" class="level2" data-number="0.1">
+<h2 data-number="0.1" class="anchored" data-anchor-id="context"><span class="header-section-number">0.1</span> Context</h2>
+<p>Predictive modelling is central to data science, but in applied research and decision-making contexts, prediction alone is insufficient — stakeholders need to understand <em>why</em> a model makes its predictions. <strong>Explainable AI (XAI)</strong> methods provide post-hoc interpretability for complex models (Molnar, 2022).</p>
+<p>This project demonstrates a complete ML pipeline with integrated explainability:</p>
+<ol type="1">
+<li><strong>Data preprocessing</strong> — feature engineering, imputation, encoding.</li>
+<li><strong>Model training</strong> — random forest and gradient boosting (xgboost) via the <code>tidymodels</code> framework.</li>
+<li><strong>Hyperparameter tuning</strong> — grid search with cross-validation.</li>
+<li><strong>Performance evaluation</strong> — RMSE, R², and residual analysis.</li>
+<li><strong>Global explainability</strong> — variable importance, PDP, ALE.</li>
+<li><strong>Local explainability</strong> — SHAP values, ICE curves, break-down plots for individual predictions.</li>
+</ol>
+<p>The dataset is <strong>Ames Housing</strong> (De Cock, 2011): 2,930 residential property sales in Ames, Iowa, with 80+ features predicting sale price. Available via the <code>modeldata</code> package.</p>
+</section>
+<section id="key-results" class="level2" data-number="0.2">
+<h2 data-number="0.2" class="anchored" data-anchor-id="key-results"><span class="header-section-number">0.2</span> Key Results</h2>
+<blockquote class="blockquote">
+<p><strong>Note:</strong> Theoretical expectations to be refined with actual output.</p>
+</blockquote>
+<p><strong>Expected findings:</strong></p>
+<ul>
+<li><strong>Both models</strong> should achieve R² ≈ 0.85–0.92 on the test set, with xgboost typically edging out random forest by 1–2%.</li>
+<li><strong>Top predictors:</strong> Overall quality, living area, neighbourhood, garage area, and year built should dominate variable importance.</li>
+<li><strong>PDP/ALE for living area:</strong> monotonically increasing, approximately linear in log-price.</li>
+<li><strong>SHAP:</strong> should reveal interaction effects (e.g., quality × area) that variable importance alone cannot detect.</li>
+</ul>
+</section>
+<section id="setup" class="level2" data-number="0.3">
+<h2 data-number="0.3" class="anchored" data-anchor-id="setup"><span class="header-section-number">0.3</span> Setup</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels)  <span class="co"># recipes, parsnip, workflows, tune, yardstick</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(modeldata)   <span class="co"># ames dataset</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(xgboost)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ranger)      <span class="co"># fast random forest</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DALEX)       <span class="co"># explainability wrapper</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibble)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Parallel backend ─────────────────────────────────────────────────────────</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Use all physical cores minus one (leave one for the OS / RStudio).</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># doParallel works on Windows; tune::tune_grid() picks it up automatically.</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co">#library(doParallel)</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co">#n_cores &lt;- max(1, parallel::detectCores(logical = FALSE) - 1)</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co">#cl &lt;- makePSOCKcluster(n_cores)</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co">#registerDoParallel(cl)</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co">#cat(sprintf("Parallel backend registered: %d workers\n", n_cores))</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Also let xgboost / ranger use multiple threads internally for the final fit.</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co"># (Tuning is parallelised across folds via doParallel; final fits are</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="co"># parallelised across threads within the model.)</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="co">#options(xgboost.nthread = n_cores)</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="co"># ranger uses num.threads, set per-call in the model spec if desired.</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">11</span>) <span class="sc">+</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>      <span class="at">plot.title    =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">13</span>),</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>      <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(<span class="at">colour =</span> <span class="st">"grey40"</span>, <span class="at">size =</span> <span class="dv">10</span>),</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>      <span class="at">legend.position =</span> <span class="st">"bottom"</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>palette_ml <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"#2C3E50"</span>, <span class="st">"#E74C3C"</span>, <span class="st">"#3498DB"</span>, <span class="st">"#2ECC71"</span>, <span class="st">"#F39C12"</span>)</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2026</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<hr>
+</section>
+<section id="part-a-data-preparation" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> PART A — Data Preparation</h1>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"ames"</span>, <span class="at">package =</span> <span class="st">"modeldata"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Ames dataset: %d observations × %d variables</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>            <span class="fu">nrow</span>(ames), <span class="fu">ncol</span>(ames)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Ames dataset: 2930 observations × 74 variables</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Log-transform sale price ─────────────────────────────────────────────────</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>ames <span class="ot">&lt;-</span> ames <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">log_price =</span> <span class="fu">log10</span>(Sale_Price))</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Train/test split (stratified by price) ───────────────────────────────────</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>split <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(ames, <span class="at">prop =</span> <span class="fl">0.80</span>, <span class="at">strata =</span> log_price)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>train <span class="ot">&lt;-</span> <span class="fu">training</span>(split)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>test  <span class="ot">&lt;-</span> <span class="fu">testing</span>(split)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Drop raw price from train/test — log_price is the target</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>train <span class="ot">&lt;-</span> train <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span>Sale_Price)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>test  <span class="ot">&lt;-</span> test  <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span>Sale_Price)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Training: %d | Test: %d</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">nrow</span>(train), <span class="fu">nrow</span>(test)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Training: 2342 | Test: 588</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Cross-validation folds ───────────────────────────────────────────────────</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>cv_folds <span class="ot">&lt;-</span> <span class="fu">vfold_cv</span>(train, <span class="at">v =</span> <span class="dv">5</span>, <span class="at">strata =</span> log_price)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="preprocessing-recipe" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="preprocessing-recipe"><span class="header-section-number">1.1</span> Preprocessing recipe</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>base_recipe <span class="ot">&lt;-</span> <span class="fu">recipe</span>(log_price <span class="sc">~</span> ., <span class="at">data =</span> train) <span class="sc">|&gt;</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_novel</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_unknown</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_dummy</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_zv</span>(<span class="fu">all_predictors</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_impute_median</span>(<span class="fu">all_numeric_predictors</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>())</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Recipe steps:</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Recipe steps:</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(base_recipe)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<hr>
+</section>
+</section>
+<section id="part-b-model-training" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> PART B — Model Training</h1>
+<section id="random-forest" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="random-forest"><span class="header-section-number">2.1</span> Random Forest</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>rf_spec <span class="ot">&lt;-</span> <span class="fu">rand_forest</span>(</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">mtry  =</span> <span class="fu">tune</span>(),</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">trees =</span> <span class="dv">500</span>,</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">min_n =</span> <span class="fu">tune</span>()</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"ranger"</span>, <span class="at">importance =</span> <span class="st">"impurity"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>)</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>rf_wf <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">|&gt;</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(base_recipe) <span class="sc">|&gt;</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(rf_spec)</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Tune hyperparameters ─────────────────────────────────────────────────────</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>rf_grid <span class="ot">&lt;-</span> <span class="fu">grid_regular</span>(</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtry</span>(<span class="at">range =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">30</span>)),</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">min_n</span>(<span class="at">range =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">15</span>)),</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">levels =</span> <span class="dv">5</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>rf_tune <span class="ot">&lt;-</span> <span class="fu">tune_grid</span>(</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>  rf_wf,</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">resamples =</span> cv_folds,</span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">grid      =</span> rf_grid,</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">metrics   =</span> <span class="fu">metric_set</span>(rmse, rsq)</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"=== Random Forest Tuning Results (top 5) ===</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=== Random Forest Tuning Results (top 5) ===</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">show_best</span>(rf_tune, <span class="at">metric =</span> <span class="st">"rmse"</span>, <span class="at">n =</span> <span class="dv">5</span>) <span class="sc">|&gt;</span> <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 7%">
+<col style="width: 8%">
+<col style="width: 11%">
+<col style="width: 15%">
+<col style="width: 10%">
+<col style="width: 4%">
+<col style="width: 11%">
+<col style="width: 31%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">mtry</th>
+<th style="text-align: right;">min_n</th>
+<th style="text-align: left;">.metric</th>
+<th style="text-align: left;">.estimator</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: right;">std_err</th>
+<th style="text-align: left;">.config</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">rmse</td>
+<td style="text-align: left;">standard</td>
+<td style="text-align: right;">0.0650</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.0026</td>
+<td style="text-align: left;">Preprocessor1_Model05</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: left;">rmse</td>
+<td style="text-align: left;">standard</td>
+<td style="text-align: right;">0.0651</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.0026</td>
+<td style="text-align: left;">Preprocessor1_Model10</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: left;">rmse</td>
+<td style="text-align: left;">standard</td>
+<td style="text-align: right;">0.0654</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.0026</td>
+<td style="text-align: left;">Preprocessor1_Model15</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: left;">rmse</td>
+<td style="text-align: left;">standard</td>
+<td style="text-align: right;">0.0656</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.0027</td>
+<td style="text-align: left;">Preprocessor1_Model20</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">23</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">rmse</td>
+<td style="text-align: left;">standard</td>
+<td style="text-align: right;">0.0657</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.0026</td>
+<td style="text-align: left;">Preprocessor1_Model04</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Finalise with best hyperparameters ───────────────────────────────────────</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>rf_best <span class="ot">&lt;-</span> <span class="fu">select_best</span>(rf_tune, <span class="at">metric =</span> <span class="st">"rmse"</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>rf_final <span class="ot">&lt;-</span> rf_wf <span class="sc">|&gt;</span> <span class="fu">finalize_workflow</span>(rf_best) <span class="sc">|&gt;</span> <span class="fu">fit</span>(train)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="xgboost" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="xgboost"><span class="header-section-number">2.2</span> XGBoost</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>xgb_spec <span class="ot">&lt;-</span> <span class="fu">boost_tree</span>(</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">trees      =</span> <span class="dv">500</span>,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">tree_depth =</span> <span class="fu">tune</span>(),</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">learn_rate =</span> <span class="fu">tune</span>(),</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">min_n      =</span> <span class="fu">tune</span>()</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"xgboost"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>)</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>xgb_wf <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">|&gt;</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(base_recipe) <span class="sc">|&gt;</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(xgb_spec)</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>xgb_grid <span class="ot">&lt;-</span> <span class="fu">grid_regular</span>(</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tree_depth</span>(<span class="at">range =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">8</span>)),</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">learn_rate</span>(<span class="at">range =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">2.5</span>, <span class="sc">-</span><span class="dv">1</span>)),</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">min_n</span>(<span class="at">range =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">20</span>)),</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">levels =</span> <span class="dv">4</span></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>xgb_tune <span class="ot">&lt;-</span> <span class="fu">tune_grid</span>(</span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>  xgb_wf,</span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">resamples =</span> cv_folds,</span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">grid      =</span> xgb_grid,</span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">metrics   =</span> <span class="fu">metric_set</span>(rmse, rsq)</span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"=== XGBoost Tuning Results (top 5) ===</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=== XGBoost Tuning Results (top 5) ===</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">show_best</span>(xgb_tune, <span class="at">metric =</span> <span class="st">"rmse"</span>, <span class="at">n =</span> <span class="dv">5</span>) <span class="sc">|&gt;</span> <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 9%">
+<col style="width: 12%">
+<col style="width: 8%">
+<col style="width: 3%">
+<col style="width: 9%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">min_n</th>
+<th style="text-align: right;">tree_depth</th>
+<th style="text-align: right;">learn_rate</th>
+<th style="text-align: left;">.metric</th>
+<th style="text-align: left;">.estimator</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: right;">std_err</th>
+<th style="text-align: left;">.config</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">0.0316</td>
+<td style="text-align: left;">rmse</td>
+<td style="text-align: left;">standard</td>
+<td style="text-align: right;">0.0556</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.0024</td>
+<td style="text-align: left;">Preprocessor1_Model60</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">0.1000</td>
+<td style="text-align: left;">rmse</td>
+<td style="text-align: left;">standard</td>
+<td style="text-align: right;">0.0558</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.0022</td>
+<td style="text-align: left;">Preprocessor1_Model61</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0.0316</td>
+<td style="text-align: left;">rmse</td>
+<td style="text-align: left;">standard</td>
+<td style="text-align: right;">0.0560</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.0023</td>
+<td style="text-align: left;">Preprocessor1_Model59</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0.1000</td>
+<td style="text-align: left;">rmse</td>
+<td style="text-align: left;">standard</td>
+<td style="text-align: right;">0.0562</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.0021</td>
+<td style="text-align: left;">Preprocessor1_Model62</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0.0316</td>
+<td style="text-align: left;">rmse</td>
+<td style="text-align: left;">standard</td>
+<td style="text-align: right;">0.0564</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.0024</td>
+<td style="text-align: left;">Preprocessor1_Model58</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>xgb_best <span class="ot">&lt;-</span> <span class="fu">select_best</span>(xgb_tune, <span class="at">metric =</span> <span class="st">"rmse"</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>xgb_final <span class="ot">&lt;-</span> xgb_wf <span class="sc">|&gt;</span> <span class="fu">finalize_workflow</span>(xgb_best) <span class="sc">|&gt;</span> <span class="fu">fit</span>(train)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<hr>
+</section>
+</section>
+<section id="part-c-performance-evaluation" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> PART C — Performance Evaluation</h1>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Predictions ──────────────────────────────────────────────────────────────</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>pred_rf  <span class="ot">&lt;-</span> <span class="fu">predict</span>(rf_final, test) <span class="sc">|&gt;</span> <span class="fu">bind_cols</span>(test <span class="sc">|&gt;</span> <span class="fu">select</span>(log_price))</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>pred_xgb <span class="ot">&lt;-</span> <span class="fu">predict</span>(xgb_final, test) <span class="sc">|&gt;</span> <span class="fu">bind_cols</span>(test <span class="sc">|&gt;</span> <span class="fu">select</span>(log_price))</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Metrics ──────────────────────────────────────────────────────────────────</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>metrics_rf  <span class="ot">&lt;-</span> pred_rf  <span class="sc">|&gt;</span> <span class="fu">metrics</span>(<span class="at">truth =</span> log_price, <span class="at">estimate =</span> .pred)</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>metrics_xgb <span class="ot">&lt;-</span> pred_xgb <span class="sc">|&gt;</span> <span class="fu">metrics</span>(<span class="at">truth =</span> log_price, <span class="at">estimate =</span> .pred)</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>perf_table <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  metrics_rf <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">model =</span> <span class="st">"Random Forest"</span>),</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  metrics_xgb <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">model =</span> <span class="st">"XGBoost"</span>)</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(model, .metric, .estimate) <span class="sc">|&gt;</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> .metric, <span class="at">values_from =</span> .estimate)</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(perf_table, <span class="at">digits =</span> <span class="dv">4</span>,</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">caption =</span> <span class="st">"Test set performance: Random Forest vs XGBoost"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Test set performance: Random Forest vs XGBoost</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">model</th>
+<th style="text-align: right;">rmse</th>
+<th style="text-align: right;">rsq</th>
+<th style="text-align: right;">mae</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Random Forest</td>
+<td style="text-align: right;">0.0559</td>
+<td style="text-align: right;">0.9024</td>
+<td style="text-align: right;">0.0381</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">XGBoost</td>
+<td style="text-align: right;">0.0546</td>
+<td style="text-align: right;">0.9023</td>
+<td style="text-align: right;">0.0370</td>
+</tr>
+</tbody>
+</table>
+<p>Predicted vs actual log(sale price) for both models on the test set.</p>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Predicted vs actual plot ─────────────────────────────────────────────────</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>pred_all <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  pred_rf <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">model =</span> <span class="st">"Random Forest"</span>),</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  pred_xgb <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">model =</span> <span class="st">"XGBoost"</span>)</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(pred_all, <span class="fu">aes</span>(<span class="at">x =</span> log_price, <span class="at">y =</span> .pred)) <span class="sc">+</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">colour =</span> <span class="st">"red"</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> model) <span class="sc">+</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Predicted vs Actual (Test Set)"</span>,</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Actual log₁₀(Sale Price)"</span>, <span class="at">y =</span> <span class="st">"Predicted log₁₀(Sale Price)"</span></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_equal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="13_ML_prediction_XAI_files/figure-html/test-performance-1.png" class="img-fluid figure-img" width="864"></p>
+<figcaption>Predicted vs actual log(sale price) for both models on the test set.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<hr>
+</section>
+<section id="part-d-explainability-xai" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> PART D — Explainability (XAI)</h1>
+<section id="create-dalex-explainers" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="create-dalex-explainers"><span class="header-section-number">4.1</span> Create DALEX explainers</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Prepare raw test features (no baking) ────────────────────────────────────</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Passing the workflow to DALEX lets the recipe run inside the prediction</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co"># function, so PDP/ALE/SHAP report effects on the original feature scale</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="co"># (e.g. Overall_Qual stays a factor, Gr_Liv_Area in square feet).</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>test_x <span class="ot">&lt;-</span> test <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span>log_price)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>test_y <span class="ot">&lt;-</span> test<span class="sc">$</span>log_price</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Prediction function: workflow handles preprocessing internally ───────────</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>pred_fun_wf <span class="ot">&lt;-</span> <span class="cf">function</span>(model, newdata) {</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">predict</span>(model, <span class="at">new_data =</span> newdata)<span class="sc">$</span>.pred</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>explainer_rf <span class="ot">&lt;-</span> <span class="fu">explain</span>(</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>  rf_final,                       <span class="co"># full workflow, not extract_fit_parsnip()</span></span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">data             =</span> test_x,</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">y                =</span> test_y,</span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">predict_function =</span> pred_fun_wf,</span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">label            =</span> <span class="st">"Random Forest"</span>,</span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose          =</span> <span class="cn">FALSE</span></span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>explainer_xgb <span class="ot">&lt;-</span> <span class="fu">explain</span>(</span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>  xgb_final,                      <span class="co"># full workflow, not extract_fit_parsnip()</span></span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">data             =</span> test_x,</span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">y                =</span> test_y,</span>
+<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">predict_function =</span> pred_fun_wf,</span>
+<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">label            =</span> <span class="st">"XGBoost"</span>,</span>
+<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose          =</span> <span class="cn">FALSE</span></span>
+<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="variable-importance" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="variable-importance"><span class="header-section-number">4.2</span> Variable importance</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>vi_rf  <span class="ot">&lt;-</span> <span class="fu">model_parts</span>(explainer_rf,  <span class="at">type =</span> <span class="st">"variable_importance"</span>, <span class="at">N =</span> <span class="dv">500</span>)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>vi_xgb <span class="ot">&lt;-</span> <span class="fu">model_parts</span>(explainer_xgb, <span class="at">type =</span> <span class="st">"variable_importance"</span>, <span class="at">N =</span> <span class="dv">500</span>)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(vi_rf, vi_xgb, <span class="at">max_vars =</span> <span class="dv">15</span>, <span class="at">show_boxplots =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Permutation Variable Importance (Top 15)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="13_ML_prediction_XAI_files/figure-html/var-importance-1.png" class="img-fluid figure-img" width="768"></p>
+<figcaption>Top 15 predictors by permutation importance (drop in RMSE). Compared across models.</figcaption>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>vi_xgb <span class="sc">|&gt;</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="sc">!</span>variable <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"_full_model_"</span>, <span class="st">"_baseline_"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(variable) <span class="sc">|&gt;</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">mean_drop =</span> <span class="fu">mean</span>(dropout_loss)) <span class="sc">|&gt;</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(<span class="fu">desc</span>(mean_drop)) <span class="sc">|&gt;</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 10 × 2
+   variable       mean_drop
+   &lt;chr&gt;              &lt;dbl&gt;
+ 1 Gr_Liv_Area       0.0978
+ 2 Year_Built        0.0766
+ 3 Total_Bsmt_SF     0.0669
+ 4 Year_Remod_Add    0.0625
+ 5 Fireplaces        0.0587
+ 6 Longitude         0.0576
+ 7 Sale_Condition    0.0571
+ 8 Garage_Cars       0.0571
+ 9 Overall_Cond      0.0570
+10 First_Flr_SF      0.0569</code></pre>
+</div>
+</div>
+</section>
+<section id="partial-dependence-ale" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="partial-dependence-ale"><span class="header-section-number">4.3</span> Partial Dependence &amp; ALE</h2>
+<p>Having identified the dominant predictors via permutation importance, we now examine <em>how</em> the model uses the two strongest features, <code>Gr_Liv_Area</code> (above-ground living area) and <code>Year_Built</code>. Profile-based explanations are computationally expensive, so we restrict the analysis to variables whose contribution to predictive performance is non-trivial — here, the top two account for roughly 32% more importance than the third-ranked predictor.</p>
+<p>The two variables were selected to contrast two regimes:</p>
+<ul>
+<li><code>Gr_Liv_Area</code> is the strongest predictor and is largely independent of other features (square footage cannot be inferred from year of construction or neighbourhood). PDP and ALE should therefore agree closely.</li>
+<li><code>Year_Built</code> is the second-strongest predictor and is <strong>strongly correlated</strong> with <code>Year_Remod_Add</code> (4th in importance) and indirectly with garage age and material quality. This is precisely the regime where PDP — which assumes feature independence — may mislead, while ALE correctly conditions on the local distribution. The comparison below makes this divergence concrete.</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Grid for continuous variables ────────────────────────────────────────────</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Quantile-based grid: dense where data is dense, sparse in the tails.</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Avoids the "&gt; 201 unique values" warning and produces smoother plots.</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>area_grid <span class="ot">&lt;-</span> <span class="fu">quantile</span>(explainer_xgb<span class="sc">$</span>data<span class="sc">$</span>Gr_Liv_Area,</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>                      <span class="at">probs =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="at">length.out =</span> <span class="dv">50</span>),</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>                      <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.integer</span>() <span class="sc">|&gt;</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unique</span>()</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="co"># ── PDP ──────────────────────────────────────────────────────────────────────</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>pdp_area <span class="ot">&lt;-</span> <span class="fu">model_profile</span>(explainer_xgb,</span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>                          <span class="at">variables       =</span> <span class="st">"Gr_Liv_Area"</span>,</span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>                          <span class="at">variable_splits =</span> <span class="fu">list</span>(<span class="at">Gr_Liv_Area =</span> area_grid),</span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>                          <span class="at">type            =</span> <span class="st">"partial"</span>)</span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>pdp_year <span class="ot">&lt;-</span> <span class="fu">model_profile</span>(explainer_xgb,</span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>                          <span class="at">variables =</span> <span class="st">"Year_Built"</span>,</span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>                          <span class="at">type      =</span> <span class="st">"partial"</span>)</span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a><span class="co"># ── ALE ──────────────────────────────────────────────────────────────────────</span></span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a>ale_area <span class="ot">&lt;-</span> <span class="fu">model_profile</span>(explainer_xgb,</span>
+<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a>                          <span class="at">variables       =</span> <span class="st">"Gr_Liv_Area"</span>,</span>
+<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a>                          <span class="at">variable_splits =</span> <span class="fu">list</span>(<span class="at">Gr_Liv_Area =</span> area_grid),</span>
+<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a>                          <span class="at">type            =</span> <span class="st">"accumulated"</span>)</span>
+<span id="cb24-24"><a href="#cb24-24" aria-hidden="true" tabindex="-1"></a>ale_year <span class="ot">&lt;-</span> <span class="fu">model_profile</span>(explainer_xgb,</span>
+<span id="cb24-25"><a href="#cb24-25" aria-hidden="true" tabindex="-1"></a>                          <span class="at">variables =</span> <span class="st">"Year_Built"</span>,</span>
+<span id="cb24-26"><a href="#cb24-26" aria-hidden="true" tabindex="-1"></a>                          <span class="at">type      =</span> <span class="st">"accumulated"</span>)</span>
+<span id="cb24-27"><a href="#cb24-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-28"><a href="#cb24-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Force same y-axis range per variable for fair visual comparison</span></span>
+<span id="cb24-29"><a href="#cb24-29" aria-hidden="true" tabindex="-1"></a>y_area <span class="ot">&lt;-</span> <span class="fu">range</span>(<span class="fu">c</span>(pdp_area<span class="sc">$</span>agr_profiles<span class="sc">$</span><span class="st">`</span><span class="at">_yhat_</span><span class="st">`</span>,</span>
+<span id="cb24-30"><a href="#cb24-30" aria-hidden="true" tabindex="-1"></a>                  ale_area<span class="sc">$</span>agr_profiles<span class="sc">$</span><span class="st">`</span><span class="at">_yhat_</span><span class="st">`</span>))</span>
+<span id="cb24-31"><a href="#cb24-31" aria-hidden="true" tabindex="-1"></a>y_year <span class="ot">&lt;-</span> <span class="fu">range</span>(<span class="fu">c</span>(pdp_year<span class="sc">$</span>agr_profiles<span class="sc">$</span><span class="st">`</span><span class="at">_yhat_</span><span class="st">`</span>,</span>
+<span id="cb24-32"><a href="#cb24-32" aria-hidden="true" tabindex="-1"></a>                  ale_year<span class="sc">$</span>agr_profiles<span class="sc">$</span><span class="st">`</span><span class="at">_yhat_</span><span class="st">`</span>))</span>
+<span id="cb24-33"><a href="#cb24-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-34"><a href="#cb24-34" aria-hidden="true" tabindex="-1"></a>gridExtra<span class="sc">::</span><span class="fu">grid.arrange</span>(</span>
+<span id="cb24-35"><a href="#cb24-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(pdp_area) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"PDP: Living Area"</span>) <span class="sc">+</span> <span class="fu">ylim</span>(y_area),</span>
+<span id="cb24-36"><a href="#cb24-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(ale_area) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"ALE: Living Area"</span>) <span class="sc">+</span> <span class="fu">ylim</span>(y_area),</span>
+<span id="cb24-37"><a href="#cb24-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(pdp_year) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"PDP: Year Built"</span>) <span class="sc">+</span> <span class="fu">ylim</span>(y_year),</span>
+<span id="cb24-38"><a href="#cb24-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(ale_year) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"ALE: Year Built"</span>) <span class="sc">+</span> <span class="fu">ylim</span>(y_year),</span>
+<span id="cb24-39"><a href="#cb24-39" aria-hidden="true" tabindex="-1"></a>  <span class="at">ncol =</span> <span class="dv">2</span></span>
+<span id="cb24-40"><a href="#cb24-40" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="13_ML_prediction_XAI_files/figure-html/pdp-ale-1.png" class="img-fluid figure-img" width="864"></p>
+<figcaption>Partial dependence (PDP) and accumulated local effects (ALE) for Gr_Liv_Area and Year_Built. Differences between PDP and ALE reveal the impact of feature correlations (notably Year_Built with Year_Remod_Add).</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<section id="interpretation" class="level3" data-number="4.3.1">
+<h3 data-number="4.3.1" class="anchored" data-anchor-id="interpretation"><span class="header-section-number">4.3.1</span> Interpretation</h3>
+<ul>
+<li><p><strong>PDP</strong> shows the average prediction as a function of one feature, marginalising over all other features. It assumes feature independence.</p></li>
+<li><p><strong>ALE</strong> corrects for feature correlations by using conditional distributions. When features are correlated (e.g., living area and number of rooms), ALE is preferred.</p></li>
+<li><p><strong>Differences between PDP and ALE</strong> reveal the impact of feature correlations on the marginal effect estimate.</p>
+<p>Our results :</p></li>
+<li><p>For <strong><code>Gr_Liv_Area</code></strong>, PDP and ALE are visually identical, both in shape and amplitude. This confirms our methodological expectation: living area is largely independent of other features in the model, so averaging over the marginal distribution (PDP) and conditioning on the local distribution (ALE) produce equivalent results. Both show a strongly concave monotonic increase, with marginal value of an additional square foot collapsing to near zero above ~2,500 sq ft — a classic diminishing-returns pattern.</p></li>
+<li><p>For <strong><code>Year_Built</code></strong>, PDP and ALE share the same overall shape (flat for pre-1920 homes, modest plateau through 1970, steep climb thereafter), but the <strong>ALE has noticeably larger amplitude</strong> (~0.125 vs ~0.085 in log10 units). The PDP is “compressed” upward for old homes: by averaging over all values of <code>Year_Remod_Add</code> — including frequent recent remodels of older houses — it overestimates predictions in the 1880-1920 range. The ALE, by conditioning locally, recovers the genuine penalty on truly old and unrenovated homes. This is the textbook signature of correlated features: PDP underestimates the true marginal effect.</p></li>
+<li><p><strong>Methodological takeaway</strong>: when feature correlation is suspected (here, <code>Year_Built</code> × <code>Year_Remod_Add</code>), ALE should be the default. The fact that PDP and ALE <em>agree on shape</em> but <em>disagree on amplitude</em> is itself a useful diagnostic — it tells us XGBoost has captured the right qualitative pattern but that single-feature marginalisation slightly understates the strength of the effect.</p></li>
+</ul>
+</section>
+</section>
+<section id="shap-values-local-explainability" class="level2" data-number="4.4">
+<h2 data-number="4.4" class="anchored" data-anchor-id="shap-values-local-explainability"><span class="header-section-number">4.4</span> SHAP values (local explainability)</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Select 3 representative observations ────────────────────────────────────</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>idx <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">which.min</span>(test_y),                           <span class="co"># cheapest</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">which.min</span>(<span class="fu">abs</span>(test_y <span class="sc">-</span> <span class="fu">median</span>(test_y))),     <span class="co"># median</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">which.max</span>(test_y)                             <span class="co"># most expensive</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>bd_plots <span class="ot">&lt;-</span> <span class="fu">lapply</span>(idx, <span class="cf">function</span>(i) {</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>  bd <span class="ot">&lt;-</span> <span class="fu">predict_parts</span>(explainer_xgb,</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>                       <span class="at">new_observation =</span> test_x[i, ],</span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>                       <span class="at">type =</span> <span class="st">"shap"</span>,</span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>                       <span class="at">B =</span> <span class="dv">25</span>)</span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(bd) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">subtitle =</span> <span class="fu">sprintf</span>(<span class="st">"Observation %d (actual: %.3f)"</span>, i, test_y[i]))</span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>gridExtra<span class="sc">::</span><span class="fu">grid.arrange</span>(<span class="at">grobs =</span> bd_plots, <span class="at">ncol =</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="13_ML_prediction_XAI_files/figure-html/shap-1.png" class="img-fluid figure-img" width="768"></p>
+<figcaption>Break-down plots for 3 individual predictions (XGBoost). Each bar shows a feature’s contribution to the prediction.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<section id="interpretation-1" class="level3" data-number="4.4.1">
+<h3 data-number="4.4.1" class="anchored" data-anchor-id="interpretation-1"><span class="header-section-number">4.4.1</span> Interpretation</h3>
+<p>SHAP values decompose each individual prediction into feature contributions:</p>
+<ul>
+<li><strong>Positive SHAP</strong> = the feature pushes the prediction above the baseline (average prediction).</li>
+<li><strong>Negative SHAP</strong> = the feature pushes the prediction below baseline.</li>
+<li><strong>Comparing across observations</strong> reveals which features matter for different price segments — quality dominates at the high end, while location and condition matter more at the low end.</li>
+</ul>
+<hr>
+</section>
+</section>
+</section>
+<section id="technical-summary" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Technical Summary</h1>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"─── Reproducibility Information ───</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>─── Reproducibility Information ───</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Date: %s</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">Sys.Date</span>()))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Date: 2026-05-04</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"R version: %s</span><span class="sc">\n</span><span class="st">"</span>, R.version.string))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>R version: R version 4.4.1 (2024-06-14 ucrt)</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"tidymodels version: %s</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">packageVersion</span>(<span class="st">"tidymodels"</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>tidymodels version: 1.2.0</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"xgboost version: %s</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">packageVersion</span>(<span class="st">"xgboost"</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>xgboost version: 1.7.8.1</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"DALEX version: %s</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">packageVersion</span>(<span class="st">"DALEX"</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>DALEX version: 2.5.2</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Platform: %s</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">sessionInfo</span>()<span class="sc">$</span>platform))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Platform: x86_64-w64-mingw32/x64</code></pre>
+</div>
+</div>
+<hr>
+<section id="references" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="references"><span class="header-section-number">5.1</span> References</h2>
+<ul>
+<li>Biecek, P., &amp; Burzykowski, T. (2021). <em>Explanatory Model Analysis</em>. CRC Press.</li>
+<li>Breiman, L. (2001). Random forests. <em>Machine Learning</em>, 45(1), 5–32.</li>
+<li>Chen, T., &amp; Guestrin, C. (2016). XGBoost: A scalable tree boosting system. <em>KDD</em>, 785–794.</li>
+<li>De Cock, D. (2011). Ames, Iowa: Alternative to the Boston housing data. <em>Journal of Statistics Education</em>, 19(3).</li>
+<li>Lundberg, S. M., &amp; Lee, S.-I. (2017). A unified approach to interpreting model predictions. <em>NeurIPS</em>, 30.</li>
+<li>Molnar, C. (2022). <em>Interpretable Machine Learning</em> (2nd ed.). christophm.github.io/interpretable-ml-book.</li>
+</ul>
+
+
+<!-- -->
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/Francisco-MG\.github\.io\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb40" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Machine Learning Prediction &amp; Explainability (XAI)"</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a><span class="an">description:</span><span class="co"> |</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a><span class="co">  End-to-end predictive modelling pipeline with explainable AI using</span></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a><span class="co">  tidymodels and DALEX. Covers data splitting, preprocessing, model</span></span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a><span class="co">  training (random forest, xgboost), hyperparameter tuning, performance</span></span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a><span class="co">  evaluation (RMSE, R², ROC-AUC), and post-hoc explainability: SHAP</span></span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a><span class="co">  values, PDP/ALE plots, ICE curves, and variable importance. Applied</span></span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a><span class="co">  to the Ames housing dataset.</span></span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> 2026-03-28</span></span>
+<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a><span class="an">categories:</span><span class="co"> [R, Machine Learning, XAI, SHAP, Random Forest, XGBoost, tidymodels, DALEX]</span></span>
+<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span></span>
+<span id="cb40-13"><a href="#cb40-13" aria-hidden="true" tabindex="-1"></a><span class="co">  echo: true</span></span>
+<span id="cb40-14"><a href="#cb40-14" aria-hidden="true" tabindex="-1"></a><span class="co">  warning: false</span></span>
+<span id="cb40-15"><a href="#cb40-15" aria-hidden="true" tabindex="-1"></a><span class="co">  message: false</span></span>
+<span id="cb40-16"><a href="#cb40-16" aria-hidden="true" tabindex="-1"></a><span class="an">freeze:</span><span class="co"> auto</span></span>
+<span id="cb40-17"><a href="#cb40-17" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb40-18"><a href="#cb40-18" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb40-19"><a href="#cb40-19" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
+<span id="cb40-20"><a href="#cb40-20" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: false</span></span>
+<span id="cb40-21"><a href="#cb40-21" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb40-22"><a href="#cb40-22" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-depth: 3</span></span>
+<span id="cb40-23"><a href="#cb40-23" aria-hidden="true" tabindex="-1"></a><span class="co">    number-sections: true</span></span>
+<span id="cb40-24"><a href="#cb40-24" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb40-25"><a href="#cb40-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-26"><a href="#cb40-26" aria-hidden="true" tabindex="-1"></a><span class="fu">## Context</span></span>
+<span id="cb40-27"><a href="#cb40-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-28"><a href="#cb40-28" aria-hidden="true" tabindex="-1"></a>Predictive modelling is central to data science, but in applied research</span>
+<span id="cb40-29"><a href="#cb40-29" aria-hidden="true" tabindex="-1"></a>and decision-making contexts, prediction alone is insufficient —</span>
+<span id="cb40-30"><a href="#cb40-30" aria-hidden="true" tabindex="-1"></a>stakeholders need to understand *why* a model makes its predictions.</span>
+<span id="cb40-31"><a href="#cb40-31" aria-hidden="true" tabindex="-1"></a>**Explainable AI (XAI)** methods provide post-hoc interpretability for</span>
+<span id="cb40-32"><a href="#cb40-32" aria-hidden="true" tabindex="-1"></a>complex models (Molnar, 2022).</span>
+<span id="cb40-33"><a href="#cb40-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-34"><a href="#cb40-34" aria-hidden="true" tabindex="-1"></a>This project demonstrates a complete ML pipeline with integrated</span>
+<span id="cb40-35"><a href="#cb40-35" aria-hidden="true" tabindex="-1"></a>explainability:</span>
+<span id="cb40-36"><a href="#cb40-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-37"><a href="#cb40-37" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Data preprocessing** — feature engineering, imputation, encoding.</span>
+<span id="cb40-38"><a href="#cb40-38" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Model training** — random forest and gradient boosting (xgboost)</span>
+<span id="cb40-39"><a href="#cb40-39" aria-hidden="true" tabindex="-1"></a>   via the <span class="in">`tidymodels`</span> framework.</span>
+<span id="cb40-40"><a href="#cb40-40" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Hyperparameter tuning** — grid search with cross-validation.</span>
+<span id="cb40-41"><a href="#cb40-41" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>**Performance evaluation** — RMSE, R², and residual analysis.</span>
+<span id="cb40-42"><a href="#cb40-42" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>**Global explainability** — variable importance, PDP, ALE.</span>
+<span id="cb40-43"><a href="#cb40-43" aria-hidden="true" tabindex="-1"></a><span class="ss">6. </span>**Local explainability** — SHAP values, ICE curves, break-down</span>
+<span id="cb40-44"><a href="#cb40-44" aria-hidden="true" tabindex="-1"></a>   plots for individual predictions.</span>
+<span id="cb40-45"><a href="#cb40-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-46"><a href="#cb40-46" aria-hidden="true" tabindex="-1"></a>The dataset is **Ames Housing** (De Cock, 2011): 2,930 residential</span>
+<span id="cb40-47"><a href="#cb40-47" aria-hidden="true" tabindex="-1"></a>property sales in Ames, Iowa, with 80+ features predicting sale price.</span>
+<span id="cb40-48"><a href="#cb40-48" aria-hidden="true" tabindex="-1"></a>Available via the <span class="in">`modeldata`</span> package.</span>
+<span id="cb40-49"><a href="#cb40-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-50"><a href="#cb40-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-51"><a href="#cb40-51" aria-hidden="true" tabindex="-1"></a><span class="fu">## Key Results</span></span>
+<span id="cb40-52"><a href="#cb40-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-53"><a href="#cb40-53" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; **Note:** Theoretical expectations to be refined with actual output.</span></span>
+<span id="cb40-54"><a href="#cb40-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-55"><a href="#cb40-55" aria-hidden="true" tabindex="-1"></a>**Expected findings:**</span>
+<span id="cb40-56"><a href="#cb40-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-57"><a href="#cb40-57" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Both models** should achieve R² ≈ 0.85–0.92 on the test set, with</span>
+<span id="cb40-58"><a href="#cb40-58" aria-hidden="true" tabindex="-1"></a>  xgboost typically edging out random forest by 1–2%.</span>
+<span id="cb40-59"><a href="#cb40-59" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Top predictors:** Overall quality, living area, neighbourhood,</span>
+<span id="cb40-60"><a href="#cb40-60" aria-hidden="true" tabindex="-1"></a>  garage area, and year built should dominate variable importance.</span>
+<span id="cb40-61"><a href="#cb40-61" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**PDP/ALE for living area:** monotonically increasing, approximately</span>
+<span id="cb40-62"><a href="#cb40-62" aria-hidden="true" tabindex="-1"></a>  linear in log-price.</span>
+<span id="cb40-63"><a href="#cb40-63" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**SHAP:** should reveal interaction effects (e.g., quality × area)</span>
+<span id="cb40-64"><a href="#cb40-64" aria-hidden="true" tabindex="-1"></a>  that variable importance alone cannot detect.</span>
+<span id="cb40-65"><a href="#cb40-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-66"><a href="#cb40-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-67"><a href="#cb40-67" aria-hidden="true" tabindex="-1"></a><span class="fu">## Setup</span></span>
+<span id="cb40-68"><a href="#cb40-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-71"><a href="#cb40-71" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb40-72"><a href="#cb40-72" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup</span></span>
+<span id="cb40-73"><a href="#cb40-73" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-summary: "Load packages, enable parallel backend, set global options"</span></span>
+<span id="cb40-74"><a href="#cb40-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-75"><a href="#cb40-75" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels)  <span class="co"># recipes, parsnip, workflows, tune, yardstick</span></span>
+<span id="cb40-76"><a href="#cb40-76" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(modeldata)   <span class="co"># ames dataset</span></span>
+<span id="cb40-77"><a href="#cb40-77" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(xgboost)</span>
+<span id="cb40-78"><a href="#cb40-78" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ranger)      <span class="co"># fast random forest</span></span>
+<span id="cb40-79"><a href="#cb40-79" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DALEX)       <span class="co"># explainability wrapper</span></span>
+<span id="cb40-80"><a href="#cb40-80" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb40-81"><a href="#cb40-81" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb40-82"><a href="#cb40-82" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibble)</span>
+<span id="cb40-83"><a href="#cb40-83" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb40-84"><a href="#cb40-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-85"><a href="#cb40-85" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Parallel backend ─────────────────────────────────────────────────────────</span></span>
+<span id="cb40-86"><a href="#cb40-86" aria-hidden="true" tabindex="-1"></a><span class="co"># Use all physical cores minus one (leave one for the OS / RStudio).</span></span>
+<span id="cb40-87"><a href="#cb40-87" aria-hidden="true" tabindex="-1"></a><span class="co"># doParallel works on Windows; tune::tune_grid() picks it up automatically.</span></span>
+<span id="cb40-88"><a href="#cb40-88" aria-hidden="true" tabindex="-1"></a><span class="co">#library(doParallel)</span></span>
+<span id="cb40-89"><a href="#cb40-89" aria-hidden="true" tabindex="-1"></a><span class="co">#n_cores &lt;- max(1, parallel::detectCores(logical = FALSE) - 1)</span></span>
+<span id="cb40-90"><a href="#cb40-90" aria-hidden="true" tabindex="-1"></a><span class="co">#cl &lt;- makePSOCKcluster(n_cores)</span></span>
+<span id="cb40-91"><a href="#cb40-91" aria-hidden="true" tabindex="-1"></a><span class="co">#registerDoParallel(cl)</span></span>
+<span id="cb40-92"><a href="#cb40-92" aria-hidden="true" tabindex="-1"></a><span class="co">#cat(sprintf("Parallel backend registered: %d workers\n", n_cores))</span></span>
+<span id="cb40-93"><a href="#cb40-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-94"><a href="#cb40-94" aria-hidden="true" tabindex="-1"></a><span class="co"># Also let xgboost / ranger use multiple threads internally for the final fit.</span></span>
+<span id="cb40-95"><a href="#cb40-95" aria-hidden="true" tabindex="-1"></a><span class="co"># (Tuning is parallelised across folds via doParallel; final fits are</span></span>
+<span id="cb40-96"><a href="#cb40-96" aria-hidden="true" tabindex="-1"></a><span class="co"># parallelised across threads within the model.)</span></span>
+<span id="cb40-97"><a href="#cb40-97" aria-hidden="true" tabindex="-1"></a><span class="co">#options(xgboost.nthread = n_cores)</span></span>
+<span id="cb40-98"><a href="#cb40-98" aria-hidden="true" tabindex="-1"></a><span class="co"># ranger uses num.threads, set per-call in the model spec if desired.</span></span>
+<span id="cb40-99"><a href="#cb40-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-100"><a href="#cb40-100" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(</span>
+<span id="cb40-101"><a href="#cb40-101" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">11</span>) <span class="sc">+</span></span>
+<span id="cb40-102"><a href="#cb40-102" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(</span>
+<span id="cb40-103"><a href="#cb40-103" aria-hidden="true" tabindex="-1"></a>      <span class="at">plot.title    =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">13</span>),</span>
+<span id="cb40-104"><a href="#cb40-104" aria-hidden="true" tabindex="-1"></a>      <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(<span class="at">colour =</span> <span class="st">"grey40"</span>, <span class="at">size =</span> <span class="dv">10</span>),</span>
+<span id="cb40-105"><a href="#cb40-105" aria-hidden="true" tabindex="-1"></a>      <span class="at">legend.position =</span> <span class="st">"bottom"</span></span>
+<span id="cb40-106"><a href="#cb40-106" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb40-107"><a href="#cb40-107" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb40-108"><a href="#cb40-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-109"><a href="#cb40-109" aria-hidden="true" tabindex="-1"></a>palette_ml <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"#2C3E50"</span>, <span class="st">"#E74C3C"</span>, <span class="st">"#3498DB"</span>, <span class="st">"#2ECC71"</span>, <span class="st">"#F39C12"</span>)</span>
+<span id="cb40-110"><a href="#cb40-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-111"><a href="#cb40-111" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
+<span id="cb40-112"><a href="#cb40-112" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb40-113"><a href="#cb40-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-114"><a href="#cb40-114" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb40-115"><a href="#cb40-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-116"><a href="#cb40-116" aria-hidden="true" tabindex="-1"></a><span class="fu"># PART A — Data Preparation</span></span>
+<span id="cb40-117"><a href="#cb40-117" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-120"><a href="#cb40-120" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb40-121"><a href="#cb40-121" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: load-data</span></span>
+<span id="cb40-122"><a href="#cb40-122" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-summary: "Load Ames housing data and prepare train/test split"</span></span>
+<span id="cb40-123"><a href="#cb40-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-124"><a href="#cb40-124" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"ames"</span>, <span class="at">package =</span> <span class="st">"modeldata"</span>)</span>
+<span id="cb40-125"><a href="#cb40-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-126"><a href="#cb40-126" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Ames dataset: %d observations × %d variables</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb40-127"><a href="#cb40-127" aria-hidden="true" tabindex="-1"></a>            <span class="fu">nrow</span>(ames), <span class="fu">ncol</span>(ames)))</span>
+<span id="cb40-128"><a href="#cb40-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-129"><a href="#cb40-129" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Log-transform sale price ─────────────────────────────────────────────────</span></span>
+<span id="cb40-130"><a href="#cb40-130" aria-hidden="true" tabindex="-1"></a>ames <span class="ot">&lt;-</span> ames <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">log_price =</span> <span class="fu">log10</span>(Sale_Price))</span>
+<span id="cb40-131"><a href="#cb40-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-132"><a href="#cb40-132" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Train/test split (stratified by price) ───────────────────────────────────</span></span>
+<span id="cb40-133"><a href="#cb40-133" aria-hidden="true" tabindex="-1"></a>split <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(ames, <span class="at">prop =</span> <span class="fl">0.80</span>, <span class="at">strata =</span> log_price)</span>
+<span id="cb40-134"><a href="#cb40-134" aria-hidden="true" tabindex="-1"></a>train <span class="ot">&lt;-</span> <span class="fu">training</span>(split)</span>
+<span id="cb40-135"><a href="#cb40-135" aria-hidden="true" tabindex="-1"></a>test  <span class="ot">&lt;-</span> <span class="fu">testing</span>(split)</span>
+<span id="cb40-136"><a href="#cb40-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-137"><a href="#cb40-137" aria-hidden="true" tabindex="-1"></a><span class="co"># Drop raw price from train/test — log_price is the target</span></span>
+<span id="cb40-138"><a href="#cb40-138" aria-hidden="true" tabindex="-1"></a>train <span class="ot">&lt;-</span> train <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span>Sale_Price)</span>
+<span id="cb40-139"><a href="#cb40-139" aria-hidden="true" tabindex="-1"></a>test  <span class="ot">&lt;-</span> test  <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span>Sale_Price)</span>
+<span id="cb40-140"><a href="#cb40-140" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-141"><a href="#cb40-141" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Training: %d | Test: %d</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">nrow</span>(train), <span class="fu">nrow</span>(test)))</span>
+<span id="cb40-142"><a href="#cb40-142" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-143"><a href="#cb40-143" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Cross-validation folds ───────────────────────────────────────────────────</span></span>
+<span id="cb40-144"><a href="#cb40-144" aria-hidden="true" tabindex="-1"></a>cv_folds <span class="ot">&lt;-</span> <span class="fu">vfold_cv</span>(train, <span class="at">v =</span> <span class="dv">5</span>, <span class="at">strata =</span> log_price)</span>
+<span id="cb40-145"><a href="#cb40-145" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb40-146"><a href="#cb40-146" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-147"><a href="#cb40-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-148"><a href="#cb40-148" aria-hidden="true" tabindex="-1"></a><span class="fu">## Preprocessing recipe</span></span>
+<span id="cb40-149"><a href="#cb40-149" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-152"><a href="#cb40-152" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb40-153"><a href="#cb40-153" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: recipe</span></span>
+<span id="cb40-154"><a href="#cb40-154" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-summary: "Feature engineering and preprocessing recipe"</span></span>
+<span id="cb40-155"><a href="#cb40-155" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-156"><a href="#cb40-156" aria-hidden="true" tabindex="-1"></a>base_recipe <span class="ot">&lt;-</span> <span class="fu">recipe</span>(log_price <span class="sc">~</span> ., <span class="at">data =</span> train) <span class="sc">|&gt;</span></span>
+<span id="cb40-157"><a href="#cb40-157" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_novel</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb40-158"><a href="#cb40-158" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_unknown</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb40-159"><a href="#cb40-159" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_dummy</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb40-160"><a href="#cb40-160" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_zv</span>(<span class="fu">all_predictors</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb40-161"><a href="#cb40-161" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_impute_median</span>(<span class="fu">all_numeric_predictors</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb40-162"><a href="#cb40-162" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>())</span>
+<span id="cb40-163"><a href="#cb40-163" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-164"><a href="#cb40-164" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Recipe steps:</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb40-165"><a href="#cb40-165" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(base_recipe)</span>
+<span id="cb40-166"><a href="#cb40-166" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb40-167"><a href="#cb40-167" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-168"><a href="#cb40-168" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb40-169"><a href="#cb40-169" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-170"><a href="#cb40-170" aria-hidden="true" tabindex="-1"></a><span class="fu"># PART B — Model Training</span></span>
+<span id="cb40-171"><a href="#cb40-171" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-172"><a href="#cb40-172" aria-hidden="true" tabindex="-1"></a><span class="fu">## Random Forest</span></span>
+<span id="cb40-173"><a href="#cb40-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-176"><a href="#cb40-176" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb40-177"><a href="#cb40-177" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: rf-fit</span></span>
+<span id="cb40-178"><a href="#cb40-178" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-summary: "Train random forest with ranger"</span></span>
+<span id="cb40-179"><a href="#cb40-179" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-180"><a href="#cb40-180" aria-hidden="true" tabindex="-1"></a>rf_spec <span class="ot">&lt;-</span> <span class="fu">rand_forest</span>(</span>
+<span id="cb40-181"><a href="#cb40-181" aria-hidden="true" tabindex="-1"></a>  <span class="at">mtry  =</span> <span class="fu">tune</span>(),</span>
+<span id="cb40-182"><a href="#cb40-182" aria-hidden="true" tabindex="-1"></a>  <span class="at">trees =</span> <span class="dv">500</span>,</span>
+<span id="cb40-183"><a href="#cb40-183" aria-hidden="true" tabindex="-1"></a>  <span class="at">min_n =</span> <span class="fu">tune</span>()</span>
+<span id="cb40-184"><a href="#cb40-184" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb40-185"><a href="#cb40-185" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"ranger"</span>, <span class="at">importance =</span> <span class="st">"impurity"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb40-186"><a href="#cb40-186" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>)</span>
+<span id="cb40-187"><a href="#cb40-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-188"><a href="#cb40-188" aria-hidden="true" tabindex="-1"></a>rf_wf <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">|&gt;</span></span>
+<span id="cb40-189"><a href="#cb40-189" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(base_recipe) <span class="sc">|&gt;</span></span>
+<span id="cb40-190"><a href="#cb40-190" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(rf_spec)</span>
+<span id="cb40-191"><a href="#cb40-191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-192"><a href="#cb40-192" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Tune hyperparameters ─────────────────────────────────────────────────────</span></span>
+<span id="cb40-193"><a href="#cb40-193" aria-hidden="true" tabindex="-1"></a>rf_grid <span class="ot">&lt;-</span> <span class="fu">grid_regular</span>(</span>
+<span id="cb40-194"><a href="#cb40-194" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtry</span>(<span class="at">range =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">30</span>)),</span>
+<span id="cb40-195"><a href="#cb40-195" aria-hidden="true" tabindex="-1"></a>  <span class="fu">min_n</span>(<span class="at">range =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">15</span>)),</span>
+<span id="cb40-196"><a href="#cb40-196" aria-hidden="true" tabindex="-1"></a>  <span class="at">levels =</span> <span class="dv">5</span></span>
+<span id="cb40-197"><a href="#cb40-197" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb40-198"><a href="#cb40-198" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-199"><a href="#cb40-199" aria-hidden="true" tabindex="-1"></a>rf_tune <span class="ot">&lt;-</span> <span class="fu">tune_grid</span>(</span>
+<span id="cb40-200"><a href="#cb40-200" aria-hidden="true" tabindex="-1"></a>  rf_wf,</span>
+<span id="cb40-201"><a href="#cb40-201" aria-hidden="true" tabindex="-1"></a>  <span class="at">resamples =</span> cv_folds,</span>
+<span id="cb40-202"><a href="#cb40-202" aria-hidden="true" tabindex="-1"></a>  <span class="at">grid      =</span> rf_grid,</span>
+<span id="cb40-203"><a href="#cb40-203" aria-hidden="true" tabindex="-1"></a>  <span class="at">metrics   =</span> <span class="fu">metric_set</span>(rmse, rsq)</span>
+<span id="cb40-204"><a href="#cb40-204" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb40-205"><a href="#cb40-205" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-206"><a href="#cb40-206" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"=== Random Forest Tuning Results (top 5) ===</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb40-207"><a href="#cb40-207" aria-hidden="true" tabindex="-1"></a><span class="fu">show_best</span>(rf_tune, <span class="at">metric =</span> <span class="st">"rmse"</span>, <span class="at">n =</span> <span class="dv">5</span>) <span class="sc">|&gt;</span> <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">4</span>)</span>
+<span id="cb40-208"><a href="#cb40-208" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-209"><a href="#cb40-209" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Finalise with best hyperparameters ───────────────────────────────────────</span></span>
+<span id="cb40-210"><a href="#cb40-210" aria-hidden="true" tabindex="-1"></a>rf_best <span class="ot">&lt;-</span> <span class="fu">select_best</span>(rf_tune, <span class="at">metric =</span> <span class="st">"rmse"</span>)</span>
+<span id="cb40-211"><a href="#cb40-211" aria-hidden="true" tabindex="-1"></a>rf_final <span class="ot">&lt;-</span> rf_wf <span class="sc">|&gt;</span> <span class="fu">finalize_workflow</span>(rf_best) <span class="sc">|&gt;</span> <span class="fu">fit</span>(train)</span>
+<span id="cb40-212"><a href="#cb40-212" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb40-213"><a href="#cb40-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-214"><a href="#cb40-214" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-215"><a href="#cb40-215" aria-hidden="true" tabindex="-1"></a><span class="fu">## XGBoost</span></span>
+<span id="cb40-216"><a href="#cb40-216" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-219"><a href="#cb40-219" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb40-220"><a href="#cb40-220" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: xgb-fit</span></span>
+<span id="cb40-221"><a href="#cb40-221" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-summary: "Train xgboost gradient boosting"</span></span>
+<span id="cb40-222"><a href="#cb40-222" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-223"><a href="#cb40-223" aria-hidden="true" tabindex="-1"></a>xgb_spec <span class="ot">&lt;-</span> <span class="fu">boost_tree</span>(</span>
+<span id="cb40-224"><a href="#cb40-224" aria-hidden="true" tabindex="-1"></a>  <span class="at">trees      =</span> <span class="dv">500</span>,</span>
+<span id="cb40-225"><a href="#cb40-225" aria-hidden="true" tabindex="-1"></a>  <span class="at">tree_depth =</span> <span class="fu">tune</span>(),</span>
+<span id="cb40-226"><a href="#cb40-226" aria-hidden="true" tabindex="-1"></a>  <span class="at">learn_rate =</span> <span class="fu">tune</span>(),</span>
+<span id="cb40-227"><a href="#cb40-227" aria-hidden="true" tabindex="-1"></a>  <span class="at">min_n      =</span> <span class="fu">tune</span>()</span>
+<span id="cb40-228"><a href="#cb40-228" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb40-229"><a href="#cb40-229" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"xgboost"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb40-230"><a href="#cb40-230" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>)</span>
+<span id="cb40-231"><a href="#cb40-231" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-232"><a href="#cb40-232" aria-hidden="true" tabindex="-1"></a>xgb_wf <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">|&gt;</span></span>
+<span id="cb40-233"><a href="#cb40-233" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(base_recipe) <span class="sc">|&gt;</span></span>
+<span id="cb40-234"><a href="#cb40-234" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(xgb_spec)</span>
+<span id="cb40-235"><a href="#cb40-235" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-236"><a href="#cb40-236" aria-hidden="true" tabindex="-1"></a>xgb_grid <span class="ot">&lt;-</span> <span class="fu">grid_regular</span>(</span>
+<span id="cb40-237"><a href="#cb40-237" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tree_depth</span>(<span class="at">range =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">8</span>)),</span>
+<span id="cb40-238"><a href="#cb40-238" aria-hidden="true" tabindex="-1"></a>  <span class="fu">learn_rate</span>(<span class="at">range =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">2.5</span>, <span class="sc">-</span><span class="dv">1</span>)),</span>
+<span id="cb40-239"><a href="#cb40-239" aria-hidden="true" tabindex="-1"></a>  <span class="fu">min_n</span>(<span class="at">range =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">20</span>)),</span>
+<span id="cb40-240"><a href="#cb40-240" aria-hidden="true" tabindex="-1"></a>  <span class="at">levels =</span> <span class="dv">4</span></span>
+<span id="cb40-241"><a href="#cb40-241" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb40-242"><a href="#cb40-242" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-243"><a href="#cb40-243" aria-hidden="true" tabindex="-1"></a>xgb_tune <span class="ot">&lt;-</span> <span class="fu">tune_grid</span>(</span>
+<span id="cb40-244"><a href="#cb40-244" aria-hidden="true" tabindex="-1"></a>  xgb_wf,</span>
+<span id="cb40-245"><a href="#cb40-245" aria-hidden="true" tabindex="-1"></a>  <span class="at">resamples =</span> cv_folds,</span>
+<span id="cb40-246"><a href="#cb40-246" aria-hidden="true" tabindex="-1"></a>  <span class="at">grid      =</span> xgb_grid,</span>
+<span id="cb40-247"><a href="#cb40-247" aria-hidden="true" tabindex="-1"></a>  <span class="at">metrics   =</span> <span class="fu">metric_set</span>(rmse, rsq)</span>
+<span id="cb40-248"><a href="#cb40-248" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb40-249"><a href="#cb40-249" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-250"><a href="#cb40-250" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"=== XGBoost Tuning Results (top 5) ===</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb40-251"><a href="#cb40-251" aria-hidden="true" tabindex="-1"></a><span class="fu">show_best</span>(xgb_tune, <span class="at">metric =</span> <span class="st">"rmse"</span>, <span class="at">n =</span> <span class="dv">5</span>) <span class="sc">|&gt;</span> <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">4</span>)</span>
+<span id="cb40-252"><a href="#cb40-252" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-253"><a href="#cb40-253" aria-hidden="true" tabindex="-1"></a>xgb_best <span class="ot">&lt;-</span> <span class="fu">select_best</span>(xgb_tune, <span class="at">metric =</span> <span class="st">"rmse"</span>)</span>
+<span id="cb40-254"><a href="#cb40-254" aria-hidden="true" tabindex="-1"></a>xgb_final <span class="ot">&lt;-</span> xgb_wf <span class="sc">|&gt;</span> <span class="fu">finalize_workflow</span>(xgb_best) <span class="sc">|&gt;</span> <span class="fu">fit</span>(train)</span>
+<span id="cb40-255"><a href="#cb40-255" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb40-256"><a href="#cb40-256" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-257"><a href="#cb40-257" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb40-258"><a href="#cb40-258" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-259"><a href="#cb40-259" aria-hidden="true" tabindex="-1"></a><span class="fu"># PART C — Performance Evaluation</span></span>
+<span id="cb40-260"><a href="#cb40-260" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-263"><a href="#cb40-263" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb40-264"><a href="#cb40-264" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: test-performance</span></span>
+<span id="cb40-265"><a href="#cb40-265" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-summary: "Evaluate both models on the test set"</span></span>
+<span id="cb40-266"><a href="#cb40-266" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Predicted vs actual log(sale price) for both models on the test set."</span></span>
+<span id="cb40-267"><a href="#cb40-267" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 5</span></span>
+<span id="cb40-268"><a href="#cb40-268" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 9</span></span>
+<span id="cb40-269"><a href="#cb40-269" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-270"><a href="#cb40-270" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Predictions ──────────────────────────────────────────────────────────────</span></span>
+<span id="cb40-271"><a href="#cb40-271" aria-hidden="true" tabindex="-1"></a>pred_rf  <span class="ot">&lt;-</span> <span class="fu">predict</span>(rf_final, test) <span class="sc">|&gt;</span> <span class="fu">bind_cols</span>(test <span class="sc">|&gt;</span> <span class="fu">select</span>(log_price))</span>
+<span id="cb40-272"><a href="#cb40-272" aria-hidden="true" tabindex="-1"></a>pred_xgb <span class="ot">&lt;-</span> <span class="fu">predict</span>(xgb_final, test) <span class="sc">|&gt;</span> <span class="fu">bind_cols</span>(test <span class="sc">|&gt;</span> <span class="fu">select</span>(log_price))</span>
+<span id="cb40-273"><a href="#cb40-273" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-274"><a href="#cb40-274" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Metrics ──────────────────────────────────────────────────────────────────</span></span>
+<span id="cb40-275"><a href="#cb40-275" aria-hidden="true" tabindex="-1"></a>metrics_rf  <span class="ot">&lt;-</span> pred_rf  <span class="sc">|&gt;</span> <span class="fu">metrics</span>(<span class="at">truth =</span> log_price, <span class="at">estimate =</span> .pred)</span>
+<span id="cb40-276"><a href="#cb40-276" aria-hidden="true" tabindex="-1"></a>metrics_xgb <span class="ot">&lt;-</span> pred_xgb <span class="sc">|&gt;</span> <span class="fu">metrics</span>(<span class="at">truth =</span> log_price, <span class="at">estimate =</span> .pred)</span>
+<span id="cb40-277"><a href="#cb40-277" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-278"><a href="#cb40-278" aria-hidden="true" tabindex="-1"></a>perf_table <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb40-279"><a href="#cb40-279" aria-hidden="true" tabindex="-1"></a>  metrics_rf <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">model =</span> <span class="st">"Random Forest"</span>),</span>
+<span id="cb40-280"><a href="#cb40-280" aria-hidden="true" tabindex="-1"></a>  metrics_xgb <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">model =</span> <span class="st">"XGBoost"</span>)</span>
+<span id="cb40-281"><a href="#cb40-281" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb40-282"><a href="#cb40-282" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(model, .metric, .estimate) <span class="sc">|&gt;</span></span>
+<span id="cb40-283"><a href="#cb40-283" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> .metric, <span class="at">values_from =</span> .estimate)</span>
+<span id="cb40-284"><a href="#cb40-284" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-285"><a href="#cb40-285" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(perf_table, <span class="at">digits =</span> <span class="dv">4</span>,</span>
+<span id="cb40-286"><a href="#cb40-286" aria-hidden="true" tabindex="-1"></a>      <span class="at">caption =</span> <span class="st">"Test set performance: Random Forest vs XGBoost"</span>)</span>
+<span id="cb40-287"><a href="#cb40-287" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-288"><a href="#cb40-288" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Predicted vs actual plot ─────────────────────────────────────────────────</span></span>
+<span id="cb40-289"><a href="#cb40-289" aria-hidden="true" tabindex="-1"></a>pred_all <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb40-290"><a href="#cb40-290" aria-hidden="true" tabindex="-1"></a>  pred_rf <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">model =</span> <span class="st">"Random Forest"</span>),</span>
+<span id="cb40-291"><a href="#cb40-291" aria-hidden="true" tabindex="-1"></a>  pred_xgb <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">model =</span> <span class="st">"XGBoost"</span>)</span>
+<span id="cb40-292"><a href="#cb40-292" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb40-293"><a href="#cb40-293" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-294"><a href="#cb40-294" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(pred_all, <span class="fu">aes</span>(<span class="at">x =</span> log_price, <span class="at">y =</span> .pred)) <span class="sc">+</span></span>
+<span id="cb40-295"><a href="#cb40-295" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb40-296"><a href="#cb40-296" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">colour =</span> <span class="st">"red"</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb40-297"><a href="#cb40-297" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> model) <span class="sc">+</span></span>
+<span id="cb40-298"><a href="#cb40-298" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb40-299"><a href="#cb40-299" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Predicted vs Actual (Test Set)"</span>,</span>
+<span id="cb40-300"><a href="#cb40-300" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Actual log₁₀(Sale Price)"</span>, <span class="at">y =</span> <span class="st">"Predicted log₁₀(Sale Price)"</span></span>
+<span id="cb40-301"><a href="#cb40-301" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb40-302"><a href="#cb40-302" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_equal</span>()</span>
+<span id="cb40-303"><a href="#cb40-303" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb40-304"><a href="#cb40-304" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-305"><a href="#cb40-305" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb40-306"><a href="#cb40-306" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-307"><a href="#cb40-307" aria-hidden="true" tabindex="-1"></a><span class="fu"># PART D — Explainability (XAI)</span></span>
+<span id="cb40-308"><a href="#cb40-308" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-309"><a href="#cb40-309" aria-hidden="true" tabindex="-1"></a><span class="fu">## Create DALEX explainers</span></span>
+<span id="cb40-310"><a href="#cb40-310" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-313"><a href="#cb40-313" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb40-314"><a href="#cb40-314" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: explainers</span></span>
+<span id="cb40-315"><a href="#cb40-315" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-summary: "Create DALEX explainer objects (workflow-based, raw features)"</span></span>
+<span id="cb40-316"><a href="#cb40-316" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-317"><a href="#cb40-317" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Prepare raw test features (no baking) ────────────────────────────────────</span></span>
+<span id="cb40-318"><a href="#cb40-318" aria-hidden="true" tabindex="-1"></a><span class="co"># Passing the workflow to DALEX lets the recipe run inside the prediction</span></span>
+<span id="cb40-319"><a href="#cb40-319" aria-hidden="true" tabindex="-1"></a><span class="co"># function, so PDP/ALE/SHAP report effects on the original feature scale</span></span>
+<span id="cb40-320"><a href="#cb40-320" aria-hidden="true" tabindex="-1"></a><span class="co"># (e.g. Overall_Qual stays a factor, Gr_Liv_Area in square feet).</span></span>
+<span id="cb40-321"><a href="#cb40-321" aria-hidden="true" tabindex="-1"></a>test_x <span class="ot">&lt;-</span> test <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span>log_price)</span>
+<span id="cb40-322"><a href="#cb40-322" aria-hidden="true" tabindex="-1"></a>test_y <span class="ot">&lt;-</span> test<span class="sc">$</span>log_price</span>
+<span id="cb40-323"><a href="#cb40-323" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-324"><a href="#cb40-324" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Prediction function: workflow handles preprocessing internally ───────────</span></span>
+<span id="cb40-325"><a href="#cb40-325" aria-hidden="true" tabindex="-1"></a>pred_fun_wf <span class="ot">&lt;-</span> <span class="cf">function</span>(model, newdata) {</span>
+<span id="cb40-326"><a href="#cb40-326" aria-hidden="true" tabindex="-1"></a>  <span class="fu">predict</span>(model, <span class="at">new_data =</span> newdata)<span class="sc">$</span>.pred</span>
+<span id="cb40-327"><a href="#cb40-327" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb40-328"><a href="#cb40-328" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-329"><a href="#cb40-329" aria-hidden="true" tabindex="-1"></a>explainer_rf <span class="ot">&lt;-</span> <span class="fu">explain</span>(</span>
+<span id="cb40-330"><a href="#cb40-330" aria-hidden="true" tabindex="-1"></a>  rf_final,                       <span class="co"># full workflow, not extract_fit_parsnip()</span></span>
+<span id="cb40-331"><a href="#cb40-331" aria-hidden="true" tabindex="-1"></a>  <span class="at">data             =</span> test_x,</span>
+<span id="cb40-332"><a href="#cb40-332" aria-hidden="true" tabindex="-1"></a>  <span class="at">y                =</span> test_y,</span>
+<span id="cb40-333"><a href="#cb40-333" aria-hidden="true" tabindex="-1"></a>  <span class="at">predict_function =</span> pred_fun_wf,</span>
+<span id="cb40-334"><a href="#cb40-334" aria-hidden="true" tabindex="-1"></a>  <span class="at">label            =</span> <span class="st">"Random Forest"</span>,</span>
+<span id="cb40-335"><a href="#cb40-335" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose          =</span> <span class="cn">FALSE</span></span>
+<span id="cb40-336"><a href="#cb40-336" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb40-337"><a href="#cb40-337" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-338"><a href="#cb40-338" aria-hidden="true" tabindex="-1"></a>explainer_xgb <span class="ot">&lt;-</span> <span class="fu">explain</span>(</span>
+<span id="cb40-339"><a href="#cb40-339" aria-hidden="true" tabindex="-1"></a>  xgb_final,                      <span class="co"># full workflow, not extract_fit_parsnip()</span></span>
+<span id="cb40-340"><a href="#cb40-340" aria-hidden="true" tabindex="-1"></a>  <span class="at">data             =</span> test_x,</span>
+<span id="cb40-341"><a href="#cb40-341" aria-hidden="true" tabindex="-1"></a>  <span class="at">y                =</span> test_y,</span>
+<span id="cb40-342"><a href="#cb40-342" aria-hidden="true" tabindex="-1"></a>  <span class="at">predict_function =</span> pred_fun_wf,</span>
+<span id="cb40-343"><a href="#cb40-343" aria-hidden="true" tabindex="-1"></a>  <span class="at">label            =</span> <span class="st">"XGBoost"</span>,</span>
+<span id="cb40-344"><a href="#cb40-344" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose          =</span> <span class="cn">FALSE</span></span>
+<span id="cb40-345"><a href="#cb40-345" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb40-346"><a href="#cb40-346" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb40-347"><a href="#cb40-347" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-348"><a href="#cb40-348" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-349"><a href="#cb40-349" aria-hidden="true" tabindex="-1"></a><span class="fu">## Variable importance</span></span>
+<span id="cb40-350"><a href="#cb40-350" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-353"><a href="#cb40-353" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb40-354"><a href="#cb40-354" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: var-importance</span></span>
+<span id="cb40-355"><a href="#cb40-355" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-summary: "Permutation-based variable importance"</span></span>
+<span id="cb40-356"><a href="#cb40-356" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Top 15 predictors by permutation importance (drop in RMSE). Compared across models."</span></span>
+<span id="cb40-357"><a href="#cb40-357" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 6</span></span>
+<span id="cb40-358"><a href="#cb40-358" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 8</span></span>
+<span id="cb40-359"><a href="#cb40-359" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-360"><a href="#cb40-360" aria-hidden="true" tabindex="-1"></a>vi_rf  <span class="ot">&lt;-</span> <span class="fu">model_parts</span>(explainer_rf,  <span class="at">type =</span> <span class="st">"variable_importance"</span>, <span class="at">N =</span> <span class="dv">500</span>)</span>
+<span id="cb40-361"><a href="#cb40-361" aria-hidden="true" tabindex="-1"></a>vi_xgb <span class="ot">&lt;-</span> <span class="fu">model_parts</span>(explainer_xgb, <span class="at">type =</span> <span class="st">"variable_importance"</span>, <span class="at">N =</span> <span class="dv">500</span>)</span>
+<span id="cb40-362"><a href="#cb40-362" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-363"><a href="#cb40-363" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(vi_rf, vi_xgb, <span class="at">max_vars =</span> <span class="dv">15</span>, <span class="at">show_boxplots =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb40-364"><a href="#cb40-364" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Permutation Variable Importance (Top 15)"</span>)</span>
+<span id="cb40-365"><a href="#cb40-365" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-366"><a href="#cb40-366" aria-hidden="true" tabindex="-1"></a>vi_xgb <span class="sc">|&gt;</span></span>
+<span id="cb40-367"><a href="#cb40-367" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="sc">!</span>variable <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"_full_model_"</span>, <span class="st">"_baseline_"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb40-368"><a href="#cb40-368" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(variable) <span class="sc">|&gt;</span></span>
+<span id="cb40-369"><a href="#cb40-369" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">mean_drop =</span> <span class="fu">mean</span>(dropout_loss)) <span class="sc">|&gt;</span></span>
+<span id="cb40-370"><a href="#cb40-370" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(<span class="fu">desc</span>(mean_drop)) <span class="sc">|&gt;</span></span>
+<span id="cb40-371"><a href="#cb40-371" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">10</span>)</span>
+<span id="cb40-372"><a href="#cb40-372" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb40-373"><a href="#cb40-373" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-374"><a href="#cb40-374" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-375"><a href="#cb40-375" aria-hidden="true" tabindex="-1"></a><span class="fu">## Partial Dependence &amp; ALE</span></span>
+<span id="cb40-376"><a href="#cb40-376" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-377"><a href="#cb40-377" aria-hidden="true" tabindex="-1"></a>Having identified the dominant predictors via permutation importance, we now</span>
+<span id="cb40-378"><a href="#cb40-378" aria-hidden="true" tabindex="-1"></a>examine *how* the model uses the two strongest features, <span class="in">`Gr_Liv_Area`</span></span>
+<span id="cb40-379"><a href="#cb40-379" aria-hidden="true" tabindex="-1"></a>(above-ground living area) and <span class="in">`Year_Built`</span>. Profile-based explanations are</span>
+<span id="cb40-380"><a href="#cb40-380" aria-hidden="true" tabindex="-1"></a>computationally expensive, so we restrict the analysis to variables whose</span>
+<span id="cb40-381"><a href="#cb40-381" aria-hidden="true" tabindex="-1"></a>contribution to predictive performance is non-trivial — here, the top two</span>
+<span id="cb40-382"><a href="#cb40-382" aria-hidden="true" tabindex="-1"></a>account for roughly 32% more importance than the third-ranked predictor.</span>
+<span id="cb40-383"><a href="#cb40-383" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-384"><a href="#cb40-384" aria-hidden="true" tabindex="-1"></a>The two variables were selected to contrast two regimes:</span>
+<span id="cb40-385"><a href="#cb40-385" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-386"><a href="#cb40-386" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Gr_Liv_Area`</span> is the strongest predictor and is largely independent of other</span>
+<span id="cb40-387"><a href="#cb40-387" aria-hidden="true" tabindex="-1"></a>  features (square footage cannot be inferred from year of construction or</span>
+<span id="cb40-388"><a href="#cb40-388" aria-hidden="true" tabindex="-1"></a>  neighbourhood). PDP and ALE should therefore agree closely.</span>
+<span id="cb40-389"><a href="#cb40-389" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`Year_Built`</span> is the second-strongest predictor and is **strongly correlated**</span>
+<span id="cb40-390"><a href="#cb40-390" aria-hidden="true" tabindex="-1"></a>  with <span class="in">`Year_Remod_Add`</span> (4th in importance) and indirectly with garage age and</span>
+<span id="cb40-391"><a href="#cb40-391" aria-hidden="true" tabindex="-1"></a>  material quality. This is precisely the regime where PDP — which assumes</span>
+<span id="cb40-392"><a href="#cb40-392" aria-hidden="true" tabindex="-1"></a>  feature independence — may mislead, while ALE correctly conditions on the</span>
+<span id="cb40-393"><a href="#cb40-393" aria-hidden="true" tabindex="-1"></a>  local distribution. The comparison below makes this divergence concrete.</span>
+<span id="cb40-394"><a href="#cb40-394" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-397"><a href="#cb40-397" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb40-398"><a href="#cb40-398" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: pdp-ale</span></span>
+<span id="cb40-399"><a href="#cb40-399" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-summary: "PDP and ALE plots for top predictors"</span></span>
+<span id="cb40-400"><a href="#cb40-400" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Partial dependence (PDP) and accumulated local effects (ALE) for Gr_Liv_Area and Year_Built. Differences between PDP and ALE reveal the impact of feature correlations (notably Year_Built with Year_Remod_Add)."</span></span>
+<span id="cb40-401"><a href="#cb40-401" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 8</span></span>
+<span id="cb40-402"><a href="#cb40-402" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 9</span></span>
+<span id="cb40-403"><a href="#cb40-403" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-404"><a href="#cb40-404" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Grid for continuous variables ────────────────────────────────────────────</span></span>
+<span id="cb40-405"><a href="#cb40-405" aria-hidden="true" tabindex="-1"></a><span class="co"># Quantile-based grid: dense where data is dense, sparse in the tails.</span></span>
+<span id="cb40-406"><a href="#cb40-406" aria-hidden="true" tabindex="-1"></a><span class="co"># Avoids the "&gt; 201 unique values" warning and produces smoother plots.</span></span>
+<span id="cb40-407"><a href="#cb40-407" aria-hidden="true" tabindex="-1"></a>area_grid <span class="ot">&lt;-</span> <span class="fu">quantile</span>(explainer_xgb<span class="sc">$</span>data<span class="sc">$</span>Gr_Liv_Area,</span>
+<span id="cb40-408"><a href="#cb40-408" aria-hidden="true" tabindex="-1"></a>                      <span class="at">probs =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="at">length.out =</span> <span class="dv">50</span>),</span>
+<span id="cb40-409"><a href="#cb40-409" aria-hidden="true" tabindex="-1"></a>                      <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb40-410"><a href="#cb40-410" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.integer</span>() <span class="sc">|&gt;</span></span>
+<span id="cb40-411"><a href="#cb40-411" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unique</span>()</span>
+<span id="cb40-412"><a href="#cb40-412" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-413"><a href="#cb40-413" aria-hidden="true" tabindex="-1"></a><span class="co"># ── PDP ──────────────────────────────────────────────────────────────────────</span></span>
+<span id="cb40-414"><a href="#cb40-414" aria-hidden="true" tabindex="-1"></a>pdp_area <span class="ot">&lt;-</span> <span class="fu">model_profile</span>(explainer_xgb,</span>
+<span id="cb40-415"><a href="#cb40-415" aria-hidden="true" tabindex="-1"></a>                          <span class="at">variables       =</span> <span class="st">"Gr_Liv_Area"</span>,</span>
+<span id="cb40-416"><a href="#cb40-416" aria-hidden="true" tabindex="-1"></a>                          <span class="at">variable_splits =</span> <span class="fu">list</span>(<span class="at">Gr_Liv_Area =</span> area_grid),</span>
+<span id="cb40-417"><a href="#cb40-417" aria-hidden="true" tabindex="-1"></a>                          <span class="at">type            =</span> <span class="st">"partial"</span>)</span>
+<span id="cb40-418"><a href="#cb40-418" aria-hidden="true" tabindex="-1"></a>pdp_year <span class="ot">&lt;-</span> <span class="fu">model_profile</span>(explainer_xgb,</span>
+<span id="cb40-419"><a href="#cb40-419" aria-hidden="true" tabindex="-1"></a>                          <span class="at">variables =</span> <span class="st">"Year_Built"</span>,</span>
+<span id="cb40-420"><a href="#cb40-420" aria-hidden="true" tabindex="-1"></a>                          <span class="at">type      =</span> <span class="st">"partial"</span>)</span>
+<span id="cb40-421"><a href="#cb40-421" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-422"><a href="#cb40-422" aria-hidden="true" tabindex="-1"></a><span class="co"># ── ALE ──────────────────────────────────────────────────────────────────────</span></span>
+<span id="cb40-423"><a href="#cb40-423" aria-hidden="true" tabindex="-1"></a>ale_area <span class="ot">&lt;-</span> <span class="fu">model_profile</span>(explainer_xgb,</span>
+<span id="cb40-424"><a href="#cb40-424" aria-hidden="true" tabindex="-1"></a>                          <span class="at">variables       =</span> <span class="st">"Gr_Liv_Area"</span>,</span>
+<span id="cb40-425"><a href="#cb40-425" aria-hidden="true" tabindex="-1"></a>                          <span class="at">variable_splits =</span> <span class="fu">list</span>(<span class="at">Gr_Liv_Area =</span> area_grid),</span>
+<span id="cb40-426"><a href="#cb40-426" aria-hidden="true" tabindex="-1"></a>                          <span class="at">type            =</span> <span class="st">"accumulated"</span>)</span>
+<span id="cb40-427"><a href="#cb40-427" aria-hidden="true" tabindex="-1"></a>ale_year <span class="ot">&lt;-</span> <span class="fu">model_profile</span>(explainer_xgb,</span>
+<span id="cb40-428"><a href="#cb40-428" aria-hidden="true" tabindex="-1"></a>                          <span class="at">variables =</span> <span class="st">"Year_Built"</span>,</span>
+<span id="cb40-429"><a href="#cb40-429" aria-hidden="true" tabindex="-1"></a>                          <span class="at">type      =</span> <span class="st">"accumulated"</span>)</span>
+<span id="cb40-430"><a href="#cb40-430" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-431"><a href="#cb40-431" aria-hidden="true" tabindex="-1"></a><span class="co"># Force same y-axis range per variable for fair visual comparison</span></span>
+<span id="cb40-432"><a href="#cb40-432" aria-hidden="true" tabindex="-1"></a>y_area <span class="ot">&lt;-</span> <span class="fu">range</span>(<span class="fu">c</span>(pdp_area<span class="sc">$</span>agr_profiles<span class="sc">$</span><span class="st">`</span><span class="at">_yhat_</span><span class="st">`</span>,</span>
+<span id="cb40-433"><a href="#cb40-433" aria-hidden="true" tabindex="-1"></a>                  ale_area<span class="sc">$</span>agr_profiles<span class="sc">$</span><span class="st">`</span><span class="at">_yhat_</span><span class="st">`</span>))</span>
+<span id="cb40-434"><a href="#cb40-434" aria-hidden="true" tabindex="-1"></a>y_year <span class="ot">&lt;-</span> <span class="fu">range</span>(<span class="fu">c</span>(pdp_year<span class="sc">$</span>agr_profiles<span class="sc">$</span><span class="st">`</span><span class="at">_yhat_</span><span class="st">`</span>,</span>
+<span id="cb40-435"><a href="#cb40-435" aria-hidden="true" tabindex="-1"></a>                  ale_year<span class="sc">$</span>agr_profiles<span class="sc">$</span><span class="st">`</span><span class="at">_yhat_</span><span class="st">`</span>))</span>
+<span id="cb40-436"><a href="#cb40-436" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-437"><a href="#cb40-437" aria-hidden="true" tabindex="-1"></a>gridExtra<span class="sc">::</span><span class="fu">grid.arrange</span>(</span>
+<span id="cb40-438"><a href="#cb40-438" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(pdp_area) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"PDP: Living Area"</span>) <span class="sc">+</span> <span class="fu">ylim</span>(y_area),</span>
+<span id="cb40-439"><a href="#cb40-439" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(ale_area) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"ALE: Living Area"</span>) <span class="sc">+</span> <span class="fu">ylim</span>(y_area),</span>
+<span id="cb40-440"><a href="#cb40-440" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(pdp_year) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"PDP: Year Built"</span>) <span class="sc">+</span> <span class="fu">ylim</span>(y_year),</span>
+<span id="cb40-441"><a href="#cb40-441" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(ale_year) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"ALE: Year Built"</span>) <span class="sc">+</span> <span class="fu">ylim</span>(y_year),</span>
+<span id="cb40-442"><a href="#cb40-442" aria-hidden="true" tabindex="-1"></a>  <span class="at">ncol =</span> <span class="dv">2</span></span>
+<span id="cb40-443"><a href="#cb40-443" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb40-444"><a href="#cb40-444" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-445"><a href="#cb40-445" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-446"><a href="#cb40-446" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb40-447"><a href="#cb40-447" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-448"><a href="#cb40-448" aria-hidden="true" tabindex="-1"></a><span class="fu">### Interpretation</span></span>
+<span id="cb40-449"><a href="#cb40-449" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-450"><a href="#cb40-450" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**PDP** shows the average prediction as a function of one feature,</span>
+<span id="cb40-451"><a href="#cb40-451" aria-hidden="true" tabindex="-1"></a>  marginalising over all other features. It assumes feature independence.</span>
+<span id="cb40-452"><a href="#cb40-452" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**ALE** corrects for feature correlations by using conditional</span>
+<span id="cb40-453"><a href="#cb40-453" aria-hidden="true" tabindex="-1"></a>  distributions. When features are correlated (e.g., living area and</span>
+<span id="cb40-454"><a href="#cb40-454" aria-hidden="true" tabindex="-1"></a>  number of rooms), ALE is preferred.</span>
+<span id="cb40-455"><a href="#cb40-455" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Differences between PDP and ALE** reveal the impact of feature</span>
+<span id="cb40-456"><a href="#cb40-456" aria-hidden="true" tabindex="-1"></a>  correlations on the marginal effect estimate.</span>
+<span id="cb40-457"><a href="#cb40-457" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb40-458"><a href="#cb40-458" aria-hidden="true" tabindex="-1"></a>  Our results : </span>
+<span id="cb40-459"><a href="#cb40-459" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>For **`Gr_Liv_Area`**, PDP and ALE are visually identical, both in shape and</span>
+<span id="cb40-460"><a href="#cb40-460" aria-hidden="true" tabindex="-1"></a>  amplitude. This confirms our methodological expectation: living area is</span>
+<span id="cb40-461"><a href="#cb40-461" aria-hidden="true" tabindex="-1"></a>  largely independent of other features in the model, so averaging over the</span>
+<span id="cb40-462"><a href="#cb40-462" aria-hidden="true" tabindex="-1"></a>  marginal distribution (PDP) and conditioning on the local distribution (ALE)</span>
+<span id="cb40-463"><a href="#cb40-463" aria-hidden="true" tabindex="-1"></a>  produce equivalent results. Both show a strongly concave monotonic increase,</span>
+<span id="cb40-464"><a href="#cb40-464" aria-hidden="true" tabindex="-1"></a>  with marginal value of an additional square foot collapsing to near zero</span>
+<span id="cb40-465"><a href="#cb40-465" aria-hidden="true" tabindex="-1"></a>  above ~2,500 sq ft — a classic diminishing-returns pattern.</span>
+<span id="cb40-466"><a href="#cb40-466" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-467"><a href="#cb40-467" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>For **`Year_Built`**, PDP and ALE share the same overall shape (flat for</span>
+<span id="cb40-468"><a href="#cb40-468" aria-hidden="true" tabindex="-1"></a>  pre-1920 homes, modest plateau through 1970, steep climb thereafter), but</span>
+<span id="cb40-469"><a href="#cb40-469" aria-hidden="true" tabindex="-1"></a>  the **ALE has noticeably larger amplitude** (~0.125 vs ~0.085 in log10</span>
+<span id="cb40-470"><a href="#cb40-470" aria-hidden="true" tabindex="-1"></a>  units). The PDP is "compressed" upward for old homes: by averaging over</span>
+<span id="cb40-471"><a href="#cb40-471" aria-hidden="true" tabindex="-1"></a>  all values of <span class="in">`Year_Remod_Add`</span> — including frequent recent remodels of</span>
+<span id="cb40-472"><a href="#cb40-472" aria-hidden="true" tabindex="-1"></a>  older houses — it overestimates predictions in the 1880-1920 range. The</span>
+<span id="cb40-473"><a href="#cb40-473" aria-hidden="true" tabindex="-1"></a>  ALE, by conditioning locally, recovers the genuine penalty on truly old</span>
+<span id="cb40-474"><a href="#cb40-474" aria-hidden="true" tabindex="-1"></a>  and unrenovated homes. This is the textbook signature of correlated</span>
+<span id="cb40-475"><a href="#cb40-475" aria-hidden="true" tabindex="-1"></a>  features: PDP underestimates the true marginal effect.</span>
+<span id="cb40-476"><a href="#cb40-476" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-477"><a href="#cb40-477" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Methodological takeaway**: when feature correlation is suspected (here,</span>
+<span id="cb40-478"><a href="#cb40-478" aria-hidden="true" tabindex="-1"></a>  <span class="in">`Year_Built`</span> × <span class="in">`Year_Remod_Add`</span>), ALE should be the default. The fact</span>
+<span id="cb40-479"><a href="#cb40-479" aria-hidden="true" tabindex="-1"></a>  that PDP and ALE *agree on shape* but *disagree on amplitude* is itself</span>
+<span id="cb40-480"><a href="#cb40-480" aria-hidden="true" tabindex="-1"></a>  a useful diagnostic — it tells us XGBoost has captured the right</span>
+<span id="cb40-481"><a href="#cb40-481" aria-hidden="true" tabindex="-1"></a>  qualitative pattern but that single-feature marginalisation slightly</span>
+<span id="cb40-482"><a href="#cb40-482" aria-hidden="true" tabindex="-1"></a>  understates the strength of the effect.</span>
+<span id="cb40-483"><a href="#cb40-483" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-484"><a href="#cb40-484" aria-hidden="true" tabindex="-1"></a><span class="fu">## SHAP values (local explainability)</span></span>
+<span id="cb40-485"><a href="#cb40-485" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-488"><a href="#cb40-488" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb40-489"><a href="#cb40-489" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: shap</span></span>
+<span id="cb40-490"><a href="#cb40-490" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-summary: "SHAP-like break-down for individual predictions"</span></span>
+<span id="cb40-491"><a href="#cb40-491" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Break-down plots for 3 individual predictions (XGBoost). Each bar shows a feature's contribution to the prediction."</span></span>
+<span id="cb40-492"><a href="#cb40-492" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 10</span></span>
+<span id="cb40-493"><a href="#cb40-493" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 8</span></span>
+<span id="cb40-494"><a href="#cb40-494" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-495"><a href="#cb40-495" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Select 3 representative observations ────────────────────────────────────</span></span>
+<span id="cb40-496"><a href="#cb40-496" aria-hidden="true" tabindex="-1"></a>idx <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb40-497"><a href="#cb40-497" aria-hidden="true" tabindex="-1"></a>  <span class="fu">which.min</span>(test_y),                           <span class="co"># cheapest</span></span>
+<span id="cb40-498"><a href="#cb40-498" aria-hidden="true" tabindex="-1"></a>  <span class="fu">which.min</span>(<span class="fu">abs</span>(test_y <span class="sc">-</span> <span class="fu">median</span>(test_y))),     <span class="co"># median</span></span>
+<span id="cb40-499"><a href="#cb40-499" aria-hidden="true" tabindex="-1"></a>  <span class="fu">which.max</span>(test_y)                             <span class="co"># most expensive</span></span>
+<span id="cb40-500"><a href="#cb40-500" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb40-501"><a href="#cb40-501" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-502"><a href="#cb40-502" aria-hidden="true" tabindex="-1"></a>bd_plots <span class="ot">&lt;-</span> <span class="fu">lapply</span>(idx, <span class="cf">function</span>(i) {</span>
+<span id="cb40-503"><a href="#cb40-503" aria-hidden="true" tabindex="-1"></a>  bd <span class="ot">&lt;-</span> <span class="fu">predict_parts</span>(explainer_xgb,</span>
+<span id="cb40-504"><a href="#cb40-504" aria-hidden="true" tabindex="-1"></a>                       <span class="at">new_observation =</span> test_x[i, ],</span>
+<span id="cb40-505"><a href="#cb40-505" aria-hidden="true" tabindex="-1"></a>                       <span class="at">type =</span> <span class="st">"shap"</span>,</span>
+<span id="cb40-506"><a href="#cb40-506" aria-hidden="true" tabindex="-1"></a>                       <span class="at">B =</span> <span class="dv">25</span>)</span>
+<span id="cb40-507"><a href="#cb40-507" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(bd) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">subtitle =</span> <span class="fu">sprintf</span>(<span class="st">"Observation %d (actual: %.3f)"</span>, i, test_y[i]))</span>
+<span id="cb40-508"><a href="#cb40-508" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb40-509"><a href="#cb40-509" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-510"><a href="#cb40-510" aria-hidden="true" tabindex="-1"></a>gridExtra<span class="sc">::</span><span class="fu">grid.arrange</span>(<span class="at">grobs =</span> bd_plots, <span class="at">ncol =</span> <span class="dv">1</span>)</span>
+<span id="cb40-511"><a href="#cb40-511" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb40-512"><a href="#cb40-512" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-513"><a href="#cb40-513" aria-hidden="true" tabindex="-1"></a><span class="fu">### Interpretation</span></span>
+<span id="cb40-514"><a href="#cb40-514" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-515"><a href="#cb40-515" aria-hidden="true" tabindex="-1"></a>SHAP values decompose each individual prediction into feature</span>
+<span id="cb40-516"><a href="#cb40-516" aria-hidden="true" tabindex="-1"></a>contributions:</span>
+<span id="cb40-517"><a href="#cb40-517" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-518"><a href="#cb40-518" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Positive SHAP** = the feature pushes the prediction above the</span>
+<span id="cb40-519"><a href="#cb40-519" aria-hidden="true" tabindex="-1"></a>  baseline (average prediction).</span>
+<span id="cb40-520"><a href="#cb40-520" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Negative SHAP** = the feature pushes the prediction below baseline.</span>
+<span id="cb40-521"><a href="#cb40-521" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Comparing across observations** reveals which features matter</span>
+<span id="cb40-522"><a href="#cb40-522" aria-hidden="true" tabindex="-1"></a>  for different price segments — quality dominates at the high end,</span>
+<span id="cb40-523"><a href="#cb40-523" aria-hidden="true" tabindex="-1"></a>  while location and condition matter more at the low end.</span>
+<span id="cb40-524"><a href="#cb40-524" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-525"><a href="#cb40-525" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb40-526"><a href="#cb40-526" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-527"><a href="#cb40-527" aria-hidden="true" tabindex="-1"></a><span class="fu"># Technical Summary</span></span>
+<span id="cb40-528"><a href="#cb40-528" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-531"><a href="#cb40-531" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb40-532"><a href="#cb40-532" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: session-info</span></span>
+<span id="cb40-533"><a href="#cb40-533" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-summary: "Session information for reproducibility"</span></span>
+<span id="cb40-534"><a href="#cb40-534" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-535"><a href="#cb40-535" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"─── Reproducibility Information ───</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb40-536"><a href="#cb40-536" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Date: %s</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">Sys.Date</span>()))</span>
+<span id="cb40-537"><a href="#cb40-537" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"R version: %s</span><span class="sc">\n</span><span class="st">"</span>, R.version.string))</span>
+<span id="cb40-538"><a href="#cb40-538" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"tidymodels version: %s</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">packageVersion</span>(<span class="st">"tidymodels"</span>)))</span>
+<span id="cb40-539"><a href="#cb40-539" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"xgboost version: %s</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">packageVersion</span>(<span class="st">"xgboost"</span>)))</span>
+<span id="cb40-540"><a href="#cb40-540" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"DALEX version: %s</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">packageVersion</span>(<span class="st">"DALEX"</span>)))</span>
+<span id="cb40-541"><a href="#cb40-541" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Platform: %s</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">sessionInfo</span>()<span class="sc">$</span>platform))</span>
+<span id="cb40-542"><a href="#cb40-542" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb40-543"><a href="#cb40-543" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-544"><a href="#cb40-544" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-545"><a href="#cb40-545" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb40-546"><a href="#cb40-546" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-547"><a href="#cb40-547" aria-hidden="true" tabindex="-1"></a><span class="fu">## References</span></span>
+<span id="cb40-548"><a href="#cb40-548" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-549"><a href="#cb40-549" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Biecek, P., &amp; Burzykowski, T. (2021). *Explanatory Model Analysis*.</span>
+<span id="cb40-550"><a href="#cb40-550" aria-hidden="true" tabindex="-1"></a>  CRC Press.</span>
+<span id="cb40-551"><a href="#cb40-551" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Breiman, L. (2001). Random forests. *Machine Learning*, 45(1), 5–32.</span>
+<span id="cb40-552"><a href="#cb40-552" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Chen, T., &amp; Guestrin, C. (2016). XGBoost: A scalable tree boosting</span>
+<span id="cb40-553"><a href="#cb40-553" aria-hidden="true" tabindex="-1"></a>  system. *KDD*, 785–794.</span>
+<span id="cb40-554"><a href="#cb40-554" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>De Cock, D. (2011). Ames, Iowa: Alternative to the Boston housing</span>
+<span id="cb40-555"><a href="#cb40-555" aria-hidden="true" tabindex="-1"></a>  data. *Journal of Statistics Education*, 19(3).</span>
+<span id="cb40-556"><a href="#cb40-556" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Lundberg, S. M., &amp; Lee, S.-I. (2017). A unified approach to</span>
+<span id="cb40-557"><a href="#cb40-557" aria-hidden="true" tabindex="-1"></a>  interpreting model predictions. *NeurIPS*, 30.</span>
+<span id="cb40-558"><a href="#cb40-558" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Molnar, C. (2022). *Interpretable Machine Learning* (2nd ed.).</span>
+<span id="cb40-559"><a href="#cb40-559" aria-hidden="true" tabindex="-1"></a>  christophm.github.io/interpretable-ml-book.</span>
+<span id="cb40-560"><a href="#cb40-560" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-561"><a href="#cb40-561" aria-hidden="true" tabindex="-1"></a></span>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

@@ -1,0 +1,22 @@
+# Raw and locally-computed data should never be pushed.
+data/processed/
+data/raw/
+
+# But the demo subset IS meant to be versioned:
+!data/demo/
+!data/demo/*.parquet
+
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
+venv/
+
+# R / Quarto
+.Rproj.user/
+.Rhistory
+.RData
+*_files/
+*_cache/
+/.quarto/

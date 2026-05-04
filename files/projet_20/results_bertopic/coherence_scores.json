@@ -1,0 +1,39 @@
+{
+  "metric": "Cv (Roder et al. 2015)",
+  "topn": 10,
+  "n_documents": 120,
+  "vocab_size": 248,
+  "models": {
+    "LDA": {
+      "mean": 0.6301,
+      "per_topic": [
+        0.596,
+        0.8432,
+        0.6383,
+        0.443
+      ],
+      "n_valid": 4
+    },
+    "STM": {
+      "mean": 0.687,
+      "per_topic": [
+        0.5087,
+        0.6211,
+        0.8297,
+        0.7886
+      ],
+      "n_valid": 4
+    },
+    "BERTopic": {
+      "mean": 0.839,
+      "per_topic": [
+        0.6209,
+        0.8286,
+        0.834,
+        0.9895,
+        0.9222
+      ],
+      "n_valid": 5
+    }
+  }
+}

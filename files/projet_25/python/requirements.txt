@@ -1,0 +1,14 @@
+# ADARP project 25 - Phases 15a (pipeline) + 15b (feature extraction)
+
+# --- Phase 15a: data engineering ---
+pandas>=2.0
+numpy>=1.24
+pyarrow>=14.0
+openpyxl>=3.1
+tqdm>=4.65
+
+# --- Phase 15b: signal processing ---
+neurokit2>=0.2.13
+cvxopt>=1.3              # required by neurokit2 for cvxEDA decomposition
+scipy>=1.11              # pulled in by neurokit2 but pinned for reproducibility
+scikit-learn>=1.3        # pulled in by neurokit2 but pinned for reproducibility

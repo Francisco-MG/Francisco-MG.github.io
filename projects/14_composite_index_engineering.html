@@ -1,0 +1,2240 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.36">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2026-03-28">
+<meta name="description" content="End-to-end construction of a composite index from multi-item survey data. Covers indicator selection, normalisation strategies (min-max, z-score, rank), weighting approaches (equal, PCA-derived, expert), aggregation methods, sensitivity analysis, and validation against external criteria. Applied to the BFI dataset (psych) reframed as an index-building exercise, plus a simulated education quality index scenario.">
+
+<title>Composite Index Construction &amp; Feature Engineering – Francisco MG</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-845c23b38eaddc0f92fda52bfe77a8c8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-6b423f165eeea3787de40cb4f8e821c3.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Francisco MG</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="../viridis-colors.qmd"> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../report.html"> 
+<span class="menu-text">REPORTS</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../data-science.html"> 
+<span class="menu-text">DATA SCIENCE</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/Francisco-MG"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/TON-LINKEDIN"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#context" id="toc-context" class="nav-link active" data-scroll-target="#context"><span class="header-section-number">0.1</span> Context</a></li>
+  <li><a href="#key-results" id="toc-key-results" class="nav-link" data-scroll-target="#key-results"><span class="header-section-number">0.2</span> Key Results</a></li>
+  <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup"><span class="header-section-number">0.3</span> Setup</a></li>
+  <li><a href="#part-a-indicator-preparation" id="toc-part-a-indicator-preparation" class="nav-link" data-scroll-target="#part-a-indicator-preparation"><span class="header-section-number">1</span> PART A — Indicator Preparation</a>
+  <ul class="collapse">
+  <li><a href="#simulate-education-quality-indicators" id="toc-simulate-education-quality-indicators" class="nav-link" data-scroll-target="#simulate-education-quality-indicators"><span class="header-section-number">1.1</span> Simulate education quality indicators</a></li>
+  <li><a href="#normalisation" id="toc-normalisation" class="nav-link" data-scroll-target="#normalisation"><span class="header-section-number">1.2</span> Normalisation</a>
+  <ul class="collapse">
+  <li><a href="#interpretation" id="toc-interpretation" class="nav-link" data-scroll-target="#interpretation"><span class="header-section-number">1.2.1</span> Interpretation</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#part-b-weighting-strategies" id="toc-part-b-weighting-strategies" class="nav-link" data-scroll-target="#part-b-weighting-strategies"><span class="header-section-number">2</span> PART B — Weighting Strategies</a>
+  <ul class="collapse">
+  <li><a href="#pca-derived-weights" id="toc-pca-derived-weights" class="nav-link" data-scroll-target="#pca-derived-weights"><span class="header-section-number">2.1</span> PCA-derived weights</a></li>
+  <li><a href="#expert-weights-simulated" id="toc-expert-weights-simulated" class="nav-link" data-scroll-target="#expert-weights-simulated"><span class="header-section-number">2.2</span> Expert weights (simulated)</a></li>
+  </ul></li>
+  <li><a href="#part-c-aggregation-index-construction" id="toc-part-c-aggregation-index-construction" class="nav-link" data-scroll-target="#part-c-aggregation-index-construction"><span class="header-section-number">3</span> PART C — Aggregation &amp; Index Construction</a></li>
+  <li><a href="#part-d-sensitivity-analysis" id="toc-part-d-sensitivity-analysis" class="nav-link" data-scroll-target="#part-d-sensitivity-analysis"><span class="header-section-number">4</span> PART D — Sensitivity Analysis</a>
+  <ul class="collapse">
+  <li><a href="#rank-stability" id="toc-rank-stability" class="nav-link" data-scroll-target="#rank-stability"><span class="header-section-number">4.1</span> Rank stability</a></li>
+  <li><a href="#rank-shifts-for-topbottom-schools" id="toc-rank-shifts-for-topbottom-schools" class="nav-link" data-scroll-target="#rank-shifts-for-topbottom-schools"><span class="header-section-number">4.2</span> Rank shifts for top/bottom schools</a>
+  <ul class="collapse">
+  <li><a href="#interpretation-1" id="toc-interpretation-1" class="nav-link" data-scroll-target="#interpretation-1"><span class="header-section-number">4.2.1</span> Interpretation</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#part-e-feature-engineering-showcase" id="toc-part-e-feature-engineering-showcase" class="nav-link" data-scroll-target="#part-e-feature-engineering-showcase"><span class="header-section-number">5</span> PART E — Feature Engineering Showcase</a>
+  <ul class="collapse">
+  <li><a href="#interpretation-2" id="toc-interpretation-2" class="nav-link" data-scroll-target="#interpretation-2"><span class="header-section-number">5.0.1</span> Interpretation</a></li>
+  </ul></li>
+  <li><a href="#technical-summary" id="toc-technical-summary" class="nav-link" data-scroll-target="#technical-summary"><span class="header-section-number">6</span> Technical Summary</a>
+  <ul class="collapse">
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">6.1</span> References</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">Composite Index Construction &amp; Feature Engineering</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+  <div class="quarto-categories">
+    <div class="quarto-category">R</div>
+    <div class="quarto-category">Statistics</div>
+    <div class="quarto-category">Composite Index</div>
+    <div class="quarto-category">Feature Engineering</div>
+    <div class="quarto-category">PCA</div>
+    <div class="quarto-category">Indicator Design</div>
+    <div class="quarto-category">Measurement</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    <p>End-to-end construction of a composite index from multi-item survey data. Covers indicator selection, normalisation strategies (min-max, z-score, rank), weighting approaches (equal, PCA-derived, expert), aggregation methods, sensitivity analysis, and validation against external criteria. Applied to the BFI dataset (psych) reframed as an index-building exercise, plus a simulated education quality index scenario.</p>
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">March 28, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="context" class="level2" data-number="0.1">
+<h2 data-number="0.1" class="anchored" data-anchor-id="context"><span class="header-section-number">0.1</span> Context</h2>
+<p>Composite indices combine multiple indicators into a single summary score — from the Human Development Index (UNDP) to student engagement scores and institutional performance dashboards. Despite their ubiquity, composite indices involve a series of subjective but consequential methodological choices: which indicators to include, how to normalise them, how to weight and aggregate them, and how to validate the result (OECD/JRC, 2008; Greco et al., 2019).</p>
+<p><strong>Feature engineering</strong> — the creation of new variables from raw data — is the upstream process that feeds composite indices. In educational data science, this includes aggregation (school-level means from student data), interaction terms, information-theoretic features (entropy, mutual information), and temporal derivatives.</p>
+<p>This project demonstrates:</p>
+<ol type="1">
+<li><strong>Indicator preparation</strong> — normalisation, outlier treatment, and missingness handling.</li>
+<li><strong>Weighting strategies</strong> — equal weights, PCA-derived weights, and simulated expert weights.</li>
+<li><strong>Aggregation</strong> — additive, geometric, and benefit-of-the-doubt.</li>
+<li><strong>Sensitivity analysis</strong> — how much do rankings change across methods?</li>
+<li><strong>Validation</strong> — correlation with external criteria and reliability of the composite.</li>
+<li><strong>Feature engineering showcase</strong> — interaction terms, entropy, and composite variables on a simulated education dataset.</li>
+</ol>
+</section>
+<section id="key-results" class="level2" data-number="0.2">
+<h2 data-number="0.2" class="anchored" data-anchor-id="key-results"><span class="header-section-number">0.2</span> Key Results</h2>
+<blockquote class="blockquote">
+<p><strong>Note:</strong> Theoretical expectations to be refined with actual output.</p>
+</blockquote>
+<p><strong>Expected findings:</strong></p>
+<ul>
+<li><strong>Rankings should be moderately robust</strong> across normalisation and weighting methods — rank correlations (Spearman) typically &gt; 0.85 unless indicators are weakly correlated.</li>
+<li><strong>PCA-derived weights</strong> should upweight the most variance-rich indicators, potentially diverging from equal weights for heterogeneous indicator sets.</li>
+<li><strong>The geometric mean</strong> penalises imbalance more than the arithmetic mean, producing different rankings for units with extreme scores on one dimension.</li>
+</ul>
+</section>
+<section id="setup" class="level2" data-number="0.3">
+<h2 data-number="0.3" class="anchored" data-anchor-id="setup"><span class="header-section-number">0.3</span> Setup</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(psych)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibble)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(purrr)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(corrplot)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">11</span>) <span class="sc">+</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">plot.title    =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">13</span>),</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(<span class="at">colour =</span> <span class="st">"grey40"</span>, <span class="at">size =</span> <span class="dv">10</span>),</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">legend.position =</span> <span class="st">"bottom"</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>palette_idx <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"#2C3E50"</span>, <span class="st">"#E74C3C"</span>, <span class="st">"#3498DB"</span>, <span class="st">"#2ECC71"</span>, <span class="st">"#F39C12"</span>)</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2026</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<hr>
+</section>
+<section id="part-a-indicator-preparation" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> PART A — Indicator Preparation</h1>
+<section id="simulate-education-quality-indicators" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="simulate-education-quality-indicators"><span class="header-section-number">1.1</span> Simulate education quality indicators</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>n_schools <span class="ot">&lt;-</span> <span class="dv">80</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>schools <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">school_id   =</span> <span class="fu">sprintf</span>(<span class="st">"S%03d"</span>, <span class="dv">1</span><span class="sc">:</span>n_schools),</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Raw indicators (different scales and distributions)</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">test_score  =</span> <span class="fu">rnorm</span>(n_schools, <span class="at">mean =</span> <span class="dv">65</span>, <span class="at">sd =</span> <span class="dv">12</span>),    <span class="co"># 0–100</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">grad_rate   =</span> <span class="fu">rbeta</span>(n_schools, <span class="dv">8</span>, <span class="dv">2</span>) <span class="sc">*</span> <span class="dv">100</span>,            <span class="co"># 0–100%</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">attendance  =</span> <span class="fu">rbeta</span>(n_schools, <span class="dv">12</span>, <span class="dv">2</span>) <span class="sc">*</span> <span class="dv">100</span>,            <span class="co"># 0–100%</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">teacher_qual =</span> <span class="fu">rnorm</span>(n_schools, <span class="at">mean =</span> <span class="fl">3.5</span>, <span class="at">sd =</span> <span class="fl">0.8</span>),  <span class="co"># 1–5 Likert</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">resources   =</span> <span class="fu">rlnorm</span>(n_schools, <span class="at">meanlog =</span> <span class="dv">10</span>, <span class="at">sdlog =</span> <span class="fl">0.5</span>), <span class="co"># USD (right-skewed)</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">parent_sat  =</span> <span class="fu">rnorm</span>(n_schools, <span class="at">mean =</span> <span class="fl">3.8</span>, <span class="at">sd =</span> <span class="fl">0.7</span>)    <span class="co"># 1–5 Likert</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Inject correlations</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">test_score =</span> test_score <span class="sc">+</span> <span class="fl">0.4</span> <span class="sc">*</span> teacher_qual <span class="sc">*</span> <span class="dv">5</span> <span class="sc">+</span> <span class="fl">0.3</span> <span class="sc">*</span> (resources <span class="sc">/</span> <span class="fl">1e4</span>),</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">grad_rate  =</span> <span class="fu">pmin</span>(<span class="dv">100</span>, grad_rate <span class="sc">+</span> <span class="fl">0.2</span> <span class="sc">*</span> test_score <span class="sc">/</span> <span class="dv">10</span>)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Simulated %d schools with 6 indicators</span><span class="sc">\n</span><span class="st">"</span>, n_schools))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simulated 80 schools with 6 indicators</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Summary statistics ───────────────────────────────────────────────────────</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>indicators <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"test_score"</span>, <span class="st">"grad_rate"</span>, <span class="st">"attendance"</span>,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>                <span class="st">"teacher_qual"</span>, <span class="st">"resources"</span>, <span class="st">"parent_sat"</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>summary_stats <span class="ot">&lt;-</span> schools <span class="sc">|&gt;</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">all_of</span>(indicators)) <span class="sc">|&gt;</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), <span class="fu">list</span>(</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean =</span> mean, <span class="at">sd =</span> sd, <span class="at">min =</span> min, <span class="at">max =</span> max, <span class="at">skew =</span> <span class="sc">~</span>psych<span class="sc">::</span><span class="fu">skew</span>(.)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  ), <span class="at">.names =</span> <span class="st">"{.col}_{.fn}"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="fu">everything</span>(),</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">"indicator"</span>, <span class="st">"stat"</span>),</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_pattern =</span> <span class="st">"(.+)_(.+)"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> stat, <span class="at">values_from =</span> value)</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(summary_stats, <span class="at">digits =</span> <span class="dv">2</span>,</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">caption =</span> <span class="st">"Indicator summary statistics (raw scale)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Indicator summary statistics (raw scale)</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">indicator</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">sd</th>
+<th style="text-align: right;">min</th>
+<th style="text-align: right;">max</th>
+<th style="text-align: right;">skew</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">test_score</td>
+<td style="text-align: right;">71.77</td>
+<td style="text-align: right;">11.39</td>
+<td style="text-align: right;">41.91</td>
+<td style="text-align: right;">99.82</td>
+<td style="text-align: right;">0.04</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">grad_rate</td>
+<td style="text-align: right;">81.81</td>
+<td style="text-align: right;">11.71</td>
+<td style="text-align: right;">45.86</td>
+<td style="text-align: right;">98.77</td>
+<td style="text-align: right;">-0.60</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">attendance</td>
+<td style="text-align: right;">85.01</td>
+<td style="text-align: right;">8.47</td>
+<td style="text-align: right;">55.56</td>
+<td style="text-align: right;">99.24</td>
+<td style="text-align: right;">-0.90</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">teacher_qual</td>
+<td style="text-align: right;">3.53</td>
+<td style="text-align: right;">0.75</td>
+<td style="text-align: right;">1.63</td>
+<td style="text-align: right;">4.92</td>
+<td style="text-align: right;">-0.35</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">resources</td>
+<td style="text-align: right;">24580.43</td>
+<td style="text-align: right;">12909.80</td>
+<td style="text-align: right;">6765.29</td>
+<td style="text-align: right;">63408.58</td>
+<td style="text-align: right;">0.96</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">parent_sat</td>
+<td style="text-align: right;">3.91</td>
+<td style="text-align: right;">0.84</td>
+<td style="text-align: right;">2.04</td>
+<td style="text-align: right;">6.00</td>
+<td style="text-align: right;">-0.03</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="normalisation" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="normalisation"><span class="header-section-number">1.2</span> Normalisation</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Min-max normalisation (0–1) ──────────────────────────────────────────────</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>minmax <span class="ot">&lt;-</span> <span class="cf">function</span>(x) (x <span class="sc">-</span> <span class="fu">min</span>(x)) <span class="sc">/</span> (<span class="fu">max</span>(x) <span class="sc">-</span> <span class="fu">min</span>(x))</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Z-score (mean = 0, SD = 1) ──────────────────────────────────────────────</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>zscore <span class="ot">&lt;-</span> <span class="cf">function</span>(x) (x <span class="sc">-</span> <span class="fu">mean</span>(x)) <span class="sc">/</span> <span class="fu">sd</span>(x)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Rank-based (percentile) ─────────────────────────────────────────────────</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>rankpct <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="fu">rank</span>(x) <span class="sc">/</span> <span class="fu">length</span>(x)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>schools_norm <span class="ot">&lt;-</span> schools <span class="sc">|&gt;</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">across</span>(<span class="fu">all_of</span>(indicators), <span class="fu">list</span>(<span class="at">mm =</span> minmax, <span class="at">z =</span> zscore, <span class="at">rk =</span> rankpct),</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>           <span class="at">.names =</span> <span class="st">"{.col}_{.fn}"</span>)</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Show first 5 schools, resources indicator (most skewed) ──────────────────</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>  schools_norm <span class="sc">|&gt;</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(school_id, resources, resources_mm, resources_z, resources_rk) <span class="sc">|&gt;</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">head</span>(<span class="dv">8</span>),</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">digits =</span> <span class="dv">3</span>,</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">"Normalisation comparison: resources indicator (right-skewed)"</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Normalisation comparison: resources indicator (right-skewed)</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">school_id</th>
+<th style="text-align: right;">resources</th>
+<th style="text-align: right;">resources_mm</th>
+<th style="text-align: right;">resources_z</th>
+<th style="text-align: right;">resources_rk</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">S001</td>
+<td style="text-align: right;">29807.579</td>
+<td style="text-align: right;">0.407</td>
+<td style="text-align: right;">0.405</td>
+<td style="text-align: right;">0.750</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">S002</td>
+<td style="text-align: right;">38629.213</td>
+<td style="text-align: right;">0.563</td>
+<td style="text-align: right;">1.088</td>
+<td style="text-align: right;">0.900</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">S003</td>
+<td style="text-align: right;">15480.230</td>
+<td style="text-align: right;">0.154</td>
+<td style="text-align: right;">-0.705</td>
+<td style="text-align: right;">0.300</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">S004</td>
+<td style="text-align: right;">53169.278</td>
+<td style="text-align: right;">0.819</td>
+<td style="text-align: right;">2.215</td>
+<td style="text-align: right;">0.963</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">S005</td>
+<td style="text-align: right;">15290.541</td>
+<td style="text-align: right;">0.151</td>
+<td style="text-align: right;">-0.720</td>
+<td style="text-align: right;">0.288</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">S006</td>
+<td style="text-align: right;">9729.533</td>
+<td style="text-align: right;">0.052</td>
+<td style="text-align: right;">-1.150</td>
+<td style="text-align: right;">0.100</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">S007</td>
+<td style="text-align: right;">20702.363</td>
+<td style="text-align: right;">0.246</td>
+<td style="text-align: right;">-0.300</td>
+<td style="text-align: right;">0.438</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">S008</td>
+<td style="text-align: right;">24393.445</td>
+<td style="text-align: right;">0.311</td>
+<td style="text-align: right;">-0.014</td>
+<td style="text-align: right;">0.562</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>norm_plot_df <span class="ot">&lt;-</span> schools_norm <span class="sc">|&gt;</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(school_id, resources_mm, resources_z, resources_rk) <span class="sc">|&gt;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>school_id, <span class="at">names_to =</span> <span class="st">"method"</span>, <span class="at">values_to =</span> <span class="st">"value"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">method =</span> <span class="fu">case_when</span>(</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    method <span class="sc">==</span> <span class="st">"resources_mm"</span> <span class="sc">~</span> <span class="st">"Min-Max (0–1)"</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    method <span class="sc">==</span> <span class="st">"resources_z"</span>  <span class="sc">~</span> <span class="st">"Z-Score"</span>,</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    method <span class="sc">==</span> <span class="st">"resources_rk"</span> <span class="sc">~</span> <span class="st">"Rank (percentile)"</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(norm_plot_df, <span class="fu">aes</span>(<span class="at">x =</span> value)) <span class="sc">+</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">20</span>, <span class="at">fill =</span> palette_idx[<span class="dv">3</span>], <span class="at">alpha =</span> <span class="fl">0.7</span>, <span class="at">colour =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> method, <span class="at">scales =</span> <span class="st">"free_x"</span>) <span class="sc">+</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Normalisation Methods — Resources Indicator"</span>,</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Normalised Value"</span>, <span class="at">y =</span> <span class="st">"Count"</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="14_composite_index_engineering_files/figure-html/norm-comparison-1.png" class="img-fluid figure-img" width="864"></p>
+<figcaption>Resources indicator under three normalisation methods. Rank-based normalisation eliminates skewness.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<section id="interpretation" class="level3" data-number="1.2.1">
+<h3 data-number="1.2.1" class="anchored" data-anchor-id="interpretation"><span class="header-section-number">1.2.1</span> Interpretation</h3>
+<p>Normalisation choices matter most for skewed indicators:</p>
+<ul>
+<li><strong>Min-max</strong> preserves the original distribution shape, including skewness.</li>
+<li><strong>Z-score</strong> centres and scales but does not address skewness.</li>
+<li><strong>Rank-based</strong> forces a uniform distribution, eliminating outlier influence but discarding magnitude information.</li>
+</ul>
+<p>The choice should be driven by the index purpose: rank-based is robust for rankings; z-score preserves relative distances; min-max is intuitive for communication.</p>
+<hr>
+</section>
+</section>
+</section>
+<section id="part-b-weighting-strategies" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> PART B — Weighting Strategies</h1>
+<section id="pca-derived-weights" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="pca-derived-weights"><span class="header-section-number">2.1</span> PCA-derived weights</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── PCA on min-max normalised indicators ─────────────────────────────────────</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>mm_cols <span class="ot">&lt;-</span> <span class="fu">paste0</span>(indicators, <span class="st">"_mm"</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>pca_data <span class="ot">&lt;-</span> schools_norm <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="fu">all_of</span>(mm_cols))</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>pca_result <span class="ot">&lt;-</span> <span class="fu">prcomp</span>(pca_data, <span class="at">center =</span> <span class="cn">TRUE</span>, <span class="at">scale. =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Scree plot ───────────────────────────────────────────────────────────────</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>var_explained <span class="ot">&lt;-</span> pca_result<span class="sc">$</span>sdev<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="fu">sum</span>(pca_result<span class="sc">$</span>sdev<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>scree_df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">PC =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(var_explained),</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>                    <span class="at">Variance =</span> var_explained,</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>                    <span class="at">Cumulative =</span> <span class="fu">cumsum</span>(var_explained))</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(scree_df, <span class="fu">aes</span>(<span class="at">x =</span> PC, <span class="at">y =</span> Variance)) <span class="sc">+</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> palette_idx[<span class="dv">3</span>], <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> Cumulative), <span class="at">colour =</span> palette_idx[<span class="dv">2</span>], <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> Cumulative), <span class="at">colour =</span> palette_idx[<span class="dv">2</span>], <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">percent_format</span>()) <span class="sc">+</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"PCA Scree Plot &amp; Cumulative Variance"</span>,</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Principal Component"</span>, <span class="at">y =</span> <span class="st">"Proportion of Variance"</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="14_composite_index_engineering_files/figure-html/pca-weights-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>PCA scree plot and variance explained. PC1 loadings inform data-driven weights.</figcaption>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── PC1 loadings as weights ──────────────────────────────────────────────────</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>pc1_loadings <span class="ot">&lt;-</span> <span class="fu">abs</span>(pca_result<span class="sc">$</span>rotation[, <span class="dv">1</span>])</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>pca_weights  <span class="ot">&lt;-</span> pc1_loadings <span class="sc">/</span> <span class="fu">sum</span>(pc1_loadings)  <span class="co"># normalise to sum to 1</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>weight_comparison <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">indicator    =</span> indicators,</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">equal_weight =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">length</span>(indicators),</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">pca_weight   =</span> pca_weights,</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">ratio        =</span> pca_weight <span class="sc">/</span> equal_weight</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(weight_comparison, <span class="at">digits =</span> <span class="dv">3</span>,</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">caption =</span> <span class="st">"Weighting comparison: equal vs. PCA-derived"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Weighting comparison: equal vs.&nbsp;PCA-derived</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">indicator</th>
+<th style="text-align: right;">equal_weight</th>
+<th style="text-align: right;">pca_weight</th>
+<th style="text-align: right;">ratio</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">test_score</td>
+<td style="text-align: right;">0.167</td>
+<td style="text-align: right;">0.229</td>
+<td style="text-align: right;">1.376</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">grad_rate</td>
+<td style="text-align: right;">0.167</td>
+<td style="text-align: right;">0.225</td>
+<td style="text-align: right;">1.348</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">attendance</td>
+<td style="text-align: right;">0.167</td>
+<td style="text-align: right;">0.203</td>
+<td style="text-align: right;">1.216</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">teacher_qual</td>
+<td style="text-align: right;">0.167</td>
+<td style="text-align: right;">0.009</td>
+<td style="text-align: right;">0.056</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">resources</td>
+<td style="text-align: right;">0.167</td>
+<td style="text-align: right;">0.213</td>
+<td style="text-align: right;">1.280</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">parent_sat</td>
+<td style="text-align: right;">0.167</td>
+<td style="text-align: right;">0.121</td>
+<td style="text-align: right;">0.724</td>
+</tr>
+</tbody>
+</table>
+<p>PCA scree plot and variance explained. PC1 loadings inform data-driven weights.</p>
+</div>
+</div>
+</section>
+<section id="expert-weights-simulated" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="expert-weights-simulated"><span class="header-section-number">2.2</span> Expert weights (simulated)</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>expert_weights <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">indicator =</span> indicators,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">weight    =</span> <span class="fu">c</span>(<span class="fl">0.25</span>, <span class="fl">0.20</span>, <span class="fl">0.15</span>, <span class="fl">0.20</span>, <span class="fl">0.10</span>, <span class="fl">0.10</span>)  <span class="co"># sum = 1</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(expert_weights, <span class="at">digits =</span> <span class="dv">2</span>,</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">caption =</span> <span class="st">"Simulated expert weights (education domain)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Simulated expert weights (education domain)</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">indicator</th>
+<th style="text-align: right;">weight</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">test_score</td>
+<td style="text-align: right;">0.25</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">grad_rate</td>
+<td style="text-align: right;">0.20</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">attendance</td>
+<td style="text-align: right;">0.15</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">teacher_qual</td>
+<td style="text-align: right;">0.20</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">resources</td>
+<td style="text-align: right;">0.10</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">parent_sat</td>
+<td style="text-align: right;">0.10</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── All three weight vectors ─────────────────────────────────────────────────</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>all_weights <span class="ot">&lt;-</span> weight_comparison <span class="sc">|&gt;</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(expert_weights <span class="sc">|&gt;</span> <span class="fu">rename</span>(<span class="at">expert_weight =</span> weight), <span class="at">by =</span> <span class="st">"indicator"</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(all_weights <span class="sc">|&gt;</span> <span class="fu">select</span>(indicator, equal_weight, pca_weight, expert_weight),</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">digits =</span> <span class="dv">3</span>,</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">caption =</span> <span class="st">"Three weighting strategies"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Three weighting strategies</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">indicator</th>
+<th style="text-align: right;">equal_weight</th>
+<th style="text-align: right;">pca_weight</th>
+<th style="text-align: right;">expert_weight</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">test_score</td>
+<td style="text-align: right;">0.167</td>
+<td style="text-align: right;">0.229</td>
+<td style="text-align: right;">0.25</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">grad_rate</td>
+<td style="text-align: right;">0.167</td>
+<td style="text-align: right;">0.225</td>
+<td style="text-align: right;">0.20</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">attendance</td>
+<td style="text-align: right;">0.167</td>
+<td style="text-align: right;">0.203</td>
+<td style="text-align: right;">0.15</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">teacher_qual</td>
+<td style="text-align: right;">0.167</td>
+<td style="text-align: right;">0.009</td>
+<td style="text-align: right;">0.20</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">resources</td>
+<td style="text-align: right;">0.167</td>
+<td style="text-align: right;">0.213</td>
+<td style="text-align: right;">0.10</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">parent_sat</td>
+<td style="text-align: right;">0.167</td>
+<td style="text-align: right;">0.121</td>
+<td style="text-align: right;">0.10</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="part-c-aggregation-index-construction" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> PART C — Aggregation &amp; Index Construction</h1>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Arithmetic mean (equal weights) ──────────────────────────────────────────</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>schools_idx <span class="ot">&lt;-</span> schools_norm <span class="sc">|&gt;</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">|&gt;</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">idx_arith_equal =</span> <span class="fu">mean</span>(<span class="fu">c_across</span>(<span class="fu">all_of</span>(mm_cols))),</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">idx_arith_pca   =</span> <span class="fu">sum</span>(<span class="fu">c_across</span>(<span class="fu">all_of</span>(mm_cols)) <span class="sc">*</span> pca_weights),</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">idx_arith_expert =</span> <span class="fu">sum</span>(<span class="fu">c_across</span>(<span class="fu">all_of</span>(mm_cols)) <span class="sc">*</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>                            expert_weights<span class="sc">$</span>weight),</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Geometric mean (equal weights, add small epsilon for zeros)</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">idx_geom_equal  =</span> <span class="fu">exp</span>(<span class="fu">mean</span>(<span class="fu">log</span>(<span class="fu">c_across</span>(<span class="fu">all_of</span>(mm_cols)) <span class="sc">+</span> <span class="fl">0.001</span>)))</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Ranking under each method ────────────────────────────────────────────────</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>schools_idx <span class="ot">&lt;-</span> schools_idx <span class="sc">|&gt;</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">rank_arith_equal  =</span> <span class="fu">rank</span>(<span class="sc">-</span>idx_arith_equal),</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">rank_arith_pca    =</span> <span class="fu">rank</span>(<span class="sc">-</span>idx_arith_pca),</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">rank_arith_expert =</span> <span class="fu">rank</span>(<span class="sc">-</span>idx_arith_expert),</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">rank_geom_equal   =</span> <span class="fu">rank</span>(<span class="sc">-</span>idx_geom_equal)</span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(</span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>  schools_idx <span class="sc">|&gt;</span></span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(school_id, idx_arith_equal, idx_arith_pca, idx_arith_expert,</span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>           idx_geom_equal) <span class="sc">|&gt;</span></span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">head</span>(<span class="dv">10</span>),</span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">digits =</span> <span class="dv">3</span>,</span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">"Composite index scores (first 10 schools)"</span></span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Composite index scores (first 10 schools)</caption>
+<colgroup>
+<col style="width: 13%">
+<col style="width: 22%">
+<col style="width: 19%">
+<col style="width: 23%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">school_id</th>
+<th style="text-align: right;">idx_arith_equal</th>
+<th style="text-align: right;">idx_arith_pca</th>
+<th style="text-align: right;">idx_arith_expert</th>
+<th style="text-align: right;">idx_geom_equal</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">S001</td>
+<td style="text-align: right;">0.558</td>
+<td style="text-align: right;">0.616</td>
+<td style="text-align: right;">0.593</td>
+<td style="text-align: right;">0.525</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">S002</td>
+<td style="text-align: right;">0.425</td>
+<td style="text-align: right;">0.376</td>
+<td style="text-align: right;">0.402</td>
+<td style="text-align: right;">0.175</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">S003</td>
+<td style="text-align: right;">0.613</td>
+<td style="text-align: right;">0.636</td>
+<td style="text-align: right;">0.641</td>
+<td style="text-align: right;">0.531</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">S004</td>
+<td style="text-align: right;">0.707</td>
+<td style="text-align: right;">0.735</td>
+<td style="text-align: right;">0.682</td>
+<td style="text-align: right;">0.688</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">S005</td>
+<td style="text-align: right;">0.414</td>
+<td style="text-align: right;">0.343</td>
+<td style="text-align: right;">0.457</td>
+<td style="text-align: right;">0.158</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">S006</td>
+<td style="text-align: right;">0.406</td>
+<td style="text-align: right;">0.314</td>
+<td style="text-align: right;">0.388</td>
+<td style="text-align: right;">0.221</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">S007</td>
+<td style="text-align: right;">0.506</td>
+<td style="text-align: right;">0.484</td>
+<td style="text-align: right;">0.553</td>
+<td style="text-align: right;">0.383</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">S008</td>
+<td style="text-align: right;">0.460</td>
+<td style="text-align: right;">0.421</td>
+<td style="text-align: right;">0.485</td>
+<td style="text-align: right;">0.391</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">S009</td>
+<td style="text-align: right;">0.468</td>
+<td style="text-align: right;">0.524</td>
+<td style="text-align: right;">0.528</td>
+<td style="text-align: right;">0.372</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">S010</td>
+<td style="text-align: right;">0.423</td>
+<td style="text-align: right;">0.446</td>
+<td style="text-align: right;">0.471</td>
+<td style="text-align: right;">0.340</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<hr>
+</section>
+<section id="part-d-sensitivity-analysis" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> PART D — Sensitivity Analysis</h1>
+<section id="rank-stability" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="rank-stability"><span class="header-section-number">4.1</span> Rank stability</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>rank_cols <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"rank_arith_equal"</span>, <span class="st">"rank_arith_pca"</span>,</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>               <span class="st">"rank_arith_expert"</span>, <span class="st">"rank_geom_equal"</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>rank_matrix <span class="ot">&lt;-</span> <span class="fu">cor</span>(schools_idx <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="fu">all_of</span>(rank_cols)),</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>                    <span class="at">method =</span> <span class="st">"spearman"</span>)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(rank_matrix) <span class="ot">&lt;-</span> <span class="fu">rownames</span>(rank_matrix) <span class="ot">&lt;-</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">"Arith (equal)"</span>, <span class="st">"Arith (PCA)"</span>, <span class="st">"Arith (expert)"</span>, <span class="st">"Geometric"</span>)</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(rank_matrix, <span class="dv">3</span>),</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">caption =</span> <span class="st">"Spearman rank correlation between index methods"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Spearman rank correlation between index methods</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">Arith (equal)</th>
+<th style="text-align: right;">Arith (PCA)</th>
+<th style="text-align: right;">Arith (expert)</th>
+<th style="text-align: right;">Geometric</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Arith (equal)</td>
+<td style="text-align: right;">1.000</td>
+<td style="text-align: right;">0.911</td>
+<td style="text-align: right;">0.962</td>
+<td style="text-align: right;">0.908</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Arith (PCA)</td>
+<td style="text-align: right;">0.911</td>
+<td style="text-align: right;">1.000</td>
+<td style="text-align: right;">0.878</td>
+<td style="text-align: right;">0.846</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Arith (expert)</td>
+<td style="text-align: right;">0.962</td>
+<td style="text-align: right;">0.878</td>
+<td style="text-align: right;">1.000</td>
+<td style="text-align: right;">0.867</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Geometric</td>
+<td style="text-align: right;">0.908</td>
+<td style="text-align: right;">0.846</td>
+<td style="text-align: right;">0.867</td>
+<td style="text-align: right;">1.000</td>
+</tr>
+</tbody>
+</table>
+<p>Spearman rank correlations between composite index methods. High correlations indicate robust rankings.</p>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">corrplot</span>(rank_matrix, <span class="at">method =</span> <span class="st">"color"</span>, <span class="at">type =</span> <span class="st">"upper"</span>,</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">addCoef.col =</span> <span class="st">"black"</span>, <span class="at">tl.col =</span> <span class="st">"black"</span>, <span class="at">tl.srt =</span> <span class="dv">45</span>,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">title =</span> <span class="st">"Rank Stability Across Methods"</span>, <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="14_composite_index_engineering_files/figure-html/sensitivity-1.png" class="img-fluid figure-img" width="528"></p>
+<figcaption>Spearman rank correlations between composite index methods. High correlations indicate robust rankings.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="rank-shifts-for-topbottom-schools" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="rank-shifts-for-topbottom-schools"><span class="header-section-number">4.2</span> Rank shifts for top/bottom schools</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>schools_idx <span class="ot">&lt;-</span> schools_idx <span class="sc">|&gt;</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">rank_range =</span> <span class="fu">pmax</span>(rank_arith_equal, rank_arith_pca,</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>                      rank_arith_expert, rank_geom_equal) <span class="sc">-</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>                 <span class="fu">pmin</span>(rank_arith_equal, rank_arith_pca,</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>                      rank_arith_expert, rank_geom_equal)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Most volatile schools ────────────────────────────────────────────────────</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>volatile <span class="ot">&lt;-</span> schools_idx <span class="sc">|&gt;</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(rank_range)) <span class="sc">|&gt;</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(school_id, rank_arith_equal, rank_arith_pca,</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>         rank_arith_expert, rank_geom_equal, rank_range) <span class="sc">|&gt;</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">10</span>)</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(volatile, <span class="at">caption =</span> <span class="st">"Top 10 most volatile schools (largest rank range)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Top 10 most volatile schools (largest rank range)</caption>
+<colgroup>
+<col style="width: 11%">
+<col style="width: 19%">
+<col style="width: 17%">
+<col style="width: 20%">
+<col style="width: 18%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">school_id</th>
+<th style="text-align: right;">rank_arith_equal</th>
+<th style="text-align: right;">rank_arith_pca</th>
+<th style="text-align: right;">rank_arith_expert</th>
+<th style="text-align: right;">rank_geom_equal</th>
+<th style="text-align: right;">rank_range</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">S043</td>
+<td style="text-align: right;">35</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: right;">46</td>
+<td style="text-align: right;">75</td>
+<td style="text-align: right;">54</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">S046</td>
+<td style="text-align: right;">51</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">41</td>
+<td style="text-align: right;">66</td>
+<td style="text-align: right;">49</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">S044</td>
+<td style="text-align: right;">44</td>
+<td style="text-align: right;">59</td>
+<td style="text-align: right;">35</td>
+<td style="text-align: right;">76</td>
+<td style="text-align: right;">41</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">S013</td>
+<td style="text-align: right;">36</td>
+<td style="text-align: right;">57</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">63</td>
+<td style="text-align: right;">33</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">S062</td>
+<td style="text-align: right;">49</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">66</td>
+<td style="text-align: right;">52</td>
+<td style="text-align: right;">28</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">S039</td>
+<td style="text-align: right;">50</td>
+<td style="text-align: right;">64</td>
+<td style="text-align: right;">37</td>
+<td style="text-align: right;">46</td>
+<td style="text-align: right;">27</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">S052</td>
+<td style="text-align: right;">19</td>
+<td style="text-align: right;">42</td>
+<td style="text-align: right;">25</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">26</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">S025</td>
+<td style="text-align: right;">26</td>
+<td style="text-align: right;">32</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">43</td>
+<td style="text-align: right;">25</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">S014</td>
+<td style="text-align: right;">66</td>
+<td style="text-align: right;">50</td>
+<td style="text-align: right;">64</td>
+<td style="text-align: right;">72</td>
+<td style="text-align: right;">22</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">S065</td>
+<td style="text-align: right;">34</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">52</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">22</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<section id="interpretation-1" class="level3" data-number="4.2.1">
+<h3 data-number="4.2.1" class="anchored" data-anchor-id="interpretation-1"><span class="header-section-number">4.2.1</span> Interpretation</h3>
+<p>Sensitivity analysis is the credibility test for any composite index:</p>
+<ul>
+<li><strong>High rank correlations (&gt; 0.90)</strong> indicate that the ranking is robust to methodological choices — stakeholders can trust the result.</li>
+<li><strong>Low correlations or large rank shifts</strong> for specific schools reveal sensitivity to method choices. These schools typically have unbalanced profiles (e.g., very high on one indicator, very low on another).</li>
+<li><strong>The geometric mean penalises imbalance:</strong> schools with one very low indicator score lower under geometric aggregation than under arithmetic, reflecting a “weakest link” logic.</li>
+</ul>
+<hr>
+</section>
+</section>
+</section>
+<section id="part-e-feature-engineering-showcase" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> PART E — Feature Engineering Showcase</h1>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Interaction term ─────────────────────────────────────────────────────────</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>schools_feat <span class="ot">&lt;-</span> schools <span class="sc">|&gt;</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Teacher quality × Resources interaction</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">tq_x_resources =</span> teacher_qual <span class="sc">*</span> <span class="fu">log</span>(resources),</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Efficiency ratio: test scores per unit resource</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">efficiency =</span> test_score <span class="sc">/</span> (resources <span class="sc">/</span> <span class="fl">1e4</span>),</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Engagement composite (attendance + parent satisfaction)</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">engagement =</span> (attendance <span class="sc">/</span> <span class="dv">100</span> <span class="sc">+</span> parent_sat <span class="sc">/</span> <span class="dv">5</span>) <span class="sc">/</span> <span class="dv">2</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Information-theoretic feature: score entropy ─────────────────────────────</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Discretise test scores into bins and compute entropy</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>discretise <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">n_bins =</span> <span class="dv">5</span>) {</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cut</span>(x, <span class="at">breaks =</span> n_bins, <span class="at">labels =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>entropy <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>  p <span class="ot">&lt;-</span> <span class="fu">table</span>(x) <span class="sc">/</span> <span class="fu">length</span>(x)</span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span><span class="fu">sum</span>(p <span class="sc">*</span> <span class="fu">log2</span>(p <span class="sc">+</span> <span class="fl">1e-10</span>))</span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a><span class="co"># School-level entropy would require student-level data;</span></span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a><span class="co"># here we demonstrate the concept at the indicator level</span></span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>score_bins <span class="ot">&lt;-</span> <span class="fu">discretise</span>(schools<span class="sc">$</span>test_score, <span class="dv">10</span>)</span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Test score entropy (10 bins): %.3f bits</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">entropy</span>(score_bins)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Test score entropy (10 bins): 2.900 bits</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Maximum entropy (10 bins): %.3f bits</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">log2</span>(<span class="dv">10</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Maximum entropy (10 bins): 3.322 bits</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Normalised entropy: %.3f</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">entropy</span>(score_bins) <span class="sc">/</span> <span class="fu">log2</span>(<span class="dv">10</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Normalised entropy: 0.873</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Summary of engineered features ───────────────────────────────────────────</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  schools_feat <span class="sc">|&gt;</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(school_id, teacher_qual, resources, tq_x_resources,</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>           efficiency, engagement) <span class="sc">|&gt;</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">head</span>(<span class="dv">8</span>),</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">digits =</span> <span class="dv">3</span>,</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">"Engineered features: interaction, ratio, and composite"</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Engineered features: interaction, ratio, and composite</caption>
+<colgroup>
+<col style="width: 14%">
+<col style="width: 18%">
+<col style="width: 14%">
+<col style="width: 21%">
+<col style="width: 15%">
+<col style="width: 15%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">school_id</th>
+<th style="text-align: right;">teacher_qual</th>
+<th style="text-align: right;">resources</th>
+<th style="text-align: right;">tq_x_resources</th>
+<th style="text-align: right;">efficiency</th>
+<th style="text-align: right;">engagement</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">S001</td>
+<td style="text-align: right;">2.916</td>
+<td style="text-align: right;">29807.579</td>
+<td style="text-align: right;">30.043</td>
+<td style="text-align: right;">26.159</td>
+<td style="text-align: right;">0.763</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">S002</td>
+<td style="text-align: right;">3.782</td>
+<td style="text-align: right;">38629.213</td>
+<td style="text-align: right;">39.939</td>
+<td style="text-align: right;">15.730</td>
+<td style="text-align: right;">0.766</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">S003</td>
+<td style="text-align: right;">3.302</td>
+<td style="text-align: right;">15480.230</td>
+<td style="text-align: right;">31.857</td>
+<td style="text-align: right;">47.635</td>
+<td style="text-align: right;">0.923</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">S004</td>
+<td style="text-align: right;">3.369</td>
+<td style="text-align: right;">53169.278</td>
+<td style="text-align: right;">36.660</td>
+<td style="text-align: right;">13.601</td>
+<td style="text-align: right;">0.934</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">S005</td>
+<td style="text-align: right;">4.198</td>
+<td style="text-align: right;">15290.541</td>
+<td style="text-align: right;">40.447</td>
+<td style="text-align: right;">43.069</td>
+<td style="text-align: right;">0.661</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">S006</td>
+<td style="text-align: right;">3.985</td>
+<td style="text-align: right;">9729.533</td>
+<td style="text-align: right;">36.592</td>
+<td style="text-align: right;">44.266</td>
+<td style="text-align: right;">0.876</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">S007</td>
+<td style="text-align: right;">4.242</td>
+<td style="text-align: right;">20702.363</td>
+<td style="text-align: right;">42.155</td>
+<td style="text-align: right;">31.534</td>
+<td style="text-align: right;">0.695</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">S008</td>
+<td style="text-align: right;">3.866</td>
+<td style="text-align: right;">24393.445</td>
+<td style="text-align: right;">39.059</td>
+<td style="text-align: right;">25.098</td>
+<td style="text-align: right;">0.692</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<section id="interpretation-2" class="level3" data-number="5.0.1">
+<h3 data-number="5.0.1" class="anchored" data-anchor-id="interpretation-2"><span class="header-section-number">5.0.1</span> Interpretation</h3>
+<p>Feature engineering creates informative variables from raw data:</p>
+<ul>
+<li><strong>Interaction terms</strong> (teacher quality × log resources) capture synergies — good teachers with adequate resources may produce disproportionately better outcomes.</li>
+<li><strong>Efficiency ratios</strong> (output/input) normalise for resource differences, enabling fair comparison between well-funded and under-funded schools.</li>
+<li><strong>Composite engagement</strong> combines related indicators into a single actionable metric.</li>
+<li><strong>Entropy</strong> measures distributional spread — a school district with high entropy in test scores has more heterogeneity among schools.</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="technical-summary" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Technical Summary</h1>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"─── Reproducibility Information ───</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>─── Reproducibility Information ───</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Date: %s</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">Sys.Date</span>()))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Date: 2026-05-03</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"R version: %s</span><span class="sc">\n</span><span class="st">"</span>, R.version.string))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>R version: R version 4.4.1 (2024-06-14 ucrt)</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"psych version: %s</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">packageVersion</span>(<span class="st">"psych"</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>psych version: 2.4.6.26</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Platform: %s</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">sessionInfo</span>()<span class="sc">$</span>platform))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Platform: x86_64-w64-mingw32/x64</code></pre>
+</div>
+</div>
+<hr>
+<section id="references" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="references"><span class="header-section-number">6.1</span> References</h2>
+<ul>
+<li>Greco, S., Ishizaka, A., Tasiou, M., &amp; Torrisi, G. (2019). On the methodological framework of composite indices: A review of the issues of weighting, aggregation, and robustness. <em>Social Indicators Research</em>, 141(1), 61–94.</li>
+<li>OECD/JRC (2008). <em>Handbook on Constructing Composite Indicators: Methodology and User Guide</em>. OECD Publishing.</li>
+<li>Saltelli, A. (2007). Composite indicators between analysis and advocacy. <em>Social Indicators Research</em>, 81(1), 65–77.</li>
+</ul>
+
+
+<!-- -->
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/Francisco-MG\.github\.io\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Composite Index Construction &amp; Feature Engineering"</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="an">description:</span><span class="co"> |</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="co">  End-to-end construction of a composite index from multi-item survey data.</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="co">  Covers indicator selection, normalisation strategies (min-max, z-score,</span></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a><span class="co">  rank), weighting approaches (equal, PCA-derived, expert), aggregation</span></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a><span class="co">  methods, sensitivity analysis, and validation against external criteria.</span></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a><span class="co">  Applied to the BFI dataset (psych) reframed as an index-building exercise,</span></span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a><span class="co">  plus a simulated education quality index scenario.</span></span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> 2026-03-28</span></span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a><span class="an">categories:</span><span class="co"> [R, Statistics, Composite Index, Feature Engineering, PCA, Indicator Design, Measurement]</span></span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span></span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a><span class="co">  echo: true</span></span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a><span class="co">  warning: false</span></span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a><span class="co">  message: false</span></span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a><span class="an">freeze:</span><span class="co"> auto</span></span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb32-19"><a href="#cb32-19" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
+<span id="cb32-20"><a href="#cb32-20" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: false</span></span>
+<span id="cb32-21"><a href="#cb32-21" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb32-22"><a href="#cb32-22" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-depth: 3</span></span>
+<span id="cb32-23"><a href="#cb32-23" aria-hidden="true" tabindex="-1"></a><span class="co">    number-sections: true</span></span>
+<span id="cb32-24"><a href="#cb32-24" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb32-25"><a href="#cb32-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-26"><a href="#cb32-26" aria-hidden="true" tabindex="-1"></a><span class="fu">## Context</span></span>
+<span id="cb32-27"><a href="#cb32-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-28"><a href="#cb32-28" aria-hidden="true" tabindex="-1"></a>Composite indices combine multiple indicators into a single summary</span>
+<span id="cb32-29"><a href="#cb32-29" aria-hidden="true" tabindex="-1"></a>score — from the Human Development Index (UNDP) to student engagement</span>
+<span id="cb32-30"><a href="#cb32-30" aria-hidden="true" tabindex="-1"></a>scores and institutional performance dashboards. Despite their ubiquity,</span>
+<span id="cb32-31"><a href="#cb32-31" aria-hidden="true" tabindex="-1"></a>composite indices involve a series of subjective but consequential</span>
+<span id="cb32-32"><a href="#cb32-32" aria-hidden="true" tabindex="-1"></a>methodological choices: which indicators to include, how to normalise</span>
+<span id="cb32-33"><a href="#cb32-33" aria-hidden="true" tabindex="-1"></a>them, how to weight and aggregate them, and how to validate the result</span>
+<span id="cb32-34"><a href="#cb32-34" aria-hidden="true" tabindex="-1"></a>(OECD/JRC, 2008; Greco et al., 2019).</span>
+<span id="cb32-35"><a href="#cb32-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-36"><a href="#cb32-36" aria-hidden="true" tabindex="-1"></a>**Feature engineering** — the creation of new variables from raw data —</span>
+<span id="cb32-37"><a href="#cb32-37" aria-hidden="true" tabindex="-1"></a>is the upstream process that feeds composite indices. In educational</span>
+<span id="cb32-38"><a href="#cb32-38" aria-hidden="true" tabindex="-1"></a>data science, this includes aggregation (school-level means from student</span>
+<span id="cb32-39"><a href="#cb32-39" aria-hidden="true" tabindex="-1"></a>data), interaction terms, information-theoretic features (entropy,</span>
+<span id="cb32-40"><a href="#cb32-40" aria-hidden="true" tabindex="-1"></a>mutual information), and temporal derivatives.</span>
+<span id="cb32-41"><a href="#cb32-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-42"><a href="#cb32-42" aria-hidden="true" tabindex="-1"></a>This project demonstrates:</span>
+<span id="cb32-43"><a href="#cb32-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-44"><a href="#cb32-44" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Indicator preparation** — normalisation, outlier treatment, and</span>
+<span id="cb32-45"><a href="#cb32-45" aria-hidden="true" tabindex="-1"></a>   missingness handling.</span>
+<span id="cb32-46"><a href="#cb32-46" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Weighting strategies** — equal weights, PCA-derived weights, and</span>
+<span id="cb32-47"><a href="#cb32-47" aria-hidden="true" tabindex="-1"></a>   simulated expert weights.</span>
+<span id="cb32-48"><a href="#cb32-48" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Aggregation** — additive, geometric, and benefit-of-the-doubt.</span>
+<span id="cb32-49"><a href="#cb32-49" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>**Sensitivity analysis** — how much do rankings change across</span>
+<span id="cb32-50"><a href="#cb32-50" aria-hidden="true" tabindex="-1"></a>   methods?</span>
+<span id="cb32-51"><a href="#cb32-51" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>**Validation** — correlation with external criteria and reliability</span>
+<span id="cb32-52"><a href="#cb32-52" aria-hidden="true" tabindex="-1"></a>   of the composite.</span>
+<span id="cb32-53"><a href="#cb32-53" aria-hidden="true" tabindex="-1"></a><span class="ss">6. </span>**Feature engineering showcase** — interaction terms, entropy, and</span>
+<span id="cb32-54"><a href="#cb32-54" aria-hidden="true" tabindex="-1"></a>   composite variables on a simulated education dataset.</span>
+<span id="cb32-55"><a href="#cb32-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-56"><a href="#cb32-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-57"><a href="#cb32-57" aria-hidden="true" tabindex="-1"></a><span class="fu">## Key Results</span></span>
+<span id="cb32-58"><a href="#cb32-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-59"><a href="#cb32-59" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; **Note:** Theoretical expectations to be refined with actual output.</span></span>
+<span id="cb32-60"><a href="#cb32-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-61"><a href="#cb32-61" aria-hidden="true" tabindex="-1"></a>**Expected findings:**</span>
+<span id="cb32-62"><a href="#cb32-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-63"><a href="#cb32-63" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Rankings should be moderately robust** across normalisation and</span>
+<span id="cb32-64"><a href="#cb32-64" aria-hidden="true" tabindex="-1"></a>  weighting methods — rank correlations (Spearman) typically &gt; 0.85</span>
+<span id="cb32-65"><a href="#cb32-65" aria-hidden="true" tabindex="-1"></a>  unless indicators are weakly correlated.</span>
+<span id="cb32-66"><a href="#cb32-66" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**PCA-derived weights** should upweight the most variance-rich</span>
+<span id="cb32-67"><a href="#cb32-67" aria-hidden="true" tabindex="-1"></a>  indicators, potentially diverging from equal weights for</span>
+<span id="cb32-68"><a href="#cb32-68" aria-hidden="true" tabindex="-1"></a>  heterogeneous indicator sets.</span>
+<span id="cb32-69"><a href="#cb32-69" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**The geometric mean** penalises imbalance more than the arithmetic</span>
+<span id="cb32-70"><a href="#cb32-70" aria-hidden="true" tabindex="-1"></a>  mean, producing different rankings for units with extreme scores</span>
+<span id="cb32-71"><a href="#cb32-71" aria-hidden="true" tabindex="-1"></a>  on one dimension.</span>
+<span id="cb32-72"><a href="#cb32-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-73"><a href="#cb32-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-74"><a href="#cb32-74" aria-hidden="true" tabindex="-1"></a><span class="fu">## Setup</span></span>
+<span id="cb32-75"><a href="#cb32-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-78"><a href="#cb32-78" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb32-79"><a href="#cb32-79" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup</span></span>
+<span id="cb32-80"><a href="#cb32-80" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-summary: "Load packages and set global options"</span></span>
+<span id="cb32-81"><a href="#cb32-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-82"><a href="#cb32-82" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(psych)</span>
+<span id="cb32-83"><a href="#cb32-83" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb32-84"><a href="#cb32-84" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb32-85"><a href="#cb32-85" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb32-86"><a href="#cb32-86" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibble)</span>
+<span id="cb32-87"><a href="#cb32-87" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(purrr)</span>
+<span id="cb32-88"><a href="#cb32-88" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb32-89"><a href="#cb32-89" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(corrplot)</span>
+<span id="cb32-90"><a href="#cb32-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-91"><a href="#cb32-91" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(</span>
+<span id="cb32-92"><a href="#cb32-92" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">11</span>) <span class="sc">+</span></span>
+<span id="cb32-93"><a href="#cb32-93" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(</span>
+<span id="cb32-94"><a href="#cb32-94" aria-hidden="true" tabindex="-1"></a>      <span class="at">plot.title    =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">13</span>),</span>
+<span id="cb32-95"><a href="#cb32-95" aria-hidden="true" tabindex="-1"></a>      <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(<span class="at">colour =</span> <span class="st">"grey40"</span>, <span class="at">size =</span> <span class="dv">10</span>),</span>
+<span id="cb32-96"><a href="#cb32-96" aria-hidden="true" tabindex="-1"></a>      <span class="at">legend.position =</span> <span class="st">"bottom"</span></span>
+<span id="cb32-97"><a href="#cb32-97" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb32-98"><a href="#cb32-98" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb32-99"><a href="#cb32-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-100"><a href="#cb32-100" aria-hidden="true" tabindex="-1"></a>palette_idx <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"#2C3E50"</span>, <span class="st">"#E74C3C"</span>, <span class="st">"#3498DB"</span>, <span class="st">"#2ECC71"</span>, <span class="st">"#F39C12"</span>)</span>
+<span id="cb32-101"><a href="#cb32-101" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-102"><a href="#cb32-102" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
+<span id="cb32-103"><a href="#cb32-103" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-104"><a href="#cb32-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-105"><a href="#cb32-105" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb32-106"><a href="#cb32-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-107"><a href="#cb32-107" aria-hidden="true" tabindex="-1"></a><span class="fu"># PART A — Indicator Preparation</span></span>
+<span id="cb32-108"><a href="#cb32-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-109"><a href="#cb32-109" aria-hidden="true" tabindex="-1"></a><span class="fu">## Simulate education quality indicators</span></span>
+<span id="cb32-110"><a href="#cb32-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-113"><a href="#cb32-113" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb32-114"><a href="#cb32-114" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: sim-indicators</span></span>
+<span id="cb32-115"><a href="#cb32-115" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-summary: "Simulate school-level education quality indicators"</span></span>
+<span id="cb32-116"><a href="#cb32-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-117"><a href="#cb32-117" aria-hidden="true" tabindex="-1"></a>n_schools <span class="ot">&lt;-</span> <span class="dv">80</span></span>
+<span id="cb32-118"><a href="#cb32-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-119"><a href="#cb32-119" aria-hidden="true" tabindex="-1"></a>schools <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb32-120"><a href="#cb32-120" aria-hidden="true" tabindex="-1"></a>  <span class="at">school_id   =</span> <span class="fu">sprintf</span>(<span class="st">"S%03d"</span>, <span class="dv">1</span><span class="sc">:</span>n_schools),</span>
+<span id="cb32-121"><a href="#cb32-121" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Raw indicators (different scales and distributions)</span></span>
+<span id="cb32-122"><a href="#cb32-122" aria-hidden="true" tabindex="-1"></a>  <span class="at">test_score  =</span> <span class="fu">rnorm</span>(n_schools, <span class="at">mean =</span> <span class="dv">65</span>, <span class="at">sd =</span> <span class="dv">12</span>),    <span class="co"># 0–100</span></span>
+<span id="cb32-123"><a href="#cb32-123" aria-hidden="true" tabindex="-1"></a>  <span class="at">grad_rate   =</span> <span class="fu">rbeta</span>(n_schools, <span class="dv">8</span>, <span class="dv">2</span>) <span class="sc">*</span> <span class="dv">100</span>,            <span class="co"># 0–100%</span></span>
+<span id="cb32-124"><a href="#cb32-124" aria-hidden="true" tabindex="-1"></a>  <span class="at">attendance  =</span> <span class="fu">rbeta</span>(n_schools, <span class="dv">12</span>, <span class="dv">2</span>) <span class="sc">*</span> <span class="dv">100</span>,            <span class="co"># 0–100%</span></span>
+<span id="cb32-125"><a href="#cb32-125" aria-hidden="true" tabindex="-1"></a>  <span class="at">teacher_qual =</span> <span class="fu">rnorm</span>(n_schools, <span class="at">mean =</span> <span class="fl">3.5</span>, <span class="at">sd =</span> <span class="fl">0.8</span>),  <span class="co"># 1–5 Likert</span></span>
+<span id="cb32-126"><a href="#cb32-126" aria-hidden="true" tabindex="-1"></a>  <span class="at">resources   =</span> <span class="fu">rlnorm</span>(n_schools, <span class="at">meanlog =</span> <span class="dv">10</span>, <span class="at">sdlog =</span> <span class="fl">0.5</span>), <span class="co"># USD (right-skewed)</span></span>
+<span id="cb32-127"><a href="#cb32-127" aria-hidden="true" tabindex="-1"></a>  <span class="at">parent_sat  =</span> <span class="fu">rnorm</span>(n_schools, <span class="at">mean =</span> <span class="fl">3.8</span>, <span class="at">sd =</span> <span class="fl">0.7</span>)    <span class="co"># 1–5 Likert</span></span>
+<span id="cb32-128"><a href="#cb32-128" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb32-129"><a href="#cb32-129" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Inject correlations</span></span>
+<span id="cb32-130"><a href="#cb32-130" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb32-131"><a href="#cb32-131" aria-hidden="true" tabindex="-1"></a>    <span class="at">test_score =</span> test_score <span class="sc">+</span> <span class="fl">0.4</span> <span class="sc">*</span> teacher_qual <span class="sc">*</span> <span class="dv">5</span> <span class="sc">+</span> <span class="fl">0.3</span> <span class="sc">*</span> (resources <span class="sc">/</span> <span class="fl">1e4</span>),</span>
+<span id="cb32-132"><a href="#cb32-132" aria-hidden="true" tabindex="-1"></a>    <span class="at">grad_rate  =</span> <span class="fu">pmin</span>(<span class="dv">100</span>, grad_rate <span class="sc">+</span> <span class="fl">0.2</span> <span class="sc">*</span> test_score <span class="sc">/</span> <span class="dv">10</span>)</span>
+<span id="cb32-133"><a href="#cb32-133" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb32-134"><a href="#cb32-134" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-135"><a href="#cb32-135" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Simulated %d schools with 6 indicators</span><span class="sc">\n</span><span class="st">"</span>, n_schools))</span>
+<span id="cb32-136"><a href="#cb32-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-137"><a href="#cb32-137" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Summary statistics ───────────────────────────────────────────────────────</span></span>
+<span id="cb32-138"><a href="#cb32-138" aria-hidden="true" tabindex="-1"></a>indicators <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"test_score"</span>, <span class="st">"grad_rate"</span>, <span class="st">"attendance"</span>,</span>
+<span id="cb32-139"><a href="#cb32-139" aria-hidden="true" tabindex="-1"></a>                <span class="st">"teacher_qual"</span>, <span class="st">"resources"</span>, <span class="st">"parent_sat"</span>)</span>
+<span id="cb32-140"><a href="#cb32-140" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-141"><a href="#cb32-141" aria-hidden="true" tabindex="-1"></a>summary_stats <span class="ot">&lt;-</span> schools <span class="sc">|&gt;</span></span>
+<span id="cb32-142"><a href="#cb32-142" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">all_of</span>(indicators)) <span class="sc">|&gt;</span></span>
+<span id="cb32-143"><a href="#cb32-143" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), <span class="fu">list</span>(</span>
+<span id="cb32-144"><a href="#cb32-144" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean =</span> mean, <span class="at">sd =</span> sd, <span class="at">min =</span> min, <span class="at">max =</span> max, <span class="at">skew =</span> <span class="sc">~</span>psych<span class="sc">::</span><span class="fu">skew</span>(.)</span>
+<span id="cb32-145"><a href="#cb32-145" aria-hidden="true" tabindex="-1"></a>  ), <span class="at">.names =</span> <span class="st">"{.col}_{.fn}"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb32-146"><a href="#cb32-146" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="fu">everything</span>(),</span>
+<span id="cb32-147"><a href="#cb32-147" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">"indicator"</span>, <span class="st">"stat"</span>),</span>
+<span id="cb32-148"><a href="#cb32-148" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_pattern =</span> <span class="st">"(.+)_(.+)"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb32-149"><a href="#cb32-149" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> stat, <span class="at">values_from =</span> value)</span>
+<span id="cb32-150"><a href="#cb32-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-151"><a href="#cb32-151" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(summary_stats, <span class="at">digits =</span> <span class="dv">2</span>,</span>
+<span id="cb32-152"><a href="#cb32-152" aria-hidden="true" tabindex="-1"></a>      <span class="at">caption =</span> <span class="st">"Indicator summary statistics (raw scale)"</span>)</span>
+<span id="cb32-153"><a href="#cb32-153" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-154"><a href="#cb32-154" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-155"><a href="#cb32-155" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-156"><a href="#cb32-156" aria-hidden="true" tabindex="-1"></a><span class="fu">## Normalisation</span></span>
+<span id="cb32-157"><a href="#cb32-157" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-160"><a href="#cb32-160" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb32-161"><a href="#cb32-161" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: normalisation</span></span>
+<span id="cb32-162"><a href="#cb32-162" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-summary: "Apply three normalisation methods"</span></span>
+<span id="cb32-163"><a href="#cb32-163" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-164"><a href="#cb32-164" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Min-max normalisation (0–1) ──────────────────────────────────────────────</span></span>
+<span id="cb32-165"><a href="#cb32-165" aria-hidden="true" tabindex="-1"></a>minmax <span class="ot">&lt;-</span> <span class="cf">function</span>(x) (x <span class="sc">-</span> <span class="fu">min</span>(x)) <span class="sc">/</span> (<span class="fu">max</span>(x) <span class="sc">-</span> <span class="fu">min</span>(x))</span>
+<span id="cb32-166"><a href="#cb32-166" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-167"><a href="#cb32-167" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Z-score (mean = 0, SD = 1) ──────────────────────────────────────────────</span></span>
+<span id="cb32-168"><a href="#cb32-168" aria-hidden="true" tabindex="-1"></a>zscore <span class="ot">&lt;-</span> <span class="cf">function</span>(x) (x <span class="sc">-</span> <span class="fu">mean</span>(x)) <span class="sc">/</span> <span class="fu">sd</span>(x)</span>
+<span id="cb32-169"><a href="#cb32-169" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-170"><a href="#cb32-170" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Rank-based (percentile) ─────────────────────────────────────────────────</span></span>
+<span id="cb32-171"><a href="#cb32-171" aria-hidden="true" tabindex="-1"></a>rankpct <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="fu">rank</span>(x) <span class="sc">/</span> <span class="fu">length</span>(x)</span>
+<span id="cb32-172"><a href="#cb32-172" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-173"><a href="#cb32-173" aria-hidden="true" tabindex="-1"></a>schools_norm <span class="ot">&lt;-</span> schools <span class="sc">|&gt;</span></span>
+<span id="cb32-174"><a href="#cb32-174" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb32-175"><a href="#cb32-175" aria-hidden="true" tabindex="-1"></a>    <span class="fu">across</span>(<span class="fu">all_of</span>(indicators), <span class="fu">list</span>(<span class="at">mm =</span> minmax, <span class="at">z =</span> zscore, <span class="at">rk =</span> rankpct),</span>
+<span id="cb32-176"><a href="#cb32-176" aria-hidden="true" tabindex="-1"></a>           <span class="at">.names =</span> <span class="st">"{.col}_{.fn}"</span>)</span>
+<span id="cb32-177"><a href="#cb32-177" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb32-178"><a href="#cb32-178" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-179"><a href="#cb32-179" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Show first 5 schools, resources indicator (most skewed) ──────────────────</span></span>
+<span id="cb32-180"><a href="#cb32-180" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(</span>
+<span id="cb32-181"><a href="#cb32-181" aria-hidden="true" tabindex="-1"></a>  schools_norm <span class="sc">|&gt;</span></span>
+<span id="cb32-182"><a href="#cb32-182" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(school_id, resources, resources_mm, resources_z, resources_rk) <span class="sc">|&gt;</span></span>
+<span id="cb32-183"><a href="#cb32-183" aria-hidden="true" tabindex="-1"></a>    <span class="fu">head</span>(<span class="dv">8</span>),</span>
+<span id="cb32-184"><a href="#cb32-184" aria-hidden="true" tabindex="-1"></a>  <span class="at">digits =</span> <span class="dv">3</span>,</span>
+<span id="cb32-185"><a href="#cb32-185" aria-hidden="true" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">"Normalisation comparison: resources indicator (right-skewed)"</span></span>
+<span id="cb32-186"><a href="#cb32-186" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb32-187"><a href="#cb32-187" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-188"><a href="#cb32-188" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-191"><a href="#cb32-191" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb32-192"><a href="#cb32-192" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: norm-comparison</span></span>
+<span id="cb32-193"><a href="#cb32-193" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-summary: "Visualise normalisation effects on a skewed indicator"</span></span>
+<span id="cb32-194"><a href="#cb32-194" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Resources indicator under three normalisation methods. Rank-based normalisation eliminates skewness."</span></span>
+<span id="cb32-195"><a href="#cb32-195" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 4</span></span>
+<span id="cb32-196"><a href="#cb32-196" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 9</span></span>
+<span id="cb32-197"><a href="#cb32-197" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-198"><a href="#cb32-198" aria-hidden="true" tabindex="-1"></a>norm_plot_df <span class="ot">&lt;-</span> schools_norm <span class="sc">|&gt;</span></span>
+<span id="cb32-199"><a href="#cb32-199" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(school_id, resources_mm, resources_z, resources_rk) <span class="sc">|&gt;</span></span>
+<span id="cb32-200"><a href="#cb32-200" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>school_id, <span class="at">names_to =</span> <span class="st">"method"</span>, <span class="at">values_to =</span> <span class="st">"value"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb32-201"><a href="#cb32-201" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">method =</span> <span class="fu">case_when</span>(</span>
+<span id="cb32-202"><a href="#cb32-202" aria-hidden="true" tabindex="-1"></a>    method <span class="sc">==</span> <span class="st">"resources_mm"</span> <span class="sc">~</span> <span class="st">"Min-Max (0–1)"</span>,</span>
+<span id="cb32-203"><a href="#cb32-203" aria-hidden="true" tabindex="-1"></a>    method <span class="sc">==</span> <span class="st">"resources_z"</span>  <span class="sc">~</span> <span class="st">"Z-Score"</span>,</span>
+<span id="cb32-204"><a href="#cb32-204" aria-hidden="true" tabindex="-1"></a>    method <span class="sc">==</span> <span class="st">"resources_rk"</span> <span class="sc">~</span> <span class="st">"Rank (percentile)"</span></span>
+<span id="cb32-205"><a href="#cb32-205" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb32-206"><a href="#cb32-206" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-207"><a href="#cb32-207" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(norm_plot_df, <span class="fu">aes</span>(<span class="at">x =</span> value)) <span class="sc">+</span></span>
+<span id="cb32-208"><a href="#cb32-208" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">20</span>, <span class="at">fill =</span> palette_idx[<span class="dv">3</span>], <span class="at">alpha =</span> <span class="fl">0.7</span>, <span class="at">colour =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb32-209"><a href="#cb32-209" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> method, <span class="at">scales =</span> <span class="st">"free_x"</span>) <span class="sc">+</span></span>
+<span id="cb32-210"><a href="#cb32-210" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb32-211"><a href="#cb32-211" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Normalisation Methods — Resources Indicator"</span>,</span>
+<span id="cb32-212"><a href="#cb32-212" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Normalised Value"</span>, <span class="at">y =</span> <span class="st">"Count"</span></span>
+<span id="cb32-213"><a href="#cb32-213" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb32-214"><a href="#cb32-214" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-215"><a href="#cb32-215" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-216"><a href="#cb32-216" aria-hidden="true" tabindex="-1"></a><span class="fu">### Interpretation</span></span>
+<span id="cb32-217"><a href="#cb32-217" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-218"><a href="#cb32-218" aria-hidden="true" tabindex="-1"></a>Normalisation choices matter most for skewed indicators:</span>
+<span id="cb32-219"><a href="#cb32-219" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-220"><a href="#cb32-220" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Min-max** preserves the original distribution shape, including skewness.</span>
+<span id="cb32-221"><a href="#cb32-221" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Z-score** centres and scales but does not address skewness.</span>
+<span id="cb32-222"><a href="#cb32-222" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Rank-based** forces a uniform distribution, eliminating outlier influence</span>
+<span id="cb32-223"><a href="#cb32-223" aria-hidden="true" tabindex="-1"></a>  but discarding magnitude information.</span>
+<span id="cb32-224"><a href="#cb32-224" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-225"><a href="#cb32-225" aria-hidden="true" tabindex="-1"></a>The choice should be driven by the index purpose: rank-based is robust</span>
+<span id="cb32-226"><a href="#cb32-226" aria-hidden="true" tabindex="-1"></a>for rankings; z-score preserves relative distances; min-max is intuitive</span>
+<span id="cb32-227"><a href="#cb32-227" aria-hidden="true" tabindex="-1"></a>for communication.</span>
+<span id="cb32-228"><a href="#cb32-228" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-229"><a href="#cb32-229" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb32-230"><a href="#cb32-230" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-231"><a href="#cb32-231" aria-hidden="true" tabindex="-1"></a><span class="fu"># PART B — Weighting Strategies</span></span>
+<span id="cb32-232"><a href="#cb32-232" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-233"><a href="#cb32-233" aria-hidden="true" tabindex="-1"></a><span class="fu">## PCA-derived weights</span></span>
+<span id="cb32-234"><a href="#cb32-234" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-237"><a href="#cb32-237" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb32-238"><a href="#cb32-238" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: pca-weights</span></span>
+<span id="cb32-239"><a href="#cb32-239" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-summary: "Derive weights from PCA on normalised indicators"</span></span>
+<span id="cb32-240"><a href="#cb32-240" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "PCA scree plot and variance explained. PC1 loadings inform data-driven weights."</span></span>
+<span id="cb32-241"><a href="#cb32-241" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 4</span></span>
+<span id="cb32-242"><a href="#cb32-242" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 7</span></span>
+<span id="cb32-243"><a href="#cb32-243" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-244"><a href="#cb32-244" aria-hidden="true" tabindex="-1"></a><span class="co"># ── PCA on min-max normalised indicators ─────────────────────────────────────</span></span>
+<span id="cb32-245"><a href="#cb32-245" aria-hidden="true" tabindex="-1"></a>mm_cols <span class="ot">&lt;-</span> <span class="fu">paste0</span>(indicators, <span class="st">"_mm"</span>)</span>
+<span id="cb32-246"><a href="#cb32-246" aria-hidden="true" tabindex="-1"></a>pca_data <span class="ot">&lt;-</span> schools_norm <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="fu">all_of</span>(mm_cols))</span>
+<span id="cb32-247"><a href="#cb32-247" aria-hidden="true" tabindex="-1"></a>pca_result <span class="ot">&lt;-</span> <span class="fu">prcomp</span>(pca_data, <span class="at">center =</span> <span class="cn">TRUE</span>, <span class="at">scale. =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb32-248"><a href="#cb32-248" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-249"><a href="#cb32-249" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Scree plot ───────────────────────────────────────────────────────────────</span></span>
+<span id="cb32-250"><a href="#cb32-250" aria-hidden="true" tabindex="-1"></a>var_explained <span class="ot">&lt;-</span> pca_result<span class="sc">$</span>sdev<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="fu">sum</span>(pca_result<span class="sc">$</span>sdev<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb32-251"><a href="#cb32-251" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-252"><a href="#cb32-252" aria-hidden="true" tabindex="-1"></a>scree_df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">PC =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(var_explained),</span>
+<span id="cb32-253"><a href="#cb32-253" aria-hidden="true" tabindex="-1"></a>                    <span class="at">Variance =</span> var_explained,</span>
+<span id="cb32-254"><a href="#cb32-254" aria-hidden="true" tabindex="-1"></a>                    <span class="at">Cumulative =</span> <span class="fu">cumsum</span>(var_explained))</span>
+<span id="cb32-255"><a href="#cb32-255" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-256"><a href="#cb32-256" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(scree_df, <span class="fu">aes</span>(<span class="at">x =</span> PC, <span class="at">y =</span> Variance)) <span class="sc">+</span></span>
+<span id="cb32-257"><a href="#cb32-257" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> palette_idx[<span class="dv">3</span>], <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb32-258"><a href="#cb32-258" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> Cumulative), <span class="at">colour =</span> palette_idx[<span class="dv">2</span>], <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb32-259"><a href="#cb32-259" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> Cumulative), <span class="at">colour =</span> palette_idx[<span class="dv">2</span>], <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb32-260"><a href="#cb32-260" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">percent_format</span>()) <span class="sc">+</span></span>
+<span id="cb32-261"><a href="#cb32-261" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb32-262"><a href="#cb32-262" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"PCA Scree Plot &amp; Cumulative Variance"</span>,</span>
+<span id="cb32-263"><a href="#cb32-263" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Principal Component"</span>, <span class="at">y =</span> <span class="st">"Proportion of Variance"</span></span>
+<span id="cb32-264"><a href="#cb32-264" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb32-265"><a href="#cb32-265" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-266"><a href="#cb32-266" aria-hidden="true" tabindex="-1"></a><span class="co"># ── PC1 loadings as weights ──────────────────────────────────────────────────</span></span>
+<span id="cb32-267"><a href="#cb32-267" aria-hidden="true" tabindex="-1"></a>pc1_loadings <span class="ot">&lt;-</span> <span class="fu">abs</span>(pca_result<span class="sc">$</span>rotation[, <span class="dv">1</span>])</span>
+<span id="cb32-268"><a href="#cb32-268" aria-hidden="true" tabindex="-1"></a>pca_weights  <span class="ot">&lt;-</span> pc1_loadings <span class="sc">/</span> <span class="fu">sum</span>(pc1_loadings)  <span class="co"># normalise to sum to 1</span></span>
+<span id="cb32-269"><a href="#cb32-269" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-270"><a href="#cb32-270" aria-hidden="true" tabindex="-1"></a>weight_comparison <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb32-271"><a href="#cb32-271" aria-hidden="true" tabindex="-1"></a>  <span class="at">indicator    =</span> indicators,</span>
+<span id="cb32-272"><a href="#cb32-272" aria-hidden="true" tabindex="-1"></a>  <span class="at">equal_weight =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">length</span>(indicators),</span>
+<span id="cb32-273"><a href="#cb32-273" aria-hidden="true" tabindex="-1"></a>  <span class="at">pca_weight   =</span> pca_weights,</span>
+<span id="cb32-274"><a href="#cb32-274" aria-hidden="true" tabindex="-1"></a>  <span class="at">ratio        =</span> pca_weight <span class="sc">/</span> equal_weight</span>
+<span id="cb32-275"><a href="#cb32-275" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb32-276"><a href="#cb32-276" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-277"><a href="#cb32-277" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(weight_comparison, <span class="at">digits =</span> <span class="dv">3</span>,</span>
+<span id="cb32-278"><a href="#cb32-278" aria-hidden="true" tabindex="-1"></a>      <span class="at">caption =</span> <span class="st">"Weighting comparison: equal vs. PCA-derived"</span>)</span>
+<span id="cb32-279"><a href="#cb32-279" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-280"><a href="#cb32-280" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-281"><a href="#cb32-281" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-282"><a href="#cb32-282" aria-hidden="true" tabindex="-1"></a><span class="fu">## Expert weights (simulated)</span></span>
+<span id="cb32-283"><a href="#cb32-283" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-286"><a href="#cb32-286" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb32-287"><a href="#cb32-287" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: expert-weights</span></span>
+<span id="cb32-288"><a href="#cb32-288" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-summary: "Simulated expert weights for education quality"</span></span>
+<span id="cb32-289"><a href="#cb32-289" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-290"><a href="#cb32-290" aria-hidden="true" tabindex="-1"></a>expert_weights <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb32-291"><a href="#cb32-291" aria-hidden="true" tabindex="-1"></a>  <span class="at">indicator =</span> indicators,</span>
+<span id="cb32-292"><a href="#cb32-292" aria-hidden="true" tabindex="-1"></a>  <span class="at">weight    =</span> <span class="fu">c</span>(<span class="fl">0.25</span>, <span class="fl">0.20</span>, <span class="fl">0.15</span>, <span class="fl">0.20</span>, <span class="fl">0.10</span>, <span class="fl">0.10</span>)  <span class="co"># sum = 1</span></span>
+<span id="cb32-293"><a href="#cb32-293" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb32-294"><a href="#cb32-294" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-295"><a href="#cb32-295" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(expert_weights, <span class="at">digits =</span> <span class="dv">2</span>,</span>
+<span id="cb32-296"><a href="#cb32-296" aria-hidden="true" tabindex="-1"></a>      <span class="at">caption =</span> <span class="st">"Simulated expert weights (education domain)"</span>)</span>
+<span id="cb32-297"><a href="#cb32-297" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-298"><a href="#cb32-298" aria-hidden="true" tabindex="-1"></a><span class="co"># ── All three weight vectors ─────────────────────────────────────────────────</span></span>
+<span id="cb32-299"><a href="#cb32-299" aria-hidden="true" tabindex="-1"></a>all_weights <span class="ot">&lt;-</span> weight_comparison <span class="sc">|&gt;</span></span>
+<span id="cb32-300"><a href="#cb32-300" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(expert_weights <span class="sc">|&gt;</span> <span class="fu">rename</span>(<span class="at">expert_weight =</span> weight), <span class="at">by =</span> <span class="st">"indicator"</span>)</span>
+<span id="cb32-301"><a href="#cb32-301" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-302"><a href="#cb32-302" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(all_weights <span class="sc">|&gt;</span> <span class="fu">select</span>(indicator, equal_weight, pca_weight, expert_weight),</span>
+<span id="cb32-303"><a href="#cb32-303" aria-hidden="true" tabindex="-1"></a>      <span class="at">digits =</span> <span class="dv">3</span>,</span>
+<span id="cb32-304"><a href="#cb32-304" aria-hidden="true" tabindex="-1"></a>      <span class="at">caption =</span> <span class="st">"Three weighting strategies"</span>)</span>
+<span id="cb32-305"><a href="#cb32-305" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-306"><a href="#cb32-306" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-307"><a href="#cb32-307" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb32-308"><a href="#cb32-308" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-309"><a href="#cb32-309" aria-hidden="true" tabindex="-1"></a><span class="fu"># PART C — Aggregation &amp; Index Construction</span></span>
+<span id="cb32-310"><a href="#cb32-310" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-313"><a href="#cb32-313" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb32-314"><a href="#cb32-314" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: aggregation</span></span>
+<span id="cb32-315"><a href="#cb32-315" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-summary: "Compute composite indices under different methods"</span></span>
+<span id="cb32-316"><a href="#cb32-316" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-317"><a href="#cb32-317" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Arithmetic mean (equal weights) ──────────────────────────────────────────</span></span>
+<span id="cb32-318"><a href="#cb32-318" aria-hidden="true" tabindex="-1"></a>schools_idx <span class="ot">&lt;-</span> schools_norm <span class="sc">|&gt;</span></span>
+<span id="cb32-319"><a href="#cb32-319" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">|&gt;</span></span>
+<span id="cb32-320"><a href="#cb32-320" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb32-321"><a href="#cb32-321" aria-hidden="true" tabindex="-1"></a>    <span class="at">idx_arith_equal =</span> <span class="fu">mean</span>(<span class="fu">c_across</span>(<span class="fu">all_of</span>(mm_cols))),</span>
+<span id="cb32-322"><a href="#cb32-322" aria-hidden="true" tabindex="-1"></a>    <span class="at">idx_arith_pca   =</span> <span class="fu">sum</span>(<span class="fu">c_across</span>(<span class="fu">all_of</span>(mm_cols)) <span class="sc">*</span> pca_weights),</span>
+<span id="cb32-323"><a href="#cb32-323" aria-hidden="true" tabindex="-1"></a>    <span class="at">idx_arith_expert =</span> <span class="fu">sum</span>(<span class="fu">c_across</span>(<span class="fu">all_of</span>(mm_cols)) <span class="sc">*</span></span>
+<span id="cb32-324"><a href="#cb32-324" aria-hidden="true" tabindex="-1"></a>                            expert_weights<span class="sc">$</span>weight),</span>
+<span id="cb32-325"><a href="#cb32-325" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Geometric mean (equal weights, add small epsilon for zeros)</span></span>
+<span id="cb32-326"><a href="#cb32-326" aria-hidden="true" tabindex="-1"></a>    <span class="at">idx_geom_equal  =</span> <span class="fu">exp</span>(<span class="fu">mean</span>(<span class="fu">log</span>(<span class="fu">c_across</span>(<span class="fu">all_of</span>(mm_cols)) <span class="sc">+</span> <span class="fl">0.001</span>)))</span>
+<span id="cb32-327"><a href="#cb32-327" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb32-328"><a href="#cb32-328" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb32-329"><a href="#cb32-329" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-330"><a href="#cb32-330" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Ranking under each method ────────────────────────────────────────────────</span></span>
+<span id="cb32-331"><a href="#cb32-331" aria-hidden="true" tabindex="-1"></a>schools_idx <span class="ot">&lt;-</span> schools_idx <span class="sc">|&gt;</span></span>
+<span id="cb32-332"><a href="#cb32-332" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb32-333"><a href="#cb32-333" aria-hidden="true" tabindex="-1"></a>    <span class="at">rank_arith_equal  =</span> <span class="fu">rank</span>(<span class="sc">-</span>idx_arith_equal),</span>
+<span id="cb32-334"><a href="#cb32-334" aria-hidden="true" tabindex="-1"></a>    <span class="at">rank_arith_pca    =</span> <span class="fu">rank</span>(<span class="sc">-</span>idx_arith_pca),</span>
+<span id="cb32-335"><a href="#cb32-335" aria-hidden="true" tabindex="-1"></a>    <span class="at">rank_arith_expert =</span> <span class="fu">rank</span>(<span class="sc">-</span>idx_arith_expert),</span>
+<span id="cb32-336"><a href="#cb32-336" aria-hidden="true" tabindex="-1"></a>    <span class="at">rank_geom_equal   =</span> <span class="fu">rank</span>(<span class="sc">-</span>idx_geom_equal)</span>
+<span id="cb32-337"><a href="#cb32-337" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb32-338"><a href="#cb32-338" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-339"><a href="#cb32-339" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(</span>
+<span id="cb32-340"><a href="#cb32-340" aria-hidden="true" tabindex="-1"></a>  schools_idx <span class="sc">|&gt;</span></span>
+<span id="cb32-341"><a href="#cb32-341" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(school_id, idx_arith_equal, idx_arith_pca, idx_arith_expert,</span>
+<span id="cb32-342"><a href="#cb32-342" aria-hidden="true" tabindex="-1"></a>           idx_geom_equal) <span class="sc">|&gt;</span></span>
+<span id="cb32-343"><a href="#cb32-343" aria-hidden="true" tabindex="-1"></a>    <span class="fu">head</span>(<span class="dv">10</span>),</span>
+<span id="cb32-344"><a href="#cb32-344" aria-hidden="true" tabindex="-1"></a>  <span class="at">digits =</span> <span class="dv">3</span>,</span>
+<span id="cb32-345"><a href="#cb32-345" aria-hidden="true" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">"Composite index scores (first 10 schools)"</span></span>
+<span id="cb32-346"><a href="#cb32-346" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb32-347"><a href="#cb32-347" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-348"><a href="#cb32-348" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-349"><a href="#cb32-349" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb32-350"><a href="#cb32-350" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-351"><a href="#cb32-351" aria-hidden="true" tabindex="-1"></a><span class="fu"># PART D — Sensitivity Analysis</span></span>
+<span id="cb32-352"><a href="#cb32-352" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-353"><a href="#cb32-353" aria-hidden="true" tabindex="-1"></a><span class="fu">## Rank stability</span></span>
+<span id="cb32-354"><a href="#cb32-354" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-357"><a href="#cb32-357" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb32-358"><a href="#cb32-358" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: sensitivity</span></span>
+<span id="cb32-359"><a href="#cb32-359" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-summary: "Rank correlation matrix across methods"</span></span>
+<span id="cb32-360"><a href="#cb32-360" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Spearman rank correlations between composite index methods. High correlations indicate robust rankings."</span></span>
+<span id="cb32-361"><a href="#cb32-361" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 5</span></span>
+<span id="cb32-362"><a href="#cb32-362" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 5.5</span></span>
+<span id="cb32-363"><a href="#cb32-363" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-364"><a href="#cb32-364" aria-hidden="true" tabindex="-1"></a>rank_cols <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"rank_arith_equal"</span>, <span class="st">"rank_arith_pca"</span>,</span>
+<span id="cb32-365"><a href="#cb32-365" aria-hidden="true" tabindex="-1"></a>               <span class="st">"rank_arith_expert"</span>, <span class="st">"rank_geom_equal"</span>)</span>
+<span id="cb32-366"><a href="#cb32-366" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-367"><a href="#cb32-367" aria-hidden="true" tabindex="-1"></a>rank_matrix <span class="ot">&lt;-</span> <span class="fu">cor</span>(schools_idx <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="fu">all_of</span>(rank_cols)),</span>
+<span id="cb32-368"><a href="#cb32-368" aria-hidden="true" tabindex="-1"></a>                    <span class="at">method =</span> <span class="st">"spearman"</span>)</span>
+<span id="cb32-369"><a href="#cb32-369" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(rank_matrix) <span class="ot">&lt;-</span> <span class="fu">rownames</span>(rank_matrix) <span class="ot">&lt;-</span></span>
+<span id="cb32-370"><a href="#cb32-370" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">"Arith (equal)"</span>, <span class="st">"Arith (PCA)"</span>, <span class="st">"Arith (expert)"</span>, <span class="st">"Geometric"</span>)</span>
+<span id="cb32-371"><a href="#cb32-371" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-372"><a href="#cb32-372" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">round</span>(rank_matrix, <span class="dv">3</span>),</span>
+<span id="cb32-373"><a href="#cb32-373" aria-hidden="true" tabindex="-1"></a>      <span class="at">caption =</span> <span class="st">"Spearman rank correlation between index methods"</span>)</span>
+<span id="cb32-374"><a href="#cb32-374" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-375"><a href="#cb32-375" aria-hidden="true" tabindex="-1"></a><span class="fu">corrplot</span>(rank_matrix, <span class="at">method =</span> <span class="st">"color"</span>, <span class="at">type =</span> <span class="st">"upper"</span>,</span>
+<span id="cb32-376"><a href="#cb32-376" aria-hidden="true" tabindex="-1"></a>         <span class="at">addCoef.col =</span> <span class="st">"black"</span>, <span class="at">tl.col =</span> <span class="st">"black"</span>, <span class="at">tl.srt =</span> <span class="dv">45</span>,</span>
+<span id="cb32-377"><a href="#cb32-377" aria-hidden="true" tabindex="-1"></a>         <span class="at">title =</span> <span class="st">"Rank Stability Across Methods"</span>, <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">0</span>))</span>
+<span id="cb32-378"><a href="#cb32-378" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-379"><a href="#cb32-379" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-380"><a href="#cb32-380" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-381"><a href="#cb32-381" aria-hidden="true" tabindex="-1"></a><span class="fu">## Rank shifts for top/bottom schools</span></span>
+<span id="cb32-382"><a href="#cb32-382" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-385"><a href="#cb32-385" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb32-386"><a href="#cb32-386" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: rank-shifts</span></span>
+<span id="cb32-387"><a href="#cb32-387" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-summary: "Schools with largest rank changes across methods"</span></span>
+<span id="cb32-388"><a href="#cb32-388" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-389"><a href="#cb32-389" aria-hidden="true" tabindex="-1"></a>schools_idx <span class="ot">&lt;-</span> schools_idx <span class="sc">|&gt;</span></span>
+<span id="cb32-390"><a href="#cb32-390" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb32-391"><a href="#cb32-391" aria-hidden="true" tabindex="-1"></a>    <span class="at">rank_range =</span> <span class="fu">pmax</span>(rank_arith_equal, rank_arith_pca,</span>
+<span id="cb32-392"><a href="#cb32-392" aria-hidden="true" tabindex="-1"></a>                      rank_arith_expert, rank_geom_equal) <span class="sc">-</span></span>
+<span id="cb32-393"><a href="#cb32-393" aria-hidden="true" tabindex="-1"></a>                 <span class="fu">pmin</span>(rank_arith_equal, rank_arith_pca,</span>
+<span id="cb32-394"><a href="#cb32-394" aria-hidden="true" tabindex="-1"></a>                      rank_arith_expert, rank_geom_equal)</span>
+<span id="cb32-395"><a href="#cb32-395" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb32-396"><a href="#cb32-396" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-397"><a href="#cb32-397" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Most volatile schools ────────────────────────────────────────────────────</span></span>
+<span id="cb32-398"><a href="#cb32-398" aria-hidden="true" tabindex="-1"></a>volatile <span class="ot">&lt;-</span> schools_idx <span class="sc">|&gt;</span></span>
+<span id="cb32-399"><a href="#cb32-399" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(rank_range)) <span class="sc">|&gt;</span></span>
+<span id="cb32-400"><a href="#cb32-400" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(school_id, rank_arith_equal, rank_arith_pca,</span>
+<span id="cb32-401"><a href="#cb32-401" aria-hidden="true" tabindex="-1"></a>         rank_arith_expert, rank_geom_equal, rank_range) <span class="sc">|&gt;</span></span>
+<span id="cb32-402"><a href="#cb32-402" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">10</span>)</span>
+<span id="cb32-403"><a href="#cb32-403" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-404"><a href="#cb32-404" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(volatile, <span class="at">caption =</span> <span class="st">"Top 10 most volatile schools (largest rank range)"</span>)</span>
+<span id="cb32-405"><a href="#cb32-405" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-406"><a href="#cb32-406" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-407"><a href="#cb32-407" aria-hidden="true" tabindex="-1"></a><span class="fu">### Interpretation</span></span>
+<span id="cb32-408"><a href="#cb32-408" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-409"><a href="#cb32-409" aria-hidden="true" tabindex="-1"></a>Sensitivity analysis is the credibility test for any composite index:</span>
+<span id="cb32-410"><a href="#cb32-410" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-411"><a href="#cb32-411" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**High rank correlations (&gt; 0.90)** indicate that the ranking is</span>
+<span id="cb32-412"><a href="#cb32-412" aria-hidden="true" tabindex="-1"></a>  robust to methodological choices — stakeholders can trust the result.</span>
+<span id="cb32-413"><a href="#cb32-413" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Low correlations or large rank shifts** for specific schools</span>
+<span id="cb32-414"><a href="#cb32-414" aria-hidden="true" tabindex="-1"></a>  reveal sensitivity to method choices. These schools typically have</span>
+<span id="cb32-415"><a href="#cb32-415" aria-hidden="true" tabindex="-1"></a>  unbalanced profiles (e.g., very high on one indicator, very low on</span>
+<span id="cb32-416"><a href="#cb32-416" aria-hidden="true" tabindex="-1"></a>  another).</span>
+<span id="cb32-417"><a href="#cb32-417" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**The geometric mean penalises imbalance:** schools with one very</span>
+<span id="cb32-418"><a href="#cb32-418" aria-hidden="true" tabindex="-1"></a>  low indicator score lower under geometric aggregation than under</span>
+<span id="cb32-419"><a href="#cb32-419" aria-hidden="true" tabindex="-1"></a>  arithmetic, reflecting a "weakest link" logic.</span>
+<span id="cb32-420"><a href="#cb32-420" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-421"><a href="#cb32-421" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb32-422"><a href="#cb32-422" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-423"><a href="#cb32-423" aria-hidden="true" tabindex="-1"></a><span class="fu"># PART E — Feature Engineering Showcase</span></span>
+<span id="cb32-424"><a href="#cb32-424" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-427"><a href="#cb32-427" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb32-428"><a href="#cb32-428" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: feature-eng</span></span>
+<span id="cb32-429"><a href="#cb32-429" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-summary: "Feature engineering: interactions, entropy, composites"</span></span>
+<span id="cb32-430"><a href="#cb32-430" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-431"><a href="#cb32-431" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Interaction term ─────────────────────────────────────────────────────────</span></span>
+<span id="cb32-432"><a href="#cb32-432" aria-hidden="true" tabindex="-1"></a>schools_feat <span class="ot">&lt;-</span> schools <span class="sc">|&gt;</span></span>
+<span id="cb32-433"><a href="#cb32-433" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb32-434"><a href="#cb32-434" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Teacher quality × Resources interaction</span></span>
+<span id="cb32-435"><a href="#cb32-435" aria-hidden="true" tabindex="-1"></a>    <span class="at">tq_x_resources =</span> teacher_qual <span class="sc">*</span> <span class="fu">log</span>(resources),</span>
+<span id="cb32-436"><a href="#cb32-436" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Efficiency ratio: test scores per unit resource</span></span>
+<span id="cb32-437"><a href="#cb32-437" aria-hidden="true" tabindex="-1"></a>    <span class="at">efficiency =</span> test_score <span class="sc">/</span> (resources <span class="sc">/</span> <span class="fl">1e4</span>),</span>
+<span id="cb32-438"><a href="#cb32-438" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Engagement composite (attendance + parent satisfaction)</span></span>
+<span id="cb32-439"><a href="#cb32-439" aria-hidden="true" tabindex="-1"></a>    <span class="at">engagement =</span> (attendance <span class="sc">/</span> <span class="dv">100</span> <span class="sc">+</span> parent_sat <span class="sc">/</span> <span class="dv">5</span>) <span class="sc">/</span> <span class="dv">2</span></span>
+<span id="cb32-440"><a href="#cb32-440" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb32-441"><a href="#cb32-441" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-442"><a href="#cb32-442" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Information-theoretic feature: score entropy ─────────────────────────────</span></span>
+<span id="cb32-443"><a href="#cb32-443" aria-hidden="true" tabindex="-1"></a><span class="co"># Discretise test scores into bins and compute entropy</span></span>
+<span id="cb32-444"><a href="#cb32-444" aria-hidden="true" tabindex="-1"></a>discretise <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">n_bins =</span> <span class="dv">5</span>) {</span>
+<span id="cb32-445"><a href="#cb32-445" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cut</span>(x, <span class="at">breaks =</span> n_bins, <span class="at">labels =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb32-446"><a href="#cb32-446" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb32-447"><a href="#cb32-447" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-448"><a href="#cb32-448" aria-hidden="true" tabindex="-1"></a>entropy <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb32-449"><a href="#cb32-449" aria-hidden="true" tabindex="-1"></a>  p <span class="ot">&lt;-</span> <span class="fu">table</span>(x) <span class="sc">/</span> <span class="fu">length</span>(x)</span>
+<span id="cb32-450"><a href="#cb32-450" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span><span class="fu">sum</span>(p <span class="sc">*</span> <span class="fu">log2</span>(p <span class="sc">+</span> <span class="fl">1e-10</span>))</span>
+<span id="cb32-451"><a href="#cb32-451" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb32-452"><a href="#cb32-452" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-453"><a href="#cb32-453" aria-hidden="true" tabindex="-1"></a><span class="co"># School-level entropy would require student-level data;</span></span>
+<span id="cb32-454"><a href="#cb32-454" aria-hidden="true" tabindex="-1"></a><span class="co"># here we demonstrate the concept at the indicator level</span></span>
+<span id="cb32-455"><a href="#cb32-455" aria-hidden="true" tabindex="-1"></a>score_bins <span class="ot">&lt;-</span> <span class="fu">discretise</span>(schools<span class="sc">$</span>test_score, <span class="dv">10</span>)</span>
+<span id="cb32-456"><a href="#cb32-456" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Test score entropy (10 bins): %.3f bits</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">entropy</span>(score_bins)))</span>
+<span id="cb32-457"><a href="#cb32-457" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Maximum entropy (10 bins): %.3f bits</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">log2</span>(<span class="dv">10</span>)))</span>
+<span id="cb32-458"><a href="#cb32-458" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Normalised entropy: %.3f</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">entropy</span>(score_bins) <span class="sc">/</span> <span class="fu">log2</span>(<span class="dv">10</span>)))</span>
+<span id="cb32-459"><a href="#cb32-459" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-460"><a href="#cb32-460" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Summary of engineered features ───────────────────────────────────────────</span></span>
+<span id="cb32-461"><a href="#cb32-461" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(</span>
+<span id="cb32-462"><a href="#cb32-462" aria-hidden="true" tabindex="-1"></a>  schools_feat <span class="sc">|&gt;</span></span>
+<span id="cb32-463"><a href="#cb32-463" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(school_id, teacher_qual, resources, tq_x_resources,</span>
+<span id="cb32-464"><a href="#cb32-464" aria-hidden="true" tabindex="-1"></a>           efficiency, engagement) <span class="sc">|&gt;</span></span>
+<span id="cb32-465"><a href="#cb32-465" aria-hidden="true" tabindex="-1"></a>    <span class="fu">head</span>(<span class="dv">8</span>),</span>
+<span id="cb32-466"><a href="#cb32-466" aria-hidden="true" tabindex="-1"></a>  <span class="at">digits =</span> <span class="dv">3</span>,</span>
+<span id="cb32-467"><a href="#cb32-467" aria-hidden="true" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">"Engineered features: interaction, ratio, and composite"</span></span>
+<span id="cb32-468"><a href="#cb32-468" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb32-469"><a href="#cb32-469" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-470"><a href="#cb32-470" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-471"><a href="#cb32-471" aria-hidden="true" tabindex="-1"></a><span class="fu">### Interpretation</span></span>
+<span id="cb32-472"><a href="#cb32-472" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-473"><a href="#cb32-473" aria-hidden="true" tabindex="-1"></a>Feature engineering creates informative variables from raw data:</span>
+<span id="cb32-474"><a href="#cb32-474" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-475"><a href="#cb32-475" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Interaction terms** (teacher quality × log resources) capture</span>
+<span id="cb32-476"><a href="#cb32-476" aria-hidden="true" tabindex="-1"></a>  synergies — good teachers with adequate resources may produce</span>
+<span id="cb32-477"><a href="#cb32-477" aria-hidden="true" tabindex="-1"></a>  disproportionately better outcomes.</span>
+<span id="cb32-478"><a href="#cb32-478" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Efficiency ratios** (output/input) normalise for resource</span>
+<span id="cb32-479"><a href="#cb32-479" aria-hidden="true" tabindex="-1"></a>  differences, enabling fair comparison between well-funded and</span>
+<span id="cb32-480"><a href="#cb32-480" aria-hidden="true" tabindex="-1"></a>  under-funded schools.</span>
+<span id="cb32-481"><a href="#cb32-481" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Composite engagement** combines related indicators into a single</span>
+<span id="cb32-482"><a href="#cb32-482" aria-hidden="true" tabindex="-1"></a>  actionable metric.</span>
+<span id="cb32-483"><a href="#cb32-483" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Entropy** measures distributional spread — a school district with</span>
+<span id="cb32-484"><a href="#cb32-484" aria-hidden="true" tabindex="-1"></a>  high entropy in test scores has more heterogeneity among schools.</span>
+<span id="cb32-485"><a href="#cb32-485" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-486"><a href="#cb32-486" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb32-487"><a href="#cb32-487" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-488"><a href="#cb32-488" aria-hidden="true" tabindex="-1"></a><span class="fu"># Technical Summary</span></span>
+<span id="cb32-489"><a href="#cb32-489" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-492"><a href="#cb32-492" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb32-493"><a href="#cb32-493" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: session-info</span></span>
+<span id="cb32-494"><a href="#cb32-494" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-summary: "Session information for reproducibility"</span></span>
+<span id="cb32-495"><a href="#cb32-495" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-496"><a href="#cb32-496" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"─── Reproducibility Information ───</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb32-497"><a href="#cb32-497" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Date: %s</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">Sys.Date</span>()))</span>
+<span id="cb32-498"><a href="#cb32-498" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"R version: %s</span><span class="sc">\n</span><span class="st">"</span>, R.version.string))</span>
+<span id="cb32-499"><a href="#cb32-499" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"psych version: %s</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">packageVersion</span>(<span class="st">"psych"</span>)))</span>
+<span id="cb32-500"><a href="#cb32-500" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Platform: %s</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">sessionInfo</span>()<span class="sc">$</span>platform))</span>
+<span id="cb32-501"><a href="#cb32-501" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-502"><a href="#cb32-502" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-503"><a href="#cb32-503" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb32-504"><a href="#cb32-504" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-505"><a href="#cb32-505" aria-hidden="true" tabindex="-1"></a><span class="fu">## References</span></span>
+<span id="cb32-506"><a href="#cb32-506" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-507"><a href="#cb32-507" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Greco, S., Ishizaka, A., Tasiou, M., &amp; Torrisi, G. (2019). On the</span>
+<span id="cb32-508"><a href="#cb32-508" aria-hidden="true" tabindex="-1"></a>  methodological framework of composite indices: A review of the issues</span>
+<span id="cb32-509"><a href="#cb32-509" aria-hidden="true" tabindex="-1"></a>  of weighting, aggregation, and robustness. *Social Indicators</span>
+<span id="cb32-510"><a href="#cb32-510" aria-hidden="true" tabindex="-1"></a>  Research*, 141(1), 61–94.</span>
+<span id="cb32-511"><a href="#cb32-511" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>OECD/JRC (2008). *Handbook on Constructing Composite Indicators:</span>
+<span id="cb32-512"><a href="#cb32-512" aria-hidden="true" tabindex="-1"></a>  Methodology and User Guide*. OECD Publishing.</span>
+<span id="cb32-513"><a href="#cb32-513" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Saltelli, A. (2007). Composite indicators between analysis and</span>
+<span id="cb32-514"><a href="#cb32-514" aria-hidden="true" tabindex="-1"></a>  advocacy. *Social Indicators Research*, 81(1), 65–77.</span>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

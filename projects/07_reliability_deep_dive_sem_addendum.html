@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.57">
+<meta name="generator" content="quarto-1.9.36">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -11,6 +11,9 @@
 
 <title>Reliability Deep Dive: Beyond Cronbach’s Alpha – Francisco MG</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -23,8 +26,9 @@ ul.task-list li input[type="checkbox"] {
   vertical-align: middle;
 }
 /* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -35,7 +39,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -66,15 +70,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-845c23b38eaddc0f92fda52bfe77a8c8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-6b423f165eeea3787de40cb4f8e821c3.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -104,7 +109,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -117,7 +122,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -135,7 +140,7 @@ window.Quarto = {
 
 </head>
 
-<body class="nav-fixed">
+<body class="nav-fixed quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -357,7 +362,7 @@ window.Quarto = {
 <section id="setup" class="level2" data-number="0.3">
 <h2 data-number="0.3" class="anchored" data-anchor-id="setup"><span class="header-section-number">0.3</span> Setup</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Core packages ──────────────────────────────────────────────────────────────</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Core packages ──────────────────────────────────────────────────────────────</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(psych)       <span class="co"># BFI data + alpha, omega, splitHalf</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lavaan)      <span class="co"># CFA-based omega</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
@@ -379,7 +384,7 @@ window.Quarto = {
 <span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>palette_rel <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"#2C3E50"</span>, <span class="st">"#E74C3C"</span>, <span class="st">"#3498DB"</span>, <span class="st">"#2ECC71"</span>, <span class="st">"#F39C12"</span>)</span>
 <span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2026</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2026</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <hr>
 </section>
@@ -388,7 +393,7 @@ window.Quarto = {
 <section id="load-and-inspect-the-bfi" class="level2" data-number="1.1">
 <h2 data-number="1.1" class="anchored" data-anchor-id="load-and-inspect-the-bfi"><span class="header-section-number">1.1</span> Load and inspect the BFI</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"bfi"</span>, <span class="at">package =</span> <span class="st">"psych"</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"bfi"</span>, <span class="at">package =</span> <span class="st">"psych"</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Select the 25 personality items (drop age, gender, education) ────────────</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>item_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">paste0</span>(<span class="st">"A"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>), <span class="fu">paste0</span>(<span class="st">"C"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>), <span class="fu">paste0</span>(<span class="st">"E"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>),</span>
@@ -400,20 +405,20 @@ window.Quarto = {
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>bfi_complete <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(bfi_items)</span>
 <span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"BFI dataset: %d respondents, %d personality items</span><span class="sc">\n</span><span class="st">"</span>,</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>            <span class="fu">nrow</span>(bfi), <span class="fu">length</span>(item_names)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>            <span class="fu">nrow</span>(bfi), <span class="fu">length</span>(item_names)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>BFI dataset: 2800 respondents, 25 personality items</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Complete cases: %d (%.1f%%)</span><span class="sc">\n</span><span class="st">"</span>,</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>            n_complete, <span class="dv">100</span> <span class="sc">*</span> n_complete <span class="sc">/</span> <span class="fu">nrow</span>(bfi)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Complete cases: %d (%.1f%%)</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>            n_complete, <span class="dv">100</span> <span class="sc">*</span> n_complete <span class="sc">/</span> <span class="fu">nrow</span>(bfi)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Complete cases: 2436 (87.0%)</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Response scale: 1 (Very Inaccurate) to 6 (Very Accurate)</span><span class="sc">\n\n</span><span class="st">"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Response scale: 1 (Very Inaccurate) to 6 (Very Accurate)</span><span class="sc">\n\n</span><span class="st">"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Response scale: 1 (Very Inaccurate) to 6 (Very Accurate)</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Factor structure (for subscale analyses) ─────────────────────────────────</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Factor structure (for subscale analyses) ─────────────────────────────────</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>factor_map <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">item   =</span> item_names,</span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">factor =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"Agreeableness"</span>, <span class="st">"Conscientiousness"</span>, <span class="st">"Extraversion"</span>,</span>
@@ -424,7 +429,7 @@ window.Quarto = {
 <span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(</span>
 <span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  factor_map <span class="sc">|&gt;</span> <span class="fu">group_by</span>(factor) <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="at">items =</span> <span class="fu">paste</span>(item, <span class="at">collapse =</span> <span class="st">", "</span>)),</span>
 <span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">"BFI factor structure (5 items per factor)"</span></span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <caption>BFI factor structure (5 items per factor)</caption>
@@ -464,7 +469,7 @@ window.Quarto = {
 <h2 data-number="1.2" class="anchored" data-anchor-id="reverse-score-items"><span class="header-section-number">1.2</span> Reverse-score items</h2>
 <p>Several BFI items are reverse-keyed. We reverse-score them so that higher values consistently indicate more of the trait.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── BFI reverse-keyed items (from psych documentation) ───────────────────────</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── BFI reverse-keyed items (from psych documentation) ───────────────────────</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># A1 (-), C4 (-), C5 (-), E1 (-), E2 (-), O2 (-), O5 (-)</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>reverse_items <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"A1"</span>, <span class="st">"C4"</span>, <span class="st">"C5"</span>, <span class="st">"E1"</span>, <span class="st">"E2"</span>, <span class="st">"O2"</span>, <span class="st">"O5"</span>)</span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
@@ -473,17 +478,17 @@ window.Quarto = {
 <span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  bfi_scored[[item]] <span class="ot">&lt;-</span> <span class="dv">7</span> <span class="sc">-</span> bfi_scored[[item]]  <span class="co"># Reverse on 1–6 scale</span></span>
 <span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Reverse-scored items: %s</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">paste</span>(reverse_items, <span class="at">collapse =</span> <span class="st">", "</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Reverse-scored items: %s</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">paste</span>(reverse_items, <span class="at">collapse =</span> <span class="st">", "</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Reverse-scored items: A1, C4, C5, E1, E2, O2, O5</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"After reverse scoring, all items keyed in the positive direction.</span><span class="sc">\n</span><span class="st">"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"After reverse scoring, all items keyed in the positive direction.</span><span class="sc">\n</span><span class="st">"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>After reverse scoring, all items keyed in the positive direction.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Quick sanity check: inter-item correlations should now be mostly positive ─</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Quick sanity check: inter-item correlations should now be mostly positive ─</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>avg_r <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">cor</span>(bfi_scored, <span class="at">use =</span> <span class="st">"pairwise.complete.obs"</span>)[<span class="fu">lower.tri</span>(<span class="fu">cor</span>(bfi_scored, <span class="at">use =</span> <span class="st">"pairwise.complete.obs"</span>))])</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Mean inter-item correlation (after reverse scoring): %.3f</span><span class="sc">\n</span><span class="st">"</span>, avg_r))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Mean inter-item correlation (after reverse scoring): %.3f</span><span class="sc">\n</span><span class="st">"</span>, avg_r))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Mean inter-item correlation (after reverse scoring): 0.093</code></pre>
 </div>
@@ -496,34 +501,34 @@ window.Quarto = {
 <section id="full-scale-alpha" class="level2" data-number="2.1">
 <h2 data-number="2.1" class="anchored" data-anchor-id="full-scale-alpha"><span class="header-section-number">2.1</span> Full-scale alpha</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Full-scale alpha with item diagnostics ───────────────────────────────────</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>alpha_full <span class="ot">&lt;-</span> psych<span class="sc">::</span><span class="fu">alpha</span>(bfi_scored, <span class="at">check.keys =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Full-scale alpha with item diagnostics ───────────────────────────────────</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>alpha_full <span class="ot">&lt;-</span> psych<span class="sc">::</span><span class="fu">alpha</span>(bfi_scored, <span class="at">check.keys =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Some items ( N1 N2 N3 N4 N5 O4 ) were negatively correlated with the first principal component and 
 probably should be reversed.  
 To do this, run the function again with the 'check.keys=TRUE' option</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"=== Full-scale BFI (25 items, N = %d) ===</span><span class="sc">\n\n</span><span class="st">"</span>, <span class="fu">nrow</span>(bfi_scored)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"=== Full-scale BFI (25 items, N = %d) ===</span><span class="sc">\n\n</span><span class="st">"</span>, <span class="fu">nrow</span>(bfi_scored)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>=== Full-scale BFI (25 items, N = 2436) ===</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Cronbach's α (raw):          %.3f</span><span class="sc">\n</span><span class="st">"</span>, alpha_full<span class="sc">$</span>total<span class="sc">$</span>raw_alpha))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Cronbach's α (raw):          %.3f</span><span class="sc">\n</span><span class="st">"</span>, alpha_full<span class="sc">$</span>total<span class="sc">$</span>raw_alpha))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Cronbach's α (raw):          0.698</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Cronbach's α (standardised): %.3f</span><span class="sc">\n</span><span class="st">"</span>, alpha_full<span class="sc">$</span>total<span class="sc">$</span>std.alpha))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Cronbach's α (standardised): %.3f</span><span class="sc">\n</span><span class="st">"</span>, alpha_full<span class="sc">$</span>total<span class="sc">$</span>std.alpha))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Cronbach's α (standardised): 0.719</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Guttman's λ6:                %.3f</span><span class="sc">\n</span><span class="st">"</span>, alpha_full<span class="sc">$</span>total<span class="sc">$</span><span class="st">`</span><span class="at">G6(smc)</span><span class="st">`</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Guttman's λ6:                %.3f</span><span class="sc">\n</span><span class="st">"</span>, alpha_full<span class="sc">$</span>total<span class="sc">$</span><span class="st">`</span><span class="at">G6(smc)</span><span class="st">`</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Guttman's λ6:                0.803</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Average inter-item r:        %.3f</span><span class="sc">\n</span><span class="st">"</span>, alpha_full<span class="sc">$</span>total<span class="sc">$</span>average_r))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Average inter-item r:        %.3f</span><span class="sc">\n</span><span class="st">"</span>, alpha_full<span class="sc">$</span>total<span class="sc">$</span>average_r))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Average inter-item r:        0.093</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Signal/Noise ratio:          %.2f</span><span class="sc">\n</span><span class="st">"</span>, alpha_full<span class="sc">$</span>total<span class="sc">$</span><span class="st">`</span><span class="at">S/N</span><span class="st">`</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Signal/Noise ratio:          %.2f</span><span class="sc">\n</span><span class="st">"</span>, alpha_full<span class="sc">$</span>total<span class="sc">$</span><span class="st">`</span><span class="at">S/N</span><span class="st">`</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Signal/Noise ratio:          2.56</code></pre>
 </div>
@@ -542,7 +547,7 @@ To do this, run the function again with the 'check.keys=TRUE' option</code></pre
 <section id="alpha-if-item-deleted" class="level2" data-number="2.2">
 <h2 data-number="2.2" class="anchored" data-anchor-id="alpha-if-item-deleted"><span class="header-section-number">2.2</span> Alpha-if-item-deleted</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Item diagnostics table ───────────────────────────────────────────────────</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Item diagnostics table ───────────────────────────────────────────────────</span></span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>item_diag <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">item           =</span> <span class="fu">rownames</span>(alpha_full<span class="sc">$</span>alpha.drop),</span>
 <span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">alpha_if_drop  =</span> alpha_full<span class="sc">$</span>alpha.drop<span class="sc">$</span>raw_alpha,</span>
@@ -555,7 +560,7 @@ To do this, run the function again with the 'check.keys=TRUE' option</code></pre
 <span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>  item_diag <span class="sc">|&gt;</span> <span class="fu">select</span>(item, factor, r_corrected, alpha_if_drop) <span class="sc">|&gt;</span> <span class="fu">arrange</span>(factor, item),</span>
 <span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">digits =</span> <span class="dv">3</span>,</span>
 <span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">"Item diagnostics: corrected item-total correlation and alpha-if-deleted"</span></span>
-<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <caption>Item diagnostics: corrected item-total correlation and alpha-if-deleted</caption>
@@ -722,7 +727,7 @@ To do this, run the function again with the 'check.keys=TRUE' option</code></pre
 </table>
 <p>Alpha-if-item-deleted for each BFI item. The dashed line shows the full-scale alpha. Items above this line reduce reliability when included.</p>
 </div>
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Plot alpha-if-deleted ────────────────────────────────────────────────────</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Plot alpha-if-deleted ────────────────────────────────────────────────────</span></span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(item_diag, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(item, alpha_if_drop), <span class="at">y =</span> alpha_if_drop,</span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>                       <span class="at">fill =</span> factor)) <span class="sc">+</span></span>
 <span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">alpha =</span> <span class="fl">0.85</span>, <span class="at">width =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
@@ -741,7 +746,7 @@ To do this, run the function again with the 'check.keys=TRUE' option</code></pre
 <span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">title    =</span> <span class="st">"Alpha-if-Item-Deleted"</span>,</span>
 <span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Items above the dashed line reduce full-scale reliability"</span>,</span>
 <span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"Alpha if Item Deleted"</span>, <span class="at">fill =</span> <span class="st">"Factor"</span></span>
-<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -771,14 +776,14 @@ To do this, run the function again with the 'check.keys=TRUE' option</code></pre
 <section id="bootstrap-confidence-interval-for-α" class="level2" data-number="2.3">
 <h2 data-number="2.3" class="anchored" data-anchor-id="bootstrap-confidence-interval-for-α"><span class="header-section-number">2.3</span> Bootstrap confidence interval for α</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Bootstrap alpha ──────────────────────────────────────────────────────────</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Bootstrap alpha ──────────────────────────────────────────────────────────</span></span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>n_boot <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
 <span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>alpha_boot <span class="ot">&lt;-</span> <span class="fu">numeric</span>(n_boot)</span>
 <span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (b <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_boot) {</span>
 <span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>  idx <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">nrow</span>(bfi_scored), <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>  alpha_boot[b] <span class="ot">&lt;-</span> psych<span class="sc">::</span><span class="fu">alpha</span>(bfi_scored[idx, ], <span class="at">check.keys =</span> <span class="cn">FALSE</span>)<span class="sc">$</span>total<span class="sc">$</span>raw_alpha</span>
-<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Some items ( N1 N2 N3 N4 N5 O4 ) were negatively correlated with the first principal component and 
 probably should be reversed.  
@@ -5779,17 +5784,17 @@ To do this, run the function again with the 'check.keys=TRUE' option</code></pre
 probably should be reversed.  
 To do this, run the function again with the 'check.keys=TRUE' option</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb1032"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1032-1"><a href="#cb1032-1" aria-hidden="true" tabindex="-1"></a>alpha_ci <span class="ot">&lt;-</span> <span class="fu">quantile</span>(alpha_boot, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1032"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1032-1"><a href="#cb1032-1" aria-hidden="true" tabindex="-1"></a>alpha_ci <span class="ot">&lt;-</span> <span class="fu">quantile</span>(alpha_boot, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span>
 <span id="cb1032-2"><a href="#cb1032-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1032-3"><a href="#cb1032-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Bootstrap 95%% CI for α: [%.3f, %.3f]</span><span class="sc">\n</span><span class="st">"</span>, alpha_ci[<span class="dv">1</span>], alpha_ci[<span class="dv">2</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1032-3"><a href="#cb1032-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Bootstrap 95%% CI for α: [%.3f, %.3f]</span><span class="sc">\n</span><span class="st">"</span>, alpha_ci[<span class="dv">1</span>], alpha_ci[<span class="dv">2</span>]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Bootstrap 95% CI for α: [0.678, 0.716]</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb1034"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1034-1"><a href="#cb1034-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Bootstrap SE: %.4f</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">sd</span>(alpha_boot)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1034"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1034-1"><a href="#cb1034-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Bootstrap SE: %.4f</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">sd</span>(alpha_boot)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Bootstrap SE: 0.0094</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb1036"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1036-1"><a href="#cb1036-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Point estimate: %.3f</span><span class="sc">\n</span><span class="st">"</span>, alpha_full<span class="sc">$</span>total<span class="sc">$</span>raw_alpha))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1036"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1036-1"><a href="#cb1036-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Point estimate: %.3f</span><span class="sc">\n</span><span class="st">"</span>, alpha_full<span class="sc">$</span>total<span class="sc">$</span>raw_alpha))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Point estimate: 0.698</code></pre>
 </div>
@@ -5803,34 +5808,34 @@ To do this, run the function again with the 'check.keys=TRUE' option</code></pre
 <h2 data-number="3.1" class="anchored" data-anchor-id="omega-via-schmid-leiman-decomposition"><span class="header-section-number">3.1</span> Omega via Schmid-Leiman decomposition</h2>
 <p>The <code>psych::omega()</code> function estimates ωt and ωh by first extracting a factor solution, then applying the Schmid-Leiman transformation to decompose each item’s variance into general factor and group factor components.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1038"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1038-1"><a href="#cb1038-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Omega with 5 group factors ──────────────────────────────────────────────</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1038"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1038-1"><a href="#cb1038-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Omega with 5 group factors ──────────────────────────────────────────────</span></span>
 <span id="cb1038-2"><a href="#cb1038-2" aria-hidden="true" tabindex="-1"></a>omega_result <span class="ot">&lt;-</span> psych<span class="sc">::</span><span class="fu">omega</span>(bfi_scored, <span class="at">nfactors =</span> <span class="dv">5</span>, <span class="at">fm =</span> <span class="st">"ml"</span>,</span>
 <span id="cb1038-3"><a href="#cb1038-3" aria-hidden="true" tabindex="-1"></a>                              <span class="at">plot =</span> <span class="cn">FALSE</span>, <span class="at">n.obs =</span> <span class="fu">nrow</span>(bfi_scored))</span>
 <span id="cb1038-4"><a href="#cb1038-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1038-5"><a href="#cb1038-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"=== McDonald's Omega (Schmid-Leiman) ===</span><span class="sc">\n\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1038-5"><a href="#cb1038-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"=== McDonald's Omega (Schmid-Leiman) ===</span><span class="sc">\n\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>=== McDonald's Omega (Schmid-Leiman) ===</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb1040"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1040-1"><a href="#cb1040-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Omega total (ωt):        %.3f</span><span class="sc">\n</span><span class="st">"</span>, omega_result<span class="sc">$</span>omega.tot))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1040"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1040-1"><a href="#cb1040-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Omega total (ωt):        %.3f</span><span class="sc">\n</span><span class="st">"</span>, omega_result<span class="sc">$</span>omega.tot))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Omega total (ωt):        0.879</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb1042"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1042-1"><a href="#cb1042-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Omega hierarchical (ωh): %.3f</span><span class="sc">\n</span><span class="st">"</span>, omega_result<span class="sc">$</span>omega_h))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1042"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1042-1"><a href="#cb1042-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Omega hierarchical (ωh): %.3f</span><span class="sc">\n</span><span class="st">"</span>, omega_result<span class="sc">$</span>omega_h))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Omega hierarchical (ωh): 0.475</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb1044"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1044-1"><a href="#cb1044-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Cronbach's alpha:        %.3f</span><span class="sc">\n</span><span class="st">"</span>, omega_result<span class="sc">$</span>alpha))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1044"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1044-1"><a href="#cb1044-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Cronbach's alpha:        %.3f</span><span class="sc">\n</span><span class="st">"</span>, omega_result<span class="sc">$</span>alpha))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Cronbach's alpha:        0.823</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb1046"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1046-1"><a href="#cb1046-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">ωt − α = %.3f (tau-equivalence violation effect)</span><span class="sc">\n</span><span class="st">"</span>,</span>
-<span id="cb1046-2"><a href="#cb1046-2" aria-hidden="true" tabindex="-1"></a>            omega_result<span class="sc">$</span>omega.tot <span class="sc">-</span> omega_result<span class="sc">$</span>alpha))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1046"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1046-1"><a href="#cb1046-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">ωt − α = %.3f (tau-equivalence violation effect)</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb1046-2"><a href="#cb1046-2" aria-hidden="true" tabindex="-1"></a>            omega_result<span class="sc">$</span>omega.tot <span class="sc">-</span> omega_result<span class="sc">$</span>alpha))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 ωt − α = 0.056 (tau-equivalence violation effect)</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb1048"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1048-1"><a href="#cb1048-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"ωh / ωt = %.2f (proportion of reliable variance due to general factor)</span><span class="sc">\n</span><span class="st">"</span>,</span>
-<span id="cb1048-2"><a href="#cb1048-2" aria-hidden="true" tabindex="-1"></a>            omega_result<span class="sc">$</span>omega_h <span class="sc">/</span> omega_result<span class="sc">$</span>omega.tot))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1048"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1048-1"><a href="#cb1048-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"ωh / ωt = %.2f (proportion of reliable variance due to general factor)</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb1048-2"><a href="#cb1048-2" aria-hidden="true" tabindex="-1"></a>            omega_result<span class="sc">$</span>omega_h <span class="sc">/</span> omega_result<span class="sc">$</span>omega.tot))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>ωh / ωt = 0.54 (proportion of reliable variance due to general factor)</code></pre>
 </div>
@@ -5840,7 +5845,7 @@ To do this, run the function again with the 'check.keys=TRUE' option</code></pre
 <h2 data-number="3.2" class="anchored" data-anchor-id="omega-via-cfa-lavaan"><span class="header-section-number">3.2</span> Omega via CFA (lavaan)</h2>
 <p>For a confirmatory approach, we specify the 5-factor CFA model and compute ω from the standardised loadings.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1050"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1050-1"><a href="#cb1050-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Specify 5-factor CFA model ──────────────────────────────────────────────</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1050"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1050-1"><a href="#cb1050-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Specify 5-factor CFA model ──────────────────────────────────────────────</span></span>
 <span id="cb1050-2"><a href="#cb1050-2" aria-hidden="true" tabindex="-1"></a>cfa_model <span class="ot">&lt;-</span> <span class="st">'</span></span>
 <span id="cb1050-3"><a href="#cb1050-3" aria-hidden="true" tabindex="-1"></a><span class="st">  A =~ A1 + A2 + A3 + A4 + A5</span></span>
 <span id="cb1050-4"><a href="#cb1050-4" aria-hidden="true" tabindex="-1"></a><span class="st">  C =~ C1 + C2 + C3 + C4 + C5</span></span>
@@ -5851,32 +5856,32 @@ To do this, run the function again with the 'check.keys=TRUE' option</code></pre
 <span id="cb1050-9"><a href="#cb1050-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1050-10"><a href="#cb1050-10" aria-hidden="true" tabindex="-1"></a>fit_cfa <span class="ot">&lt;-</span> <span class="fu">cfa</span>(cfa_model, <span class="at">data =</span> bfi_scored, <span class="at">estimator =</span> <span class="st">"MLR"</span>)</span>
 <span id="cb1050-11"><a href="#cb1050-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1050-12"><a href="#cb1050-12" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"=== CFA Model Fit ===</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1050-12"><a href="#cb1050-12" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"=== CFA Model Fit ===</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>=== CFA Model Fit ===</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb1052"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1052-1"><a href="#cb1052-1" aria-hidden="true" tabindex="-1"></a>fit_indices <span class="ot">&lt;-</span> <span class="fu">fitMeasures</span>(fit_cfa, <span class="fu">c</span>(<span class="st">"chisq"</span>, <span class="st">"df"</span>, <span class="st">"pvalue"</span>,</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1052"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1052-1"><a href="#cb1052-1" aria-hidden="true" tabindex="-1"></a>fit_indices <span class="ot">&lt;-</span> <span class="fu">fitMeasures</span>(fit_cfa, <span class="fu">c</span>(<span class="st">"chisq"</span>, <span class="st">"df"</span>, <span class="st">"pvalue"</span>,</span>
 <span id="cb1052-2"><a href="#cb1052-2" aria-hidden="true" tabindex="-1"></a>                                       <span class="st">"cfi"</span>, <span class="st">"tli"</span>, <span class="st">"rmsea"</span>,</span>
 <span id="cb1052-3"><a href="#cb1052-3" aria-hidden="true" tabindex="-1"></a>                                       <span class="st">"rmsea.ci.lower"</span>, <span class="st">"rmsea.ci.upper"</span>,</span>
 <span id="cb1052-4"><a href="#cb1052-4" aria-hidden="true" tabindex="-1"></a>                                       <span class="st">"srmr"</span>))</span>
-<span id="cb1052-5"><a href="#cb1052-5" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">round</span>(fit_indices, <span class="dv">3</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1052-5"><a href="#cb1052-5" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">round</span>(fit_indices, <span class="dv">3</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>         chisq             df         pvalue            cfi            tli 
       4165.467        265.000          0.000          0.782          0.754 
          rmsea rmsea.ci.lower rmsea.ci.upper           srmr 
          0.078          0.076          0.080          0.075 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb1054"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1054-1"><a href="#cb1054-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Extract standardised loadings ────────────────────────────────────────────</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1054"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1054-1"><a href="#cb1054-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Extract standardised loadings ────────────────────────────────────────────</span></span>
 <span id="cb1054-2"><a href="#cb1054-2" aria-hidden="true" tabindex="-1"></a>std_loadings <span class="ot">&lt;-</span> <span class="fu">standardizedSolution</span>(fit_cfa) <span class="sc">|&gt;</span></span>
 <span id="cb1054-3"><a href="#cb1054-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(op <span class="sc">==</span> <span class="st">"=~"</span>) <span class="sc">|&gt;</span></span>
 <span id="cb1054-4"><a href="#cb1054-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(lhs, rhs, est.std)</span>
 <span id="cb1054-5"><a href="#cb1054-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1054-6"><a href="#cb1054-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">=== Standardised Factor Loadings ===</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1054-6"><a href="#cb1054-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">=== Standardised Factor Loadings ===</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 === Standardised Factor Loadings ===</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb1056"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1056-1"><a href="#cb1056-1" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(std_loadings, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Factor"</span>, <span class="st">"Item"</span>, <span class="st">"Loading"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1056"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1056-1"><a href="#cb1056-1" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(std_loadings, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Factor"</span>, <span class="st">"Item"</span>, <span class="st">"Loading"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <thead>
@@ -6015,7 +6020,7 @@ To do this, run the function again with the 'check.keys=TRUE' option</code></pre
 </tbody>
 </table>
 </div>
-<div class="sourceCode cell-code" id="cb1057"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1057-1"><a href="#cb1057-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Compute omega total per factor from CFA ──────────────────────────────────</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1057"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1057-1"><a href="#cb1057-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Compute omega total per factor from CFA ──────────────────────────────────</span></span>
 <span id="cb1057-2"><a href="#cb1057-2" aria-hidden="true" tabindex="-1"></a>compute_omega_factor <span class="ot">&lt;-</span> <span class="cf">function</span>(loadings_vec, error_vars) {</span>
 <span id="cb1057-3"><a href="#cb1057-3" aria-hidden="true" tabindex="-1"></a>  (<span class="fu">sum</span>(loadings_vec))<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> ((<span class="fu">sum</span>(loadings_vec))<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="fu">sum</span>(error_vars))</span>
 <span id="cb1057-4"><a href="#cb1057-4" aria-hidden="true" tabindex="-1"></a>}</span>
@@ -6038,7 +6043,7 @@ To do this, run the function again with the 'check.keys=TRUE' option</code></pre
 <span id="cb1057-21"><a href="#cb1057-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">digits =</span> <span class="dv">3</span>,</span>
 <span id="cb1057-22"><a href="#cb1057-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Factor"</span>, <span class="st">"Items"</span>, <span class="st">"Mean λ"</span>, <span class="st">"ωt (CFA)"</span>),</span>
 <span id="cb1057-23"><a href="#cb1057-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">"Factor-specific omega total from CFA standardised loadings"</span></span>
-<span id="cb1057-24"><a href="#cb1057-24" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1057-24"><a href="#cb1057-24" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <caption>Factor-specific omega total from CFA standardised loadings</caption>
@@ -6110,7 +6115,7 @@ To do this, run the function again with the 'check.keys=TRUE' option</code></pre
 <section id="per-factor-alpha-and-omega-comparison" class="level2" data-number="4.1">
 <h2 data-number="4.1" class="anchored" data-anchor-id="per-factor-alpha-and-omega-comparison"><span class="header-section-number">4.1</span> Per-factor alpha and omega comparison</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1058"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1058-1"><a href="#cb1058-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Compute alpha per factor ────────────────────────────────────────────────</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1058"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1058-1"><a href="#cb1058-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Compute alpha per factor ────────────────────────────────────────────────</span></span>
 <span id="cb1058-2"><a href="#cb1058-2" aria-hidden="true" tabindex="-1"></a>factor_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"C"</span>, <span class="st">"E"</span>, <span class="st">"N"</span>, <span class="st">"O"</span>)</span>
 <span id="cb1058-3"><a href="#cb1058-3" aria-hidden="true" tabindex="-1"></a>factor_labels <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Agreeableness"</span>, <span class="st">"Conscientiousness"</span>, <span class="st">"Extraversion"</span>,</span>
 <span id="cb1058-4"><a href="#cb1058-4" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"Neuroticism"</span>, <span class="st">"Openness"</span>)</span>
@@ -6145,7 +6150,7 @@ To do this, run the function again with the 'check.keys=TRUE' option</code></pre
 <span id="cb1058-33"><a href="#cb1058-33" aria-hidden="true" tabindex="-1"></a>  factor_rel,</span>
 <span id="cb1058-34"><a href="#cb1058-34" aria-hidden="true" tabindex="-1"></a>  <span class="at">digits =</span> <span class="dv">3</span>,</span>
 <span id="cb1058-35"><a href="#cb1058-35" aria-hidden="true" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">"Factor-specific reliability: α vs. ωt"</span></span>
-<span id="cb1058-36"><a href="#cb1058-36" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1058-36"><a href="#cb1058-36" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <caption>Factor-specific reliability: α vs.&nbsp;ωt</caption>
@@ -6198,7 +6203,7 @@ To do this, run the function again with the 'check.keys=TRUE' option</code></pre
 </table>
 <p>Reliability coefficients by BFI factor. Alpha (circles) vs.&nbsp;Omega total (triangles). The gap reveals tau-equivalence violation per factor.</p>
 </div>
-<div class="sourceCode cell-code" id="cb1059"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1059-1"><a href="#cb1059-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Plot comparison ──────────────────────────────────────────────────────────</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1059"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1059-1"><a href="#cb1059-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Plot comparison ──────────────────────────────────────────────────────────</span></span>
 <span id="cb1059-2"><a href="#cb1059-2" aria-hidden="true" tabindex="-1"></a>rel_plot_df <span class="ot">&lt;-</span> factor_rel <span class="sc">|&gt;</span></span>
 <span id="cb1059-3"><a href="#cb1059-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(factor, alpha, omega_t) <span class="sc">|&gt;</span></span>
 <span id="cb1059-4"><a href="#cb1059-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>factor, <span class="at">names_to =</span> <span class="st">"metric"</span>, <span class="at">values_to =</span> <span class="st">"value"</span>) <span class="sc">|&gt;</span></span>
@@ -6219,7 +6224,7 @@ To do this, run the function again with the 'check.keys=TRUE' option</code></pre
 <span id="cb1059-19"><a href="#cb1059-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Gap between markers = tau-equivalence violation effect"</span>,</span>
 <span id="cb1059-20"><a href="#cb1059-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"Reliability Coefficient"</span>,</span>
 <span id="cb1059-21"><a href="#cb1059-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">colour =</span> <span class="cn">NULL</span>, <span class="at">shape =</span> <span class="cn">NULL</span></span>
-<span id="cb1059-22"><a href="#cb1059-22" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1059-22"><a href="#cb1059-22" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -6260,7 +6265,7 @@ To do this, run the function again with the 'check.keys=TRUE' option</code></pre
 <section id="sem-and-confidence-intervals" class="level2" data-number="5.1">
 <h2 data-number="5.1" class="anchored" data-anchor-id="sem-and-confidence-intervals"><span class="header-section-number">5.1</span> SEM and confidence intervals</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1060"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1060-1"><a href="#cb1060-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Compute SEM per factor ───────────────────────────────────────────────────</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1060"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1060-1"><a href="#cb1060-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Compute SEM per factor ───────────────────────────────────────────────────</span></span>
 <span id="cb1060-2"><a href="#cb1060-2" aria-hidden="true" tabindex="-1"></a><span class="co"># SEM = SD × sqrt(1 − reliability)</span></span>
 <span id="cb1060-3"><a href="#cb1060-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Using omega as the reliability estimate</span></span>
 <span id="cb1060-4"><a href="#cb1060-4" aria-hidden="true" tabindex="-1"></a></span>
@@ -6283,7 +6288,7 @@ To do this, run the function again with the 'check.keys=TRUE' option</code></pre
 <span id="cb1060-21"><a href="#cb1060-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Factor"</span>, <span class="st">"SD"</span>, <span class="st">"α"</span>, <span class="st">"ωt"</span>, <span class="st">"SEM (α)"</span>, <span class="st">"SEM (ω)"</span>,</span>
 <span id="cb1060-22"><a href="#cb1060-22" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"95% CI half-width (α)"</span>, <span class="st">"95% CI half-width (ω)"</span>),</span>
 <span id="cb1060-23"><a href="#cb1060-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">"Standard Error of Measurement by factor"</span></span>
-<span id="cb1060-24"><a href="#cb1060-24" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1060-24"><a href="#cb1060-24" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <caption>Standard Error of Measurement by factor</caption>
@@ -6368,7 +6373,7 @@ To do this, run the function again with the 'check.keys=TRUE' option</code></pre
 <section id="score-uncertainty-visualisation" class="level2" data-number="5.2">
 <h2 data-number="5.2" class="anchored" data-anchor-id="score-uncertainty-visualisation"><span class="header-section-number">5.2</span> Score uncertainty visualisation</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1061"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1061-1"><a href="#cb1061-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Hypothetical respondent at each factor mean ──────────────────────────────</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1061"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1061-1"><a href="#cb1061-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Hypothetical respondent at each factor mean ──────────────────────────────</span></span>
 <span id="cb1061-2"><a href="#cb1061-2" aria-hidden="true" tabindex="-1"></a>mean_scores <span class="ot">&lt;-</span> <span class="fu">map_dbl</span>(<span class="fu">seq_along</span>(factor_names), <span class="cf">function</span>(i) {</span>
 <span id="cb1061-3"><a href="#cb1061-3" aria-hidden="true" tabindex="-1"></a>  items <span class="ot">&lt;-</span> <span class="fu">paste0</span>(factor_names[i], <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>)</span>
 <span id="cb1061-4"><a href="#cb1061-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mean</span>(<span class="fu">rowSums</span>(bfi_scored[, items]))</span>
@@ -6390,7 +6395,7 @@ To do this, run the function again with the 'check.keys=TRUE' option</code></pre
 <span id="cb1061-20"><a href="#cb1061-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">title    =</span> <span class="st">"Score Confidence Intervals (95%, SEM-Based)"</span>,</span>
 <span id="cb1061-21"><a href="#cb1061-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"For a respondent at the sample mean on each factor"</span>,</span>
 <span id="cb1061-22"><a href="#cb1061-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"Subscale Score (sum of 5 items, range 5–30)"</span></span>
-<span id="cb1061-23"><a href="#cb1061-23" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1061-23"><a href="#cb1061-23" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -6425,7 +6430,7 @@ To do this, run the function again with the 'check.keys=TRUE' option</code></pre
 <section id="random-and-systematic-splits" class="level2" data-number="6.1">
 <h2 data-number="6.1" class="anchored" data-anchor-id="random-and-systematic-splits"><span class="header-section-number">6.1</span> Random and systematic splits</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1062"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1062-1"><a href="#cb1062-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Split-half on Neuroticism (as an example factor) ────────────────────────</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1062"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1062-1"><a href="#cb1062-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Split-half on Neuroticism (as an example factor) ────────────────────────</span></span>
 <span id="cb1062-2"><a href="#cb1062-2" aria-hidden="true" tabindex="-1"></a>n_items <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"N"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>)</span>
 <span id="cb1062-3"><a href="#cb1062-3" aria-hidden="true" tabindex="-1"></a>n_data  <span class="ot">&lt;-</span> bfi_scored[, n_items]</span>
 <span id="cb1062-4"><a href="#cb1062-4" aria-hidden="true" tabindex="-1"></a></span>
@@ -6437,19 +6442,19 @@ To do this, run the function again with the 'check.keys=TRUE' option</code></pre
 <span id="cb1062-10"><a href="#cb1062-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Spearman-Brown correction (unequal splits)</span></span>
 <span id="cb1062-11"><a href="#cb1062-11" aria-hidden="true" tabindex="-1"></a>sb_odd_even <span class="ot">&lt;-</span> (<span class="dv">2</span> <span class="sc">*</span> r_odd_even) <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> r_odd_even)</span>
 <span id="cb1062-12"><a href="#cb1062-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1062-13"><a href="#cb1062-13" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Odd-even split (Neuroticism):</span><span class="sc">\n</span><span class="st">"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1062-13"><a href="#cb1062-13" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Odd-even split (Neuroticism):</span><span class="sc">\n</span><span class="st">"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Odd-even split (Neuroticism):</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb1064"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1064-1"><a href="#cb1064-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  Half-test correlation: %.3f</span><span class="sc">\n</span><span class="st">"</span>, r_odd_even))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1064"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1064-1"><a href="#cb1064-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  Half-test correlation: %.3f</span><span class="sc">\n</span><span class="st">"</span>, r_odd_even))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  Half-test correlation: 0.735</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb1066"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1066-1"><a href="#cb1066-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  Spearman-Brown corrected: %.3f</span><span class="sc">\n\n</span><span class="st">"</span>, sb_odd_even))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1066"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1066-1"><a href="#cb1066-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  Spearman-Brown corrected: %.3f</span><span class="sc">\n\n</span><span class="st">"</span>, sb_odd_even))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  Spearman-Brown corrected: 0.848</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb1068"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1068-1"><a href="#cb1068-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Method 2: Random splits (500 iterations) ────────────────────────────────</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1068"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1068-1"><a href="#cb1068-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Method 2: Random splits (500 iterations) ────────────────────────────────</span></span>
 <span id="cb1068-2"><a href="#cb1068-2" aria-hidden="true" tabindex="-1"></a>n_splits <span class="ot">&lt;-</span> <span class="dv">500</span></span>
 <span id="cb1068-3"><a href="#cb1068-3" aria-hidden="true" tabindex="-1"></a>sh_estimates <span class="ot">&lt;-</span> <span class="fu">numeric</span>(n_splits)</span>
 <span id="cb1068-4"><a href="#cb1068-4" aria-hidden="true" tabindex="-1"></a></span>
@@ -6464,23 +6469,23 @@ To do this, run the function again with the 'check.keys=TRUE' option</code></pre
 <span id="cb1068-13"><a href="#cb1068-13" aria-hidden="true" tabindex="-1"></a>  sh_estimates[s] <span class="ot">&lt;-</span> (k <span class="sc">*</span> r_split) <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> (k <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> r_split)</span>
 <span id="cb1068-14"><a href="#cb1068-14" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb1068-15"><a href="#cb1068-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1068-16"><a href="#cb1068-16" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Random split-half (500 splits, Neuroticism):</span><span class="sc">\n</span><span class="st">"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1068-16"><a href="#cb1068-16" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Random split-half (500 splits, Neuroticism):</span><span class="sc">\n</span><span class="st">"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Random split-half (500 splits, Neuroticism):</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb1070"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1070-1"><a href="#cb1070-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  Mean: %.3f</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">mean</span>(sh_estimates)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1070"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1070-1"><a href="#cb1070-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  Mean: %.3f</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">mean</span>(sh_estimates)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  Mean: 0.847</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb1072"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1072-1"><a href="#cb1072-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  SD:   %.3f</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">sd</span>(sh_estimates)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1072"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1072-1"><a href="#cb1072-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  SD:   %.3f</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">sd</span>(sh_estimates)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  SD:   0.035</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb1074"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1074-1"><a href="#cb1074-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  Range: [%.3f, %.3f]</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">min</span>(sh_estimates), <span class="fu">max</span>(sh_estimates)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1074"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1074-1"><a href="#cb1074-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  Range: [%.3f, %.3f]</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">min</span>(sh_estimates), <span class="fu">max</span>(sh_estimates)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  Range: [0.772, 0.880]</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb1076"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1076-1"><a href="#cb1076-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Plot distribution of split-half estimates ────────────────────────────────</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1076"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1076-1"><a href="#cb1076-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Plot distribution of split-half estimates ────────────────────────────────</span></span>
 <span id="cb1076-2"><a href="#cb1076-2" aria-hidden="true" tabindex="-1"></a>sh_df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">reliability =</span> sh_estimates)</span>
 <span id="cb1076-3"><a href="#cb1076-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1076-4"><a href="#cb1076-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sh_df, <span class="fu">aes</span>(<span class="at">x =</span> reliability)) <span class="sc">+</span></span>
@@ -6497,7 +6502,7 @@ To do this, run the function again with the 'check.keys=TRUE' option</code></pre
 <span id="cb1076-15"><a href="#cb1076-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="fu">sprintf</span>(<span class="st">"500 random splits — Mean = %.3f, SD = %.3f"</span>,</span>
 <span id="cb1076-16"><a href="#cb1076-16" aria-hidden="true" tabindex="-1"></a>                        <span class="fu">mean</span>(sh_estimates), <span class="fu">sd</span>(sh_estimates)),</span>
 <span id="cb1076-17"><a href="#cb1076-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Spearman-Brown Corrected Reliability"</span>, <span class="at">y =</span> <span class="st">"Count"</span></span>
-<span id="cb1076-18"><a href="#cb1076-18" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1076-18"><a href="#cb1076-18" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -6522,7 +6527,7 @@ To do this, run the function again with the 'check.keys=TRUE' option</code></pre
 <section id="part-g-reliability-comparison-summary" class="level1" data-number="7">
 <h1 data-number="7"><span class="header-section-number">7</span> PART G — Reliability Comparison Summary</h1>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1077"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1077-1"><a href="#cb1077-1" aria-hidden="true" tabindex="-1"></a>summary_table <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1077"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1077-1"><a href="#cb1077-1" aria-hidden="true" tabindex="-1"></a>summary_table <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
 <span id="cb1077-2"><a href="#cb1077-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">Coefficient =</span> <span class="fu">c</span>(</span>
 <span id="cb1077-3"><a href="#cb1077-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Cronbach's α (full scale, 25 items)"</span>,</span>
 <span id="cb1077-4"><a href="#cb1077-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Cronbach's α (standardised)"</span>,</span>
@@ -6555,7 +6560,7 @@ To do this, run the function again with the 'check.keys=TRUE' option</code></pre
 <span id="cb1077-31"><a href="#cb1077-31" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb1077-32"><a href="#cb1077-32" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb1077-33"><a href="#cb1077-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1077-34"><a href="#cb1077-34" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(summary_table, <span class="at">caption =</span> <span class="st">"Comprehensive reliability comparison — BFI (25 items)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1077-34"><a href="#cb1077-34" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(summary_table, <span class="at">caption =</span> <span class="st">"Comprehensive reliability comparison — BFI (25 items)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <caption>Comprehensive reliability comparison — BFI (25 items)</caption>
@@ -6651,7 +6656,7 @@ To do this, run the function again with the 'check.keys=TRUE' option</code></pre
 </ul>
 <p>These criteria are intended for <strong>reflective</strong> measurement models. They are not the right diagnostics for formative indicators.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1078"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1078-1"><a href="#cb1078-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(semPlot)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1078"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1078-1"><a href="#cb1078-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(semPlot)</span>
 <span id="cb1078-2"><a href="#cb1078-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1078-3"><a href="#cb1078-3" aria-hidden="true" tabindex="-1"></a><span class="fu">semPaths</span>(fit_cfa,</span>
 <span id="cb1078-4"><a href="#cb1078-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">what       =</span> <span class="st">"std"</span>,        <span class="co"># standardised estimates</span></span>
@@ -6668,7 +6673,7 @@ To do this, run the function again with the 'check.keys=TRUE' option</code></pre
 <span id="cb1078-15"><a href="#cb1078-15" aria-hidden="true" tabindex="-1"></a>         <span class="at">color      =</span> <span class="fu">list</span>(<span class="at">lat =</span> <span class="st">"#3498DB"</span>, <span class="at">man =</span> <span class="st">"#ECF0F1"</span>),</span>
 <span id="cb1078-16"><a href="#cb1078-16" aria-hidden="true" tabindex="-1"></a>         <span class="at">border.color =</span> <span class="st">"#2C3E50"</span>,</span>
 <span id="cb1078-17"><a href="#cb1078-17" aria-hidden="true" tabindex="-1"></a>         <span class="at">edge.color =</span> <span class="st">"#2C3E50"</span>,</span>
-<span id="cb1078-18"><a href="#cb1078-18" aria-hidden="true" tabindex="-1"></a>         <span class="at">mar        =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1078-18"><a href="#cb1078-18" aria-hidden="true" tabindex="-1"></a>         <span class="at">mar        =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -6682,7 +6687,7 @@ To do this, run the function again with the 'check.keys=TRUE' option</code></pre
 <section id="cr-ave-fornell-larcker-and-htmt" class="level2" data-number="8.2">
 <h2 data-number="8.2" class="anchored" data-anchor-id="cr-ave-fornell-larcker-and-htmt"><span class="header-section-number">8.2</span> CR, AVE, Fornell-Larcker, and HTMT</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1079"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1079-1"><a href="#cb1079-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Standardised loadings and residual variances from the CFA model ──────────</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1079"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1079-1"><a href="#cb1079-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Standardised loadings and residual variances from the CFA model ──────────</span></span>
 <span id="cb1079-2"><a href="#cb1079-2" aria-hidden="true" tabindex="-1"></a>std_sol_sem <span class="ot">&lt;-</span> <span class="fu">standardizedSolution</span>(fit_cfa)</span>
 <span id="cb1079-3"><a href="#cb1079-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1079-4"><a href="#cb1079-4" aria-hidden="true" tabindex="-1"></a>loading_df <span class="ot">&lt;-</span> std_sol_sem <span class="sc">|&gt;</span></span>
@@ -6731,7 +6736,7 @@ To do this, run the function again with the 'check.keys=TRUE' option</code></pre
 <span id="cb1079-47"><a href="#cb1079-47" aria-hidden="true" tabindex="-1"></a>  <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Factor"</span>, <span class="st">"Items"</span>, <span class="st">"Mean λ"</span>, <span class="st">"Min λ"</span>, <span class="st">"CR"</span>, <span class="st">"AVE"</span>, <span class="st">"√AVE"</span>,</span>
 <span id="cb1079-48"><a href="#cb1079-48" aria-hidden="true" tabindex="-1"></a>                <span class="st">"Loadings"</span>, <span class="st">"CR check"</span>, <span class="st">"AVE check"</span>),</span>
 <span id="cb1079-49"><a href="#cb1079-49" aria-hidden="true" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">"SEM addendum: composite reliability and convergent validity indices"</span></span>
-<span id="cb1079-50"><a href="#cb1079-50" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1079-50"><a href="#cb1079-50" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <caption>SEM addendum: composite reliability and convergent validity indices</caption>
@@ -6825,7 +6830,7 @@ To do this, run the function again with the 'check.keys=TRUE' option</code></pre
 </tbody>
 </table>
 </div>
-<div class="sourceCode cell-code" id="cb1080"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1080-1"><a href="#cb1080-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Fornell-Larcker matrix: diagonal = √AVE, off-diagonal = latent correlations ─</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1080"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1080-1"><a href="#cb1080-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Fornell-Larcker matrix: diagonal = √AVE, off-diagonal = latent correlations ─</span></span>
 <span id="cb1080-2"><a href="#cb1080-2" aria-hidden="true" tabindex="-1"></a>latent_cor <span class="ot">&lt;-</span> <span class="fu">lavInspect</span>(fit_cfa, <span class="st">"cor.lv"</span>)</span>
 <span id="cb1080-3"><a href="#cb1080-3" aria-hidden="true" tabindex="-1"></a>fl_matrix <span class="ot">&lt;-</span> latent_cor</span>
 <span id="cb1080-4"><a href="#cb1080-4" aria-hidden="true" tabindex="-1"></a><span class="fu">diag</span>(fl_matrix) <span class="ot">&lt;-</span> sem_quality<span class="sc">$</span>sqrt_AVE[<span class="fu">match</span>(<span class="fu">colnames</span>(fl_matrix), factor_key<span class="sc">$</span>factor_code)]</span>
@@ -6834,7 +6839,7 @@ To do this, run the function again with the 'check.keys=TRUE' option</code></pre
 <span id="cb1080-7"><a href="#cb1080-7" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(</span>
 <span id="cb1080-8"><a href="#cb1080-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round</span>(fl_matrix, <span class="dv">3</span>),</span>
 <span id="cb1080-9"><a href="#cb1080-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">"Fornell-Larcker matrix (diagonal = √AVE; off-diagonal = latent correlations)"</span></span>
-<span id="cb1080-10"><a href="#cb1080-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1080-10"><a href="#cb1080-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <caption>Fornell-Larcker matrix (diagonal = √AVE; off-diagonal = latent correlations)</caption>
@@ -6900,7 +6905,7 @@ To do this, run the function again with the 'check.keys=TRUE' option</code></pre
 </tbody>
 </table>
 </div>
-<div class="sourceCode cell-code" id="cb1081"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1081-1"><a href="#cb1081-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── HTMT from observed item correlations ─────────────────────────────────────</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1081"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1081-1"><a href="#cb1081-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── HTMT from observed item correlations ─────────────────────────────────────</span></span>
 <span id="cb1081-2"><a href="#cb1081-2" aria-hidden="true" tabindex="-1"></a>item_blocks <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
 <span id="cb1081-3"><a href="#cb1081-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">Agreeableness     =</span> <span class="fu">paste0</span>(<span class="st">"A"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>),</span>
 <span id="cb1081-4"><a href="#cb1081-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">Conscientiousness =</span> <span class="fu">paste0</span>(<span class="st">"C"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>),</span>
@@ -6939,7 +6944,7 @@ To do this, run the function again with the 'check.keys=TRUE' option</code></pre
 <span id="cb1081-37"><a href="#cb1081-37" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(</span>
 <span id="cb1081-38"><a href="#cb1081-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round</span>(htmt_mat, <span class="dv">3</span>),</span>
 <span id="cb1081-39"><a href="#cb1081-39" aria-hidden="true" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">"HTMT matrix (values &lt; .85 are conservative evidence for discriminant validity; &lt; .90 is a looser rule)"</span></span>
-<span id="cb1081-40"><a href="#cb1081-40" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1081-40"><a href="#cb1081-40" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <caption>HTMT matrix (values &lt; .85 are conservative evidence for discriminant validity; &lt; .90 is a looser rule)</caption>
@@ -7045,27 +7050,27 @@ To do this, run the function again with the 'check.keys=TRUE' option</code></pre
 <section id="technical-summary" class="level1" data-number="9">
 <h1 data-number="9"><span class="header-section-number">9</span> Technical Summary</h1>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1082"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1082-1"><a href="#cb1082-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"─── Reproducibility Information ───</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1082"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1082-1"><a href="#cb1082-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"─── Reproducibility Information ───</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>─── Reproducibility Information ───</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb1084"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1084-1"><a href="#cb1084-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Date: %s</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">Sys.Date</span>()))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1084"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1084-1"><a href="#cb1084-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Date: %s</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">Sys.Date</span>()))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Date: 2026-04-07</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb1086"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1086-1"><a href="#cb1086-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"R version: %s</span><span class="sc">\n</span><span class="st">"</span>, R.version.string))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1086"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1086-1"><a href="#cb1086-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"R version: %s</span><span class="sc">\n</span><span class="st">"</span>, R.version.string))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>R version: R version 4.4.1 (2024-06-14 ucrt)</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb1088"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1088-1"><a href="#cb1088-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"psych version: %s</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">packageVersion</span>(<span class="st">"psych"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1088"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1088-1"><a href="#cb1088-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"psych version: %s</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">packageVersion</span>(<span class="st">"psych"</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>psych version: 2.4.6.26</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb1090"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1090-1"><a href="#cb1090-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"lavaan version: %s</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">packageVersion</span>(<span class="st">"lavaan"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1090"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1090-1"><a href="#cb1090-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"lavaan version: %s</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">packageVersion</span>(<span class="st">"lavaan"</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>lavaan version: 0.6.19</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb1092"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1092-1"><a href="#cb1092-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Platform: %s</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">sessionInfo</span>()<span class="sc">$</span>platform))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1092"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1092-1"><a href="#cb1092-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Platform: %s</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">sessionInfo</span>()<span class="sc">$</span>platform))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Platform: x86_64-w64-mingw32/x64</code></pre>
 </div>
@@ -7100,290 +7105,294 @@ To do this, run the function again with the 'check.keys=TRUE' option</code></pre
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
-window.document.addEventListener("DOMContentLoaded", function (event) {
-  const toggleBodyColorMode = (bsSheetEl) => {
-    const mode = bsSheetEl.getAttribute("data-mode");
-    const bodyEl = window.document.querySelector("body");
-    if (mode === "dark") {
-      bodyEl.classList.add("quarto-dark");
-      bodyEl.classList.remove("quarto-light");
-    } else {
-      bodyEl.classList.add("quarto-light");
-      bodyEl.classList.remove("quarto-dark");
-    }
-  }
-  const toggleBodyColorPrimary = () => {
-    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
-    if (bsSheetEl) {
-      toggleBodyColorMode(bsSheetEl);
-    }
-  }
-  toggleBodyColorPrimary();  
-  const icon = "";
-  const anchorJS = new window.AnchorJS();
-  anchorJS.options = {
-    placement: 'right',
-    icon: icon
-  };
-  anchorJS.add('.anchored');
-  const isCodeAnnotation = (el) => {
-    for (const clz of el.classList) {
-      if (clz.startsWith('code-annotation-')) {                     
-        return true;
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
       }
+      return false;
     }
-    return false;
-  }
-  const onCopySuccess = function(e) {
-    // button target
-    const button = e.trigger;
-    // don't keep focus
-    button.blur();
-    // flash "checked"
-    button.classList.add('code-copy-button-checked');
-    var currentTitle = button.getAttribute("title");
-    button.setAttribute("title", "Copied!");
-    let tooltip;
-    if (window.bootstrap) {
-      button.setAttribute("data-bs-toggle", "tooltip");
-      button.setAttribute("data-bs-placement", "left");
-      button.setAttribute("data-bs-title", "Copied!");
-      tooltip = new bootstrap.Tooltip(button, 
-        { trigger: "manual", 
-          customClass: "code-copy-button-tooltip",
-          offset: [0, -8]});
-      tooltip.show();    
-    }
-    setTimeout(function() {
-      if (tooltip) {
-        tooltip.hide();
-        button.removeAttribute("data-bs-title");
-        button.removeAttribute("data-bs-toggle");
-        button.removeAttribute("data-bs-placement");
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
       }
-      button.setAttribute("title", currentTitle);
-      button.classList.remove('code-copy-button-checked');
-    }, 1000);
-    // clear code selection
-    e.clearSelection();
-  }
-  const getTextToCopy = function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
       for (const childEl of codeEl.children) {
         if (isCodeAnnotation(childEl)) {
           childEl.remove();
         }
       }
       return codeEl.innerText;
-  }
-  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
-    text: getTextToCopy
-  });
-  clipboard.on('success', onCopySuccess);
-  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    // For code content inside modals, clipBoardJS needs to be initialized with a container option
-    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
-    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
-      text: getTextToCopy,
-      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
     });
-    clipboardModal.on('success', onCopySuccess);
-  }
-  const viewSource = window.document.getElementById('quarto-view-source') ||
-                     window.document.getElementById('quarto-code-tools-source');
-  if (viewSource) {
-    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
-    viewSource.addEventListener("click", function(e) {
-      if (sourceUrl) {
-        // rstudio viewer pane
-        if (/\bcapabilities=\b/.test(window.location)) {
-          window.open(sourceUrl);
-        } else {
-          window.location.href = sourceUrl;
-        }
-      } else {
-        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
-        modal.show();
-      }
-      return false;
-    });
-  }
-  function toggleCodeHandler(show) {
-    return function(e) {
-      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
-      for (let i=0; i<detailsSrc.length; i++) {
-        const details = detailsSrc[i].parentElement;
-        if (show) {
-          details.open = true;
-        } else {
-          details.removeAttribute("open");
-        }
-      }
-      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
-      const fromCls = show ? "hidden" : "unhidden";
-      const toCls = show ? "unhidden" : "hidden";
-      for (let i=0; i<cellCodeDivs.length; i++) {
-        const codeDiv = cellCodeDivs[i];
-        if (codeDiv.classList.contains(fromCls)) {
-          codeDiv.classList.remove(fromCls);
-          codeDiv.classList.add(toCls);
-        } 
-      }
-      return false;
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
     }
-  }
-  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
-  if (hideAllCode) {
-    hideAllCode.addEventListener("click", toggleCodeHandler(false));
-  }
-  const showAllCode = window.document.getElementById("quarto-show-all-code");
-  if (showAllCode) {
-    showAllCode.addEventListener("click", toggleCodeHandler(true));
-  }
-    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-    var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp("https:\/\/Francisco-MG\.github\.io\/");
-    var isInternal = (href) => {
-        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
-    }
-    // Inspect non-navigation links and adorn them if external
- 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
-    for (var i=0; i<links.length; i++) {
-      const link = links[i];
-      if (!isInternal(link.href)) {
-        // undo the damage that might have been done by quarto-nav.js in the case of
-        // links that we want to consider external
-        if (link.dataset.originalHref !== undefined) {
-          link.href = link.dataset.originalHref;
-        }
-      }
-    }
-  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
-    const config = {
-      allowHTML: true,
-      maxWidth: 500,
-      delay: 100,
-      arrow: false,
-      appendTo: function(el) {
-          return el.parentElement;
-      },
-      interactive: true,
-      interactiveBorder: 10,
-      theme: 'quarto',
-      placement: 'bottom-start',
-    };
-    if (contentFn) {
-      config.content = contentFn;
-    }
-    if (onTriggerFn) {
-      config.onTrigger = onTriggerFn;
-    }
-    if (onUntriggerFn) {
-      config.onUntrigger = onUntriggerFn;
-    }
-    window.tippy(el, config); 
-  }
-  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
-  for (var i=0; i<noterefs.length; i++) {
-    const ref = noterefs[i];
-    tippyHover(ref, function() {
-      // use id or data attribute instead here
-      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
-      try { href = new URL(href).hash; } catch {}
-      const id = href.replace(/^#\/?/, "");
-      const note = window.document.getElementById(id);
-      if (note) {
-        return note.innerHTML;
-      } else {
-        return "";
-      }
-    });
-  }
-  const xrefs = window.document.querySelectorAll('a.quarto-xref');
-  const processXRef = (id, note) => {
-    // Strip column container classes
-    const stripColumnClz = (el) => {
-      el.classList.remove("page-full", "page-columns");
-      if (el.children) {
-        for (const child of el.children) {
-          stripColumnClz(child);
-        }
-      }
-    }
-    stripColumnClz(note)
-    if (id === null || id.startsWith('sec-')) {
-      // Special case sections, only their first couple elements
-      const container = document.createElement("div");
-      if (note.children && note.children.length > 2) {
-        container.appendChild(note.children[0].cloneNode(true));
-        for (let i = 1; i < note.children.length; i++) {
-          const child = note.children[i];
-          if (child.tagName === "P" && child.innerText === "") {
-            continue;
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
           } else {
-            container.appendChild(child.cloneNode(true));
-            break;
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
           }
         }
-        if (window.Quarto?.typesetMath) {
-          window.Quarto.typesetMath(container);
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
         }
-        return container.innerHTML
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/Francisco-MG\.github\.io\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
       } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
         if (window.Quarto?.typesetMath) {
           window.Quarto.typesetMath(note);
         }
-        return note.innerHTML;
-      }
-    } else {
-      // Remove any anchor links if they are present
-      const anchorLink = note.querySelector('a.anchorjs-link');
-      if (anchorLink) {
-        anchorLink.remove();
-      }
-      if (window.Quarto?.typesetMath) {
-        window.Quarto.typesetMath(note);
-      }
-      // TODO in 1.5, we should make sure this works without a callout special case
-      if (note.classList.contains("callout")) {
-        return note.outerHTML;
-      } else {
-        return note.innerHTML;
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
       }
     }
-  }
-  for (var i=0; i<xrefs.length; i++) {
-    const xref = xrefs[i];
-    tippyHover(xref, undefined, function(instance) {
-      instance.disable();
-      let url = xref.getAttribute('href');
-      let hash = undefined; 
-      if (url.startsWith('#')) {
-        hash = url;
-      } else {
-        try { hash = new URL(url).hash; } catch {}
-      }
-      if (hash) {
-        const id = hash.replace(/^#\/?/, "");
-        const note = window.document.getElementById(id);
-        if (note !== null) {
-          try {
-            const html = processXRef(id, note.cloneNode(true));
-            instance.setContent(html);
-          } finally {
-            instance.enable();
-            instance.show();
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
           }
         } else {
-          // See if we can fetch this
-          fetch(url.split('#')[0])
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
           .then(res => res.text())
           .then(html => {
             const parser = new DOMParser();
             const htmlDoc = parser.parseFromString(html, "text/html");
-            const note = htmlDoc.getElementById(id);
+            const note = htmlDoc.querySelector('main.content');
             if (note !== null) {
-              const html = processXRef(id, note);
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
               instance.setContent(html);
             } 
           }).finally(() => {
@@ -7391,186 +7400,162 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             instance.show();
           });
         }
-      } else {
-        // See if we can fetch a full url (with no hash to target)
-        // This is a special case and we should probably do some content thinning / targeting
-        fetch(url)
-        .then(res => res.text())
-        .then(html => {
-          const parser = new DOMParser();
-          const htmlDoc = parser.parseFromString(html, "text/html");
-          const note = htmlDoc.querySelector('main.content');
-          if (note !== null) {
-            // This should only happen for chapter cross references
-            // (since there is no id in the URL)
-            // remove the first header
-            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
-              note.children[0].remove();
-            }
-            const html = processXRef(null, note);
-            instance.setContent(html);
-          } 
-        }).finally(() => {
-          instance.enable();
-          instance.show();
-        });
-      }
-    }, function(instance) {
-    });
-  }
-      let selectedAnnoteEl;
-      const selectorForAnnotation = ( cell, annotation) => {
-        let cellAttr = 'data-code-cell="' + cell + '"';
-        let lineAttr = 'data-code-annotation="' +  annotation + '"';
-        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
-        return selector;
-      }
-      const selectCodeLines = (annoteEl) => {
-        const doc = window.document;
-        const targetCell = annoteEl.getAttribute("data-target-cell");
-        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
-        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
-        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
-        const lineIds = lines.map((line) => {
-          return targetCell + "-" + line;
-        })
-        let top = null;
-        let height = null;
-        let parent = null;
-        if (lineIds.length > 0) {
-            //compute the position of the single el (top and bottom and make a div)
-            const el = window.document.getElementById(lineIds[0]);
-            top = el.offsetTop;
-            height = el.offsetHeight;
-            parent = el.parentElement.parentElement;
-          if (lineIds.length > 1) {
-            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
-            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
-            height = bottom - top;
-          }
-          if (top !== null && height !== null && parent !== null) {
-            // cook up a div (if necessary) and position it 
-            let div = window.document.getElementById("code-annotation-line-highlight");
-            if (div === null) {
-              div = window.document.createElement("div");
-              div.setAttribute("id", "code-annotation-line-highlight");
-              div.style.position = 'absolute';
-              parent.appendChild(div);
-            }
-            div.style.top = top - 2 + "px";
-            div.style.height = height + 4 + "px";
-            div.style.left = 0;
-            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
-            if (gutterDiv === null) {
-              gutterDiv = window.document.createElement("div");
-              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
-              gutterDiv.style.position = 'absolute';
-              const codeCell = window.document.getElementById(targetCell);
-              const gutter = codeCell.querySelector('.code-annotation-gutter');
-              gutter.appendChild(gutterDiv);
-            }
-            gutterDiv.style.top = top - 2 + "px";
-            gutterDiv.style.height = height + 4 + "px";
-          }
-          selectedAnnoteEl = annoteEl;
-        }
-      };
-      const unselectCodeLines = () => {
-        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
-        elementsIds.forEach((elId) => {
-          const div = window.document.getElementById(elId);
-          if (div) {
-            div.remove();
-          }
-        });
-        selectedAnnoteEl = undefined;
-      };
-        // Handle positioning of the toggle
-    window.addEventListener(
-      "resize",
-      throttle(() => {
-        elRect = undefined;
-        if (selectedAnnoteEl) {
-          selectCodeLines(selectedAnnoteEl);
-        }
-      }, 10)
-    );
-    function throttle(fn, ms) {
-    let throttle = false;
-    let timer;
-      return (...args) => {
-        if(!throttle) { // first call gets through
-            fn.apply(this, args);
-            throttle = true;
-        } else { // all the others get throttled
-            if(timer) clearTimeout(timer); // cancel #2
-            timer = setTimeout(() => {
-              fn.apply(this, args);
-              timer = throttle = false;
-            }, ms);
-        }
-      };
-    }
-      // Attach click handler to the DT
-      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
-      for (const annoteDlNode of annoteDls) {
-        annoteDlNode.addEventListener('click', (event) => {
-          const clickedEl = event.target;
-          if (clickedEl !== selectedAnnoteEl) {
-            unselectCodeLines();
-            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
-            if (activeEl) {
-              activeEl.classList.remove('code-annotation-active');
-            }
-            selectCodeLines(clickedEl);
-            clickedEl.classList.add('code-annotation-active');
-          } else {
-            // Unselect the line
-            unselectCodeLines();
-            clickedEl.classList.remove('code-annotation-active');
-          }
-        });
-      }
-  const findCites = (el) => {
-    const parentEl = el.parentElement;
-    if (parentEl) {
-      const cites = parentEl.dataset.cites;
-      if (cites) {
-        return {
-          el,
-          cites: cites.split(' ')
-        };
-      } else {
-        return findCites(el.parentElement)
-      }
-    } else {
-      return undefined;
-    }
-  };
-  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
-  for (var i=0; i<bibliorefs.length; i++) {
-    const ref = bibliorefs[i];
-    const citeInfo = findCites(ref);
-    if (citeInfo) {
-      tippyHover(citeInfo.el, function() {
-        var popup = window.document.createElement('div');
-        citeInfo.cites.forEach(function(cite) {
-          var citeDiv = window.document.createElement('div');
-          citeDiv.classList.add('hanging-indent');
-          citeDiv.classList.add('csl-entry');
-          var biblioDiv = window.document.getElementById('ref-' + cite);
-          if (biblioDiv) {
-            citeDiv.innerHTML = biblioDiv.innerHTML;
-          }
-          popup.appendChild(citeDiv);
-        });
-        return popup.innerHTML;
+      }, function(instance) {
       });
     }
-  }
-});
-</script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb1094" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1094-1"><a href="#cb1094-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1094" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1094-1"><a href="#cb1094-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
 <span id="cb1094-2"><a href="#cb1094-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Reliability Deep Dive: Beyond Cronbach's Alpha"</span></span>
 <span id="cb1094-3"><a href="#cb1094-3" aria-hidden="true" tabindex="-1"></a><span class="an">description:</span><span class="co"> |</span></span>
 <span id="cb1094-4"><a href="#cb1094-4" aria-hidden="true" tabindex="-1"></a><span class="co">  Comprehensive reliability analysis on the Big Five Inventory (BFI) dataset</span></span>
@@ -8003,23 +7988,23 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb1094-441"><a href="#cb1094-441" aria-hidden="true" tabindex="-1"></a><span class="fu">## Bootstrap confidence interval for α</span></span>
 <span id="cb1094-442"><a href="#cb1094-442" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1094-443"><a href="#cb1094-443" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, warning=FALSE, message=FALSE}</span></span>
-<span id="cb1094-444"><a href="#cb1094-444" aria-hidden="true" tabindex="-1"></a><span class="in">#| label: alpha-ci</span></span>
-<span id="cb1094-445"><a href="#cb1094-445" aria-hidden="true" tabindex="-1"></a><span class="in">#| code-summary: "Bootstrap 95% CI for Cronbach's alpha"</span></span>
+<span id="cb1094-444"><a href="#cb1094-444" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: alpha-ci</span></span>
+<span id="cb1094-445"><a href="#cb1094-445" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-summary: "Bootstrap 95% CI for Cronbach's alpha"</span></span>
 <span id="cb1094-446"><a href="#cb1094-446" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1094-447"><a href="#cb1094-447" aria-hidden="true" tabindex="-1"></a><span class="in"># ── Bootstrap alpha ──────────────────────────────────────────────────────────</span></span>
-<span id="cb1094-448"><a href="#cb1094-448" aria-hidden="true" tabindex="-1"></a><span class="in">n_boot &lt;- 1000</span></span>
-<span id="cb1094-449"><a href="#cb1094-449" aria-hidden="true" tabindex="-1"></a><span class="in">alpha_boot &lt;- numeric(n_boot)</span></span>
+<span id="cb1094-447"><a href="#cb1094-447" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Bootstrap alpha ──────────────────────────────────────────────────────────</span></span>
+<span id="cb1094-448"><a href="#cb1094-448" aria-hidden="true" tabindex="-1"></a>n_boot <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb1094-449"><a href="#cb1094-449" aria-hidden="true" tabindex="-1"></a>alpha_boot <span class="ot">&lt;-</span> <span class="fu">numeric</span>(n_boot)</span>
 <span id="cb1094-450"><a href="#cb1094-450" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1094-451"><a href="#cb1094-451" aria-hidden="true" tabindex="-1"></a><span class="in">for (b in 1:n_boot) {</span></span>
-<span id="cb1094-452"><a href="#cb1094-452" aria-hidden="true" tabindex="-1"></a><span class="in">  idx &lt;- sample(nrow(bfi_scored), replace = TRUE)</span></span>
-<span id="cb1094-453"><a href="#cb1094-453" aria-hidden="true" tabindex="-1"></a><span class="in">  alpha_boot[b] &lt;- psych::alpha(bfi_scored[idx, ], check.keys = FALSE)$total$raw_alpha</span></span>
-<span id="cb1094-454"><a href="#cb1094-454" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
+<span id="cb1094-451"><a href="#cb1094-451" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (b <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_boot) {</span>
+<span id="cb1094-452"><a href="#cb1094-452" aria-hidden="true" tabindex="-1"></a>  idx <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">nrow</span>(bfi_scored), <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1094-453"><a href="#cb1094-453" aria-hidden="true" tabindex="-1"></a>  alpha_boot[b] <span class="ot">&lt;-</span> psych<span class="sc">::</span><span class="fu">alpha</span>(bfi_scored[idx, ], <span class="at">check.keys =</span> <span class="cn">FALSE</span>)<span class="sc">$</span>total<span class="sc">$</span>raw_alpha</span>
+<span id="cb1094-454"><a href="#cb1094-454" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb1094-455"><a href="#cb1094-455" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1094-456"><a href="#cb1094-456" aria-hidden="true" tabindex="-1"></a><span class="in">alpha_ci &lt;- quantile(alpha_boot, probs = c(0.025, 0.975))</span></span>
+<span id="cb1094-456"><a href="#cb1094-456" aria-hidden="true" tabindex="-1"></a>alpha_ci <span class="ot">&lt;-</span> <span class="fu">quantile</span>(alpha_boot, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span>
 <span id="cb1094-457"><a href="#cb1094-457" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1094-458"><a href="#cb1094-458" aria-hidden="true" tabindex="-1"></a><span class="in">cat(sprintf("Bootstrap 95%% CI for α: [%.3f, %.3f]\n", alpha_ci[1], alpha_ci[2]))</span></span>
-<span id="cb1094-459"><a href="#cb1094-459" aria-hidden="true" tabindex="-1"></a><span class="in">cat(sprintf("Bootstrap SE: %.4f\n", sd(alpha_boot)))</span></span>
-<span id="cb1094-460"><a href="#cb1094-460" aria-hidden="true" tabindex="-1"></a><span class="in">cat(sprintf("Point estimate: %.3f\n", alpha_full$total$raw_alpha))</span></span>
+<span id="cb1094-458"><a href="#cb1094-458" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Bootstrap 95%% CI for α: [%.3f, %.3f]</span><span class="sc">\n</span><span class="st">"</span>, alpha_ci[<span class="dv">1</span>], alpha_ci[<span class="dv">2</span>]))</span>
+<span id="cb1094-459"><a href="#cb1094-459" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Bootstrap SE: %.4f</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">sd</span>(alpha_boot)))</span>
+<span id="cb1094-460"><a href="#cb1094-460" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Point estimate: %.3f</span><span class="sc">\n</span><span class="st">"</span>, alpha_full<span class="sc">$</span>total<span class="sc">$</span>raw_alpha))</span>
 <span id="cb1094-461"><a href="#cb1094-461" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb1094-462"><a href="#cb1094-462" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1094-463"><a href="#cb1094-463" aria-hidden="true" tabindex="-1"></a>------------------------------------------------------------------------</span>
@@ -8966,7 +8951,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb1094-1424"><a href="#cb1094-1424" aria-hidden="true" tabindex="-1"></a>    Discriminant validity testing in marketing: An analysis, causes for</span>
 <span id="cb1094-1425"><a href="#cb1094-1425" aria-hidden="true" tabindex="-1"></a>    concern, and proposed remedies. *Journal of the Academy of Marketing</span>
 <span id="cb1094-1426"><a href="#cb1094-1426" aria-hidden="true" tabindex="-1"></a>    Science*, 34(1), 119–134.</span>
-</code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 

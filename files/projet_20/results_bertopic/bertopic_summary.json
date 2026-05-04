@@ -1,0 +1,9 @@
+{
+  "n_documents": 120,
+  "n_topics": 4,
+  "n_outliers": 0,
+  "embedding_model": "all-MiniLM-L6-v2",
+  "cv_lda": 0.6301,
+  "cv_stm": 0.687,
+  "cv_bertopic": 0.839
+}
