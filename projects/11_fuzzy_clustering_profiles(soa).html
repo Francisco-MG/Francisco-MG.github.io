@@ -280,7 +280,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="context" class="level2" data-number="0.1">
 <h2 data-number="0.1" class="anchored" data-anchor-id="context"><span class="header-section-number">0.1</span> Context</h2>
-<p><em>Clustering methods</em> aim to identify latent subgroups in multivariate data. In educational and psychological research, <strong>latent profile analysis</strong> is used to uncover meaningful typologies — e.g., profiles of critical thinking dispositions, learning strategies, or engagement patterns.</p>
+<p>Clustering methods aim to identify latent subgroups in multivariate data. In educational and psychological research, <strong>latent profile analysis</strong> is used to uncover meaningful typologies — e.g., profiles of critical thinking dispositions, learning strategies, or engagement patterns.</p>
 <p><strong>Fuzzy c-means (FCM)</strong> clustering (Bezdek, 1981) extends the classical k-means approach by allowing each observation to belong to multiple clusters simultaneously, with graded membership degrees (0 to 1). This is psychologically more realistic than hard clustering: a student may exhibit 70% “analytical” and 30% “intuitive” profile features rather than belonging discretely to one group.</p>
 <p>A critical methodological choice in FCM is the <strong>fuzziness parameter</strong> m (also called the weighting exponent). When m → 1, memberships become binary and FCM converges to k-means; as m increases, memberships become more evenly distributed across clusters, eventually collapsing to uniform 1/c assignments. The default m = 2 is widely used (Bezdek, 1981), but the optimal value depends on the data structure and the analytical goal: lower m produces crisper profiles (better for classification), higher m produces softer profiles (better for capturing gradients and mixed cases).</p>
 <p><strong>The c/m dilemma:</strong> selecting the number of clusters c requires a fixed m, and selecting the optimal m requires a fixed c.&nbsp;We resolve this sequentially: (1) select c using the conventional m = 2 as a provisional value, (2) select m using the Xie-Beni index and Partition Coefficient with c fixed at the chosen value, (3) run the final FCM with both optimal c and m. This two-stage approach is standard practice (Pal &amp; Bezdek, 1995).</p>
@@ -505,7 +505,7 @@ Maximum silhouette at c = 2 (sil = 0.582)</code></pre>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="11_fuzzy_clustering_profiles_files/figure-html/optimal-c-1.png" class="img-fluid figure-img" width="576"></p>
+<p><img src="11_fuzzy_clustering_profiles-soa-_files/figure-html/optimal-c-1.png" class="img-fluid figure-img" width="576"></p>
 <figcaption>Average silhouette width for c = 2 to 6 clusters (FCM, m = 2). Higher values indicate better-defined clusters.</figcaption>
 </figure>
 </div>
@@ -715,7 +715,7 @@ Maximum silhouette at c = 2 (sil = 0.582)</code></pre>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="11_fuzzy_clustering_profiles_files/figure-html/fuzziness-selection-1.png" class="img-fluid figure-img" width="864"></p>
+<p><img src="11_fuzzy_clustering_profiles-soa-_files/figure-html/fuzziness-selection-1.png" class="img-fluid figure-img" width="864"></p>
 <figcaption>Fuzziness parameter selection: Xie-Beni (lower = better separation) and Partition Coefficient (higher = crisper memberships).</figcaption>
 </figure>
 </div>
@@ -788,7 +788,7 @@ Best m by fuzzy silhouette: m = 1.2 (fsil = 0.9580)</code></pre>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="11_fuzzy_clustering_profiles_files/figure-html/fuzziness-fsil-1.png" class="img-fluid figure-img" width="576"></p>
+<p><img src="11_fuzzy_clustering_profiles-soa-_files/figure-html/fuzziness-fsil-1.png" class="img-fluid figure-img" width="576"></p>
 <figcaption>Fuzzy silhouette as a function of m. A peak indicates the optimal balance between fuzziness and cluster separation.</figcaption>
 </figure>
 </div>
@@ -873,7 +873,7 @@ Best m by SIL.F: m = 3.5 (SIL.F = 0.7481)</code></pre>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="11_fuzzy_clustering_profiles_files/figure-html/fuzziness-fsil-fclust-1.png" class="img-fluid figure-img" width="576"></p>
+<p><img src="11_fuzzy_clustering_profiles-soa-_files/figure-html/fuzziness-fsil-fclust-1.png" class="img-fluid figure-img" width="576"></p>
 <figcaption>Fuzzy silhouette (SIL.F, fclust) as a function of m. Unlike the proxy formula, SIL.F incorporates weighted distances and may show a non-monotonic pattern.</figcaption>
 </figure>
 </div>
@@ -1031,7 +1031,7 @@ FCM-KMeans raw agreement (hard assignments): 34.0%</code></pre>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="11_fuzzy_clustering_profiles_files/figure-html/iris-kmeans-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="11_fuzzy_clustering_profiles-soa-_files/figure-html/iris-kmeans-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -1063,7 +1063,7 @@ FCM-KMeans raw agreement (hard assignments): 34.0%</code></pre>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="11_fuzzy_clustering_profiles_files/figure-html/iris-membership-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="11_fuzzy_clustering_profiles-soa-_files/figure-html/iris-membership-1.png" class="img-fluid figure-img" width="672"></p>
 <figcaption>Distribution of maximum membership values by true species. Low max membership indicates fuzzy/ambiguous cluster assignment.</figcaption>
 </figure>
 </div>
@@ -1473,7 +1473,7 @@ authority  evidence      bias reasoning
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="11_fuzzy_clustering_profiles_files/figure-html/disp-profiles-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="11_fuzzy_clustering_profiles-soa-_files/figure-html/disp-profiles-1.png" class="img-fluid figure-img" width="672"></p>
 <figcaption>Cluster centroids across the 4 disposition dimensions. Each line represents a profile.</figcaption>
 </figure>
 </div>
@@ -1520,7 +1520,7 @@ authority  evidence      bias reasoning
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="11_fuzzy_clustering_profiles_files/figure-html/disp-heatmap-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="11_fuzzy_clustering_profiles-soa-_files/figure-html/disp-heatmap-1.png" class="img-fluid figure-img" width="672"></p>
 <figcaption>Fuzzy membership degrees for each observation, sorted by primary cluster. Rows = observations; columns = clusters.</figcaption>
 </figure>
 </div>
@@ -1546,7 +1546,7 @@ authority  evidence      bias reasoning
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb110"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb110-1"><a href="#cb110-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Date: %s</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">Sys.Date</span>()))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Date: 2026-05-04</code></pre>
+<pre><code>Date: 2026-05-03</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb112"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb112-1"><a href="#cb112-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"R version: %s</span><span class="sc">\n</span><span class="st">"</span>, R.version.string))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -1615,7 +1615,7 @@ authority  evidence      bias reasoning
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="11_fuzzy_clustering_profiles_files/figure-html/disp-radar-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="11_fuzzy_clustering_profiles-soa-_files/figure-html/disp-radar-1.png" class="img-fluid figure-img" width="672"></p>
 <figcaption>Radar plot of FCM cluster centroids across the 4 critical thinking disposition dimensions. Each polygon represents a profile — shape differences reveal dimension-specific strengths.</figcaption>
 </figure>
 </div>
@@ -2127,7 +2127,7 @@ authority  evidence      bias reasoning
 <span id="cb121-25"><a href="#cb121-25" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb121-26"><a href="#cb121-26" aria-hidden="true" tabindex="-1"></a><span class="fu">## Context</span></span>
 <span id="cb121-27"><a href="#cb121-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb121-28"><a href="#cb121-28" aria-hidden="true" tabindex="-1"></a>*Clustering methods* aim to identify latent subgroups in multivariate data.</span>
+<span id="cb121-28"><a href="#cb121-28" aria-hidden="true" tabindex="-1"></a>Clustering methods aim to identify latent subgroups in multivariate data.</span>
 <span id="cb121-29"><a href="#cb121-29" aria-hidden="true" tabindex="-1"></a>In educational and psychological research, **latent profile analysis**</span>
 <span id="cb121-30"><a href="#cb121-30" aria-hidden="true" tabindex="-1"></a>is used to uncover meaningful typologies — e.g., profiles of critical</span>
 <span id="cb121-31"><a href="#cb121-31" aria-hidden="true" tabindex="-1"></a>thinking dispositions, learning strategies, or engagement patterns.</span>
