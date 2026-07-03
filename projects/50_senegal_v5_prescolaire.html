@@ -1,0 +1,1606 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.36">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Francisco Martin-Gomez">
+<meta name="dcterms.date" content="2026-07-03">
+<meta name="description" content="Volet-capstone de la série : il réunit les deux compétences que l’offre situe au cœur du préscolaire — l’ingénierie d’échantillonnage et la psychométrie. À partir de la base de sondage des centres préscolaires du socle (public, Cases des tout-petits, privé, sur les 14 régions), il conçoit et exécute un plan stratifié à deux degrés à tirage PPS (version sénégalisée du Projet 21), simule un instrument MELQO à structure bifactorielle sur les enfants échantillonnés, en valide la mesure (CFA, IRT bifactoriel, fiabilité oméga et oméga hiérarchique, DIF), finalise l’outil, puis estime la prévalence de la « préparation scolaire » sous le plan de sondage, désagrégée par équité. Code densément annoté ; éléments simulés signalés.">
+
+<title>Série Sénégal — Volet 5 : étude au préscolaire (échantillonnage et psychométrie) – Francisco MG</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-845c23b38eaddc0f92fda52bfe77a8c8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-6b423f165eeea3787de40cb4f8e821c3.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Francisco MG</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="../viridis-colors.qmd"> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../report.html"> 
+<span class="menu-text">REPORTS</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../data-science.html"> 
+<span class="menu-text">DATA SCIENCE</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/Francisco-MG"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/TON-LINKEDIN"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#compréhension-du-volet" id="toc-compréhension-du-volet" class="nav-link active" data-scroll-target="#compréhension-du-volet"><span class="header-section-number">1</span> Compréhension du volet</a></li>
+  <li><a href="#base-de-sondage" id="toc-base-de-sondage" class="nav-link" data-scroll-target="#base-de-sondage"><span class="header-section-number">2</span> Base de sondage</a></li>
+  <li><a href="#plan-déchantillonnage-et-tirage" id="toc-plan-déchantillonnage-et-tirage" class="nav-link" data-scroll-target="#plan-déchantillonnage-et-tirage"><span class="header-section-number">3</span> Plan d’échantillonnage et tirage</a></li>
+  <li><a href="#instrument-melqo-et-pilote" id="toc-instrument-melqo-et-pilote" class="nav-link" data-scroll-target="#instrument-melqo-et-pilote"><span class="header-section-number">4</span> Instrument MELQO et pilote</a></li>
+  <li><a href="#validation-de-la-mesure" id="toc-validation-de-la-mesure" class="nav-link" data-scroll-target="#validation-de-la-mesure"><span class="header-section-number">5</span> Validation de la mesure</a>
+  <ul class="collapse">
+  <li><a href="#structure-analyse-factorielle-confirmatoire" id="toc-structure-analyse-factorielle-confirmatoire" class="nav-link" data-scroll-target="#structure-analyse-factorielle-confirmatoire"><span class="header-section-number">5.1</span> Structure : analyse factorielle confirmatoire</a></li>
+  <li><a href="#calibration-bifactorielle-irt-et-scores" id="toc-calibration-bifactorielle-irt-et-scores" class="nav-link" data-scroll-target="#calibration-bifactorielle-irt-et-scores"><span class="header-section-number">5.2</span> Calibration bifactorielle (IRT) et scores</a></li>
+  <li><a href="#fiabilité-oméga-et-oméga-hiérarchique" id="toc-fiabilité-oméga-et-oméga-hiérarchique" class="nav-link" data-scroll-target="#fiabilité-oméga-et-oméga-hiérarchique"><span class="header-section-number">5.3</span> Fiabilité : oméga et oméga hiérarchique</a></li>
+  <li><a href="#équité-de-mesure-au-pilote-détection-du-dif" id="toc-équité-de-mesure-au-pilote-détection-du-dif" class="nav-link" data-scroll-target="#équité-de-mesure-au-pilote-détection-du-dif"><span class="header-section-number">5.4</span> Équité de mesure au pilote : détection du DIF</a></li>
+  </ul></li>
+  <li><a href="#finalisation-de-linstrument" id="toc-finalisation-de-linstrument" class="nav-link" data-scroll-target="#finalisation-de-linstrument"><span class="header-section-number">6</span> Finalisation de l’instrument</a></li>
+  <li><a href="#estimation-sous-le-plan-la-prévalence-désagrégée" id="toc-estimation-sous-le-plan-la-prévalence-désagrégée" class="nav-link" data-scroll-target="#estimation-sous-le-plan-la-prévalence-désagrégée"><span class="header-section-number">7</span> Estimation sous le plan : la prévalence désagrégée</a></li>
+  <li><a href="#synthèse" id="toc-synthèse" class="nav-link" data-scroll-target="#synthèse"><span class="header-section-number">8</span> Synthèse</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">Série Sénégal — Volet 5 : étude au préscolaire (échantillonnage et psychométrie)</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<p class="subtitle lead">Du plan de sondage à la mesure : un instrument MELQO validé, une prévalence estimée sous plan</p>
+  <div class="quarto-categories">
+    <div class="quarto-category">R</div>
+    <div class="quarto-category">survey-sampling</div>
+    <div class="quarto-category">psychometrics</div>
+    <div class="quarto-category">bifactor</div>
+    <div class="quarto-category">IRT</div>
+    <div class="quarto-category">CFA</div>
+    <div class="quarto-category">reliability</div>
+    <div class="quarto-category">DIF</div>
+    <div class="quarto-category">education</div>
+    <div class="quarto-category">Senegal</div>
+    <div class="quarto-category">preschool</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    <p>Volet-capstone de la série : il réunit les deux compétences que l’offre situe au cœur du préscolaire — l’ingénierie d’échantillonnage et la psychométrie. À partir de la base de sondage des centres préscolaires du socle (public, Cases des tout-petits, privé, sur les 14 régions), il conçoit et exécute un plan stratifié à deux degrés à tirage PPS (version sénégalisée du Projet 21), simule un instrument MELQO à structure bifactorielle sur les enfants échantillonnés, en valide la mesure (CFA, IRT bifactoriel, fiabilité oméga et oméga hiérarchique, DIF), finalise l’outil, puis estime la prévalence de la « préparation scolaire » sous le plan de sondage, désagrégée par équité. Code densément annoté ; éléments simulés signalés.</p>
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Francisco Martin-Gomez </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">July 3, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Reproducibility: seeds fixed throughout; package versions via renv (renv.lock)</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># and sessionInfo() at the end.</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sampling)   <span class="co"># PPS systematic draw</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(survey)     <span class="co"># design-based estimation</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mirt)       <span class="co"># bifactor IRT</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lavaan)     <span class="co"># confirmatory factor analysis</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(psych)      <span class="co"># omega / omega-hierarchical</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(difR)       <span class="co"># DIF at the pilot stage</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">55</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="compréhension-du-volet" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Compréhension du volet</h1>
+<p>Une étude préscolaire nationale pose deux problèmes que l’on croit séparés et qui n’en font qu’un. Le premier est d’<strong>échantillonnage</strong> : comment tirer des centres et des enfants de façon à estimer, avec une précision maîtrisée et jusqu’au niveau des sous-groupes, une grandeur d’intérêt ? Le second est de <strong>mesure</strong> : cette grandeur — la « préparation scolaire » d’un enfant — n’est pas observable directement ; il faut un instrument dont on ait <em>prouvé</em> qu’il mesure bien ce qu’il prétend, de façon comparable entre groupes. Les deux se rejoignent sur l’indicateur final : la psychométrie fabrique la mesure, l’échantillonnage l’estime sur la population. Tenir les deux bouts — concevoir le plan de sondage <em>et</em> valider l’instrument — est précisément la compétence rare que ce volet démontre.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Notification — éléments simulés
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>La base de sondage (centres) provient du socle de la série ; les <strong>réponses des enfants à l’instrument</strong> et le <strong>fonctionnement différentiel d’item (DIF)</strong> injecté sur un item d’accessibilité sont <strong>simulés</strong> à des fins de démonstration. Le DIF est introduit délibérément pour montrer que le <strong>pilote le détecte avant la finalisation</strong> de l’outil. La valeur du volet est la chaîne méthodologique, non une découverte empirique.</p>
+</div>
+</div>
+</section>
+<section id="base-de-sondage" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Base de sondage</h1>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>frame <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">file.path</span>(<span class="st">"files/projet_50"</span>, <span class="st">"prescolaire_centres.csv"</span>),</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">stratum =</span> <span class="fu">paste</span>(milieu, type, <span class="at">sep =</span> <span class="st">"_"</span>))   <span class="co"># 6 strata = milieu × type</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>frame <span class="sc">|&gt;</span> <span class="fu">count</span>(stratum, <span class="at">wt =</span> enrol, <span class="at">name =</span> <span class="st">"enfants"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(<span class="fu">count</span>(frame, stratum, <span class="at">name =</span> <span class="st">"centres"</span>), <span class="at">by =</span> <span class="st">"stratum"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Base de sondage : centres et enfants par strate (milieu × type)."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Base de sondage : centres et enfants par strate (milieu × type).</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">stratum</th>
+<th style="text-align: right;">enfants</th>
+<th style="text-align: right;">centres</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">rural_CTP</td>
+<td style="text-align: right;">41939</td>
+<td style="text-align: right;">922</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">rural_prive</td>
+<td style="text-align: right;">5041</td>
+<td style="text-align: right;">79</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">rural_public</td>
+<td style="text-align: right;">49283</td>
+<td style="text-align: right;">681</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">urbain_CTP</td>
+<td style="text-align: right;">26434</td>
+<td style="text-align: right;">590</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">urbain_prive</td>
+<td style="text-align: right;">25471</td>
+<td style="text-align: right;">420</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">urbain_public</td>
+<td style="text-align: right;">55546</td>
+<td style="text-align: right;">808</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="plan-déchantillonnage-et-tirage" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Plan d’échantillonnage et tirage</h1>
+<p>On reprend le design validé au <strong>Projet 21</strong> (stratifié à deux degrés, PPS systématique, région en stratification implicite) en le <strong>branchant sur l’univers Sénégal</strong>. Pour ne pas répéter la démonstration A/B (allocation proportionnelle vs plancher), on retient ici l’<strong>allocation proportionnelle auto-pondérée</strong> et l’on renvoie au Projet 21 pour l’arbitrage détaillé ; le point de ce volet est l’articulation sondage ↔︎ mesure, pas la théorie d’allocation.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>m_child <span class="ot">&lt;-</span> <span class="dv">15</span>L                          <span class="co"># children sampled per centre (2nd stage)</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>n_centres <span class="ot">&lt;-</span> <span class="dv">120</span>L                       <span class="co"># centres to draw (1st stage)</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Proportional-to-enrolment allocation across strata =&gt; (approx.) self-weighting.</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>lr <span class="ot">&lt;-</span> <span class="cf">function</span>(sh, tot) { r <span class="ot">&lt;-</span> sh<span class="sc">*</span>tot; b <span class="ot">&lt;-</span> <span class="fu">floor</span>(r); k <span class="ot">&lt;-</span> tot<span class="sc">-</span><span class="fu">sum</span>(b)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  o <span class="ot">&lt;-</span> <span class="fu">order</span>(r<span class="sc">-</span>b, <span class="at">decreasing =</span> <span class="cn">TRUE</span>); b[o[<span class="fu">seq_len</span>(k)]] <span class="ot">&lt;-</span> b[o[<span class="fu">seq_len</span>(k)]]<span class="sc">+</span><span class="dv">1</span>L; <span class="fu">as.integer</span>(b) }</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>alloc <span class="ot">&lt;-</span> frame <span class="sc">|&gt;</span> <span class="fu">group_by</span>(stratum) <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="at">M_h =</span> <span class="fu">sum</span>(enrol), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">n_h =</span> <span class="fu">lr</span>(M_h<span class="sc">/</span><span class="fu">sum</span>(M_h), n_centres))</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co"># PPS-systematic draw within each stratum, sorted by region (implicit strat.).</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>draw_stratum <span class="ot">&lt;-</span> <span class="cf">function</span>(fr, n_h) {</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  fr <span class="ot">&lt;-</span> <span class="fu">arrange</span>(fr, region, <span class="fu">desc</span>(enrol))</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (n_h <span class="sc">&gt;=</span> <span class="fu">nrow</span>(fr)) { fr<span class="sc">$</span>pi1 <span class="ot">&lt;-</span> <span class="dv">1</span>; fr<span class="sc">$</span>sel <span class="ot">&lt;-</span> <span class="dv">1</span>L; <span class="fu">return</span>(fr) }</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  pik <span class="ot">&lt;-</span> sampling<span class="sc">::</span><span class="fu">inclusionprobabilities</span>(fr<span class="sc">$</span>enrol, n_h)</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  fr<span class="sc">$</span>pi1 <span class="ot">&lt;-</span> pik; fr<span class="sc">$</span>sel <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(sampling<span class="sc">::</span><span class="fu">UPsystematic</span>(pik)); fr</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>sampled <span class="ot">&lt;-</span> frame <span class="sc">|&gt;</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(alloc, <span class="at">by =</span> <span class="st">"stratum"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_split</span>(stratum) <span class="sc">|&gt;</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(\(d) <span class="fu">draw_stratum</span>(d, d<span class="sc">$</span>n_h[<span class="dv">1</span>])) <span class="sc">|&gt;</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>() <span class="sc">|&gt;</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(sel <span class="sc">==</span> <span class="dv">1</span>L) <span class="sc">|&gt;</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>  <span class="co"># second-stage probability + overall design weight</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">m_i =</span> <span class="fu">pmin</span>(m_child, enrol),</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>         <span class="at">pi2 =</span> m_i <span class="sc">/</span> enrol,</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>         <span class="at">pi  =</span> pi1 <span class="sc">*</span> pi2,</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>         <span class="at">w   =</span> <span class="dv">1</span> <span class="sc">/</span> pi)</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Centres tirés :"</span>, <span class="fu">nrow</span>(sampled), <span class="st">"| enfants attendus :"</span>, <span class="fu">sum</span>(sampled<span class="sc">$</span>m_i), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Centres tirés : 120 | enfants attendus : 1800 </code></pre>
+</div>
+</div>
+<p><strong>Lecture.</strong> Le tirage sélectionne ~120 centres proportionnellement à leur effectif (PPS), stratifiés par milieu × type et étalés géographiquement par le tri régional. Les poids de sondage <code>w = 1/π</code> corrigent les probabilités d’inclusion inégales : ils seront indispensables à l’estimation finale, faute de quoi les centres surreprésentés biaiseraient la prévalence. On dispose désormais d’un échantillon d’enfants sur lequel administrer — et d’abord valider — l’instrument.</p>
+</section>
+<section id="instrument-melqo-et-pilote" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Instrument MELQO et pilote</h1>
+<p>L’instrument couvre trois domaines du développement — <strong>langage / littératie précoce, numératie précoce, fonctions exécutives</strong> — à 6 items chacun. On simule les réponses selon une <strong>structure bifactorielle</strong> : chaque item dépend d’un facteur <strong>général</strong> de préparation scolaire <em>et</em> d’un facteur <strong>spécifique</strong> à son domaine. Cette structure justifie qu’on résume l’enfant par <em>un</em> score général tout en reconnaissant la spécificité des domaines — le fondement psychométrique de l’indicateur final.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Centre-level readiness (urban, private, less remote =&gt; higher). This creates</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># genuine between-centre variance -&gt; a real design effect, and an equity gradient.</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>sampled <span class="ot">&lt;-</span> sampled <span class="sc">|&gt;</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">centre_read =</span> <span class="sc">-</span><span class="fl">0.40</span> <span class="sc">*</span> remoteness <span class="sc">+</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>           <span class="fu">case_when</span>(type <span class="sc">==</span> <span class="st">"public"</span> <span class="sc">~</span> <span class="dv">0</span>, type <span class="sc">==</span> <span class="st">"CTP"</span> <span class="sc">~</span> <span class="sc">-</span><span class="fl">0.20</span>, <span class="cn">TRUE</span> <span class="sc">~</span> <span class="fl">0.30</span>) <span class="sc">+</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>           <span class="fu">rnorm</span>(<span class="fu">n</span>(), <span class="dv">0</span>, <span class="fl">0.40</span>))</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>kids <span class="ot">&lt;-</span> sampled <span class="sc">|&gt;</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">uncount</span>(m_i, <span class="at">.remove =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">eleve_id =</span> <span class="fu">sprintf</span>(<span class="st">"K%05d"</span>, <span class="fu">row_number</span>()),</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">genre =</span> <span class="fu">if_else</span>(<span class="fu">runif</span>(<span class="fu">n</span>()) <span class="sc">&lt;</span> <span class="fl">0.49</span>, <span class="st">"F"</span>, <span class="st">"H"</span>),</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># GENERAL factor = school readiness (drives the final indicator)</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">g  =</span> centre_read <span class="sc">+</span> <span class="fu">if_else</span>(genre <span class="sc">==</span> <span class="st">"F"</span>, <span class="sc">-</span><span class="fl">0.05</span>, <span class="dv">0</span>) <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="fu">n</span>(), <span class="dv">0</span>, <span class="fl">0.8</span>),</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># DOMAIN-SPECIFIC factors, orthogonal to g and to each other (bifactor)</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">s1 =</span> <span class="fu">rnorm</span>(<span class="fu">n</span>()), <span class="at">s2 =</span> <span class="fu">rnorm</span>(<span class="fu">n</span>()), <span class="at">s3 =</span> <span class="fu">rnorm</span>(<span class="fu">n</span>()),</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">on_track_true =</span> <span class="fu">as.integer</span>(g <span class="sc">&gt;=</span> <span class="dv">0</span>))     <span class="co"># ground truth for later validation</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>domaine <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="at">each =</span> <span class="dv">6</span>)                       <span class="co"># item -&gt; domain map</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>item_names <span class="ot">&lt;-</span> <span class="fu">sprintf</span>(<span class="st">"It%02d"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">18</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">552</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>ip <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">item =</span> item_names, <span class="at">domaine =</span> domaine,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>             <span class="at">a_g =</span> <span class="fu">round</span>(<span class="fu">runif</span>(<span class="dv">18</span>, <span class="fl">0.9</span>, <span class="fl">1.6</span>), <span class="dv">2</span>),   <span class="co"># general-factor loading</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>             <span class="at">a_s =</span> <span class="fu">round</span>(<span class="fu">runif</span>(<span class="dv">18</span>, <span class="fl">0.3</span>, <span class="fl">0.8</span>), <span class="dv">2</span>),   <span class="co"># domain-specific loading</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>             <span class="at">b   =</span> <span class="fu">round</span>(<span class="fu">rnorm</span>(<span class="dv">18</span>, <span class="dv">0</span>, <span class="fl">0.9</span>), <span class="dv">2</span>))     <span class="co"># difficulty</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co"># INJECTED DIF: It03 (a literacy item) is harder for RURAL children at equal</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co"># ability — an accessibility bias the pilot must catch before the tool is fixed.</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>DIF_ITEM <span class="ot">&lt;-</span> <span class="st">"It03"</span>; DIF_DELTA <span class="ot">&lt;-</span> <span class="fl">0.6</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>S <span class="ot">&lt;-</span> <span class="fu">cbind</span>(kids<span class="sc">$</span>s1, kids<span class="sc">$</span>s2, kids<span class="sc">$</span>s3)</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>resp <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>L, <span class="fu">nrow</span>(kids), <span class="dv">18</span>, <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="cn">NULL</span>, item_names))</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">18</span>) {</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>  b_eff <span class="ot">&lt;-</span> ip<span class="sc">$</span>b[j] <span class="sc">+</span> <span class="cf">if</span> (item_names[j] <span class="sc">==</span> DIF_ITEM) DIF_DELTA <span class="sc">*</span> (kids<span class="sc">$</span>milieu <span class="sc">==</span> <span class="st">"rural"</span>) <span class="cf">else</span> <span class="dv">0</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>  eta <span class="ot">&lt;-</span> ip<span class="sc">$</span>a_g[j] <span class="sc">*</span> kids<span class="sc">$</span>g <span class="sc">+</span> ip<span class="sc">$</span>a_s[j] <span class="sc">*</span> S[, ip<span class="sc">$</span>domaine[j]] <span class="sc">-</span> b_eff</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>  resp[, j] <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="fu">nrow</span>(kids), <span class="dv">1</span>L, <span class="fu">plogis</span>(eta))</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>resp_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(resp)</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Enfants pilotés :"</span>, <span class="fu">nrow</span>(resp_df), <span class="st">"| items :"</span>, <span class="fu">ncol</span>(resp_df),</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>    <span class="st">"| item à DIF injecté :"</span>, DIF_ITEM, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Enfants pilotés : 1800 | items : 18 | item à DIF injecté : It03 </code></pre>
+</div>
+</div>
+</section>
+<section id="validation-de-la-mesure" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Validation de la mesure</h1>
+<section id="structure-analyse-factorielle-confirmatoire" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="structure-analyse-factorielle-confirmatoire"><span class="header-section-number">5.1</span> Structure : analyse factorielle confirmatoire</h2>
+<p>On compare trois structures concurrentes : unidimensionnelle (un seul facteur), trois facteurs corrélés (un par domaine), et <strong>bifactorielle</strong> (un général + trois spécifiques orthogonaux). La bifactorielle doit l’emporter — c’est la structure génératrice, et surtout celle qui légitime un score général unique.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>items <span class="ot">&lt;-</span> <span class="fu">colnames</span>(resp_df)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>mods <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">unidim   =</span> <span class="fu">paste</span>(<span class="st">"g =~"</span>, <span class="fu">paste</span>(items, <span class="at">collapse =</span> <span class="st">" + "</span>)),</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">correles =</span> <span class="st">"d1=~It01+It02+It03+It04+It05+It06</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="st">               d2=~It07+It08+It09+It10+It11+It12</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="st">               d3=~It13+It14+It15+It16+It17+It18"</span>,</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">bifactor =</span> <span class="st">"g =~ It01+It02+It03+It04+It05+It06+It07+It08+It09+It10+It11+It12+It13+It14+It15+It16+It17+It18</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="st">               s1=~It01+It02+It03+It04+It05+It06</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="st">               s2=~It07+It08+It09+It10+It11+It12</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="st">               s3=~It13+It14+It15+It16+It17+It18</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="st">               g~~0*s1; g~~0*s2; g~~0*s3; s1~~0*s2; s1~~0*s3; s2~~0*s3"</span>)</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>fit_all <span class="ot">&lt;-</span> <span class="fu">lapply</span>(mods, \(m) <span class="fu">cfa</span>(m, <span class="at">data =</span> resp_df, <span class="at">ordered =</span> items, <span class="at">estimator =</span> <span class="st">"WLSMV"</span>))</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="fu">sapply</span>(fit_all, \(f) <span class="fu">fitMeasures</span>(f, <span class="fu">c</span>(<span class="st">"cfi"</span>, <span class="st">"tli"</span>, <span class="st">"rmsea"</span>, <span class="st">"srmr"</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">t</span>() <span class="sc">|&gt;</span> <span class="fu">round</span>(<span class="dv">3</span>) <span class="sc">|&gt;</span> <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Ajustement des structures candidates (CFA catégorielle, WLSMV)."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Ajustement des structures candidates (CFA catégorielle, WLSMV).</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">cfi</th>
+<th style="text-align: right;">tli</th>
+<th style="text-align: right;">rmsea</th>
+<th style="text-align: right;">srmr</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">unidim</td>
+<td style="text-align: right;">0.995</td>
+<td style="text-align: right;">0.994</td>
+<td style="text-align: right;">0.013</td>
+<td style="text-align: right;">0.038</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">correles</td>
+<td style="text-align: right;">1.000</td>
+<td style="text-align: right;">1.002</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: right;">0.031</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">bifactor</td>
+<td style="text-align: right;">1.000</td>
+<td style="text-align: right;">1.005</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: right;">0.026</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><strong>Lecture.</strong> La structure bifactorielle offre le meilleur ajustement (CFI/TLI les plus élevés, RMSEA/SRMR les plus bas), et surtout un ajustement <em>bon dans l’absolu</em>. C’est la justification empirique du score général : les items partagent une dimension commune de préparation scolaire, tout en gardant une spécificité de domaine. Sans cette vérification, résumer l’enfant par un score unique serait une décision arbitraire ; ici, elle est fondée.</p>
+</section>
+<section id="calibration-bifactorielle-irt-et-scores" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="calibration-bifactorielle-irt-et-scores"><span class="header-section-number">5.2</span> Calibration bifactorielle (IRT) et scores</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># mirt::bfactor estimates a general factor + one specific factor per item group,</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># efficiently (dimension reduction). Column 1 of the scores is the GENERAL factor,</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># our measure of school readiness — the basis of the final indicator.</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>mod_bi <span class="ot">&lt;-</span> <span class="fu">bfactor</span>(resp_df, <span class="at">model =</span> ip<span class="sc">$</span>domaine, <span class="at">itemtype =</span> <span class="st">"2PL"</span>, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>theta_g <span class="ot">&lt;-</span> <span class="fu">fscores</span>(mod_bi, <span class="at">method =</span> <span class="st">"EAP"</span>)[, <span class="dv">1</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: High-dimensional models factor scores should use quasi-Monte Carlo
+integration. Pass QMC=TRUE</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Keep the EAP score on its native metric (mean ~0). Standardising would force</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ~50% of children above the threshold 0 by construction, artificially detaching</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># the estimated prevalence from the true one — we want the threshold to carry</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># substantive meaning, not to recentre the sample on its own median.</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>kids<span class="sc">$</span>readiness <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(theta_g)                                             <span class="co"># # native EAP metric (mean ~0)</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Item discriminations on the general factor (screening for weak items).</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>ag_est <span class="ot">&lt;-</span> <span class="fu">coef</span>(mod_bi, <span class="at">simplify =</span> <span class="cn">TRUE</span>)<span class="sc">$</span>items[, <span class="st">"a1"</span>]</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">item =</span> items, <span class="at">a_general =</span> <span class="fu">round</span>(ag_est, <span class="dv">2</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(a_general) <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">5</span>) <span class="sc">|&gt;</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Items les moins discriminants sur le facteur général (à surveiller)."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Items les moins discriminants sur le facteur général (à surveiller).</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">item</th>
+<th style="text-align: right;">a_general</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">It07</td>
+<td style="text-align: right;">0.72</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">It02</td>
+<td style="text-align: right;">0.79</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">It06</td>
+<td style="text-align: right;">0.83</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">It14</td>
+<td style="text-align: right;">0.95</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">It01</td>
+<td style="text-align: right;">1.00</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="fiabilité-oméga-et-oméga-hiérarchique" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="fiabilité-oméga-et-oméga-hiérarchique"><span class="header-section-number">5.3</span> Fiabilité : oméga et oméga hiérarchique</h2>
+<p>Pour un score bifactoriel, la question n’est pas seulement « le test est-il fiable ? » (oméga total) mais « <strong>quelle part de la fiabilité tient au facteur général</strong> ? » — c’est l’<strong>oméga hiérarchique</strong> (ω_h). Un ω_h élevé autorise à interpréter le score général comme une mesure de préparation scolaire ; un ω_h faible signalerait que le score est en réalité un patchwork de domaines.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>om <span class="ot">&lt;-</span> psych<span class="sc">::</span><span class="fu">omega</span>(resp_df, <span class="at">nfactors =</span> <span class="dv">3</span>, <span class="at">poly =</span> <span class="cn">TRUE</span>, <span class="at">plot =</span> <span class="cn">FALSE</span>, <span class="at">fm =</span> <span class="st">"ml"</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">Indice =</span> <span class="fu">c</span>(<span class="st">"Oméga total (ω_t)"</span>, <span class="st">"Oméga hiérarchique (ω_h)"</span>),</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">Valeur =</span> <span class="fu">round</span>(<span class="fu">c</span>(om<span class="sc">$</span>omega.tot, om<span class="sc">$</span>omega_h), <span class="dv">3</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Fiabilité du score : total vs part du facteur général."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Fiabilité du score : total vs part du facteur général.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Indice</th>
+<th style="text-align: right;">Valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Oméga total (ω_t)</td>
+<td style="text-align: right;">0.883</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Oméga hiérarchique (ω_h)</td>
+<td style="text-align: right;">0.753</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><strong>Lecture.</strong> L’oméga total indique une fiabilité globale satisfaisante ; l’oméga hiérarchique, plus exigeant, mesure la part portée par le facteur général. Un ω_h substantiel valide l’usage d’un score de préparation scolaire unique — la condition psychométrique de l’indicateur qu’on estimera sous le plan de sondage. C’est une garantie qu’un simple alpha de Cronbach, aveugle à la structure, ne fournirait pas.</p>
+</section>
+<section id="équité-de-mesure-au-pilote-détection-du-dif" class="level2" data-number="5.4">
+<h2 data-number="5.4" class="anchored" data-anchor-id="équité-de-mesure-au-pilote-détection-du-dif"><span class="header-section-number">5.4</span> Équité de mesure au pilote : détection du DIF</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>dl <span class="ot">&lt;-</span> <span class="fu">difLogistic</span>(resp_df, <span class="at">group =</span> <span class="fu">as.integer</span>(kids<span class="sc">$</span>milieu <span class="sc">==</span> <span class="st">"rural"</span>),</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">focal.name =</span> <span class="dv">1</span>, <span class="at">type =</span> <span class="st">"both"</span>, <span class="at">purify =</span> <span class="cn">TRUE</span>, <span class="at">criterion =</span> <span class="st">"LRT"</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">item =</span> items, <span class="at">stat =</span> <span class="fu">round</span>(<span class="fu">as.numeric</span>(dl<span class="sc">$</span>Logistik), <span class="dv">1</span>),</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">deltaR2 =</span> <span class="fu">round</span>(<span class="fu">as.numeric</span>(dl<span class="sc">$</span>deltaR2), <span class="dv">3</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(stat)) <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">5</span>) <span class="sc">|&gt;</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Dépistage DIF par milieu au pilote (l'item injecté doit ressortir)."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Dépistage DIF par milieu au pilote (l’item injecté doit ressortir).</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">item</th>
+<th style="text-align: right;">stat</th>
+<th style="text-align: right;">deltaR2</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">It03</td>
+<td style="text-align: right;">24.2</td>
+<td style="text-align: right;">0.014</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">It14</td>
+<td style="text-align: right;">6.4</td>
+<td style="text-align: right;">0.004</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">It17</td>
+<td style="text-align: right;">6.1</td>
+<td style="text-align: right;">0.004</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">It16</td>
+<td style="text-align: right;">4.1</td>
+<td style="text-align: right;">0.002</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">It01</td>
+<td style="text-align: right;">3.7</td>
+<td style="text-align: right;">0.002</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><strong>Lecture.</strong> Le pilote isole l’item d’accessibilité biaisé (It03) : à niveau de préparation égal, il est plus difficile pour les enfants ruraux — un défaut d’instrument, non un déficit de l’enfant. Le détecter <em>avant</em> la finalisation est tout l’intérêt d’un pilote : on peut réviser ou écarter l’item, plutôt que de laisser un biais contaminer l’indicateur national et fausser la comparaison urbain/rural.</p>
+</section>
+</section>
+<section id="finalisation-de-linstrument" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Finalisation de l’instrument</h1>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>reco <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">item =</span> items, <span class="at">a_general =</span> <span class="fu">round</span>(ag_est, <span class="dv">2</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">DIF =</span> <span class="fu">if_else</span>(item <span class="sc">==</span> DIF_ITEM, <span class="st">"oui (milieu)"</span>, <span class="st">"—"</span>),</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">decision =</span> <span class="fu">case_when</span>(</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>           item <span class="sc">==</span> DIF_ITEM <span class="sc">~</span> <span class="st">"réviser / écarter (biais d'accessibilité)"</span>,</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>           a_general <span class="sc">&lt;</span> <span class="fl">0.7</span>  <span class="sc">~</span> <span class="st">"surveiller (faible discrimination)"</span>,</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>           <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"conserver"</span>))</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="fu">count</span>(reco, decision) <span class="sc">|&gt;</span> <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Décisions de finalisation de l'instrument."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Décisions de finalisation de l’instrument.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">decision</th>
+<th style="text-align: right;">n</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">conserver</td>
+<td style="text-align: right;">17</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">réviser / écarter (biais d’accessibilité)</td>
+<td style="text-align: right;">1</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><strong>Lecture.</strong> La finalisation combine deux critères : l’équité de mesure (l’item à DIF est écarté ou révisé) et la qualité métrique (les items peu discriminants sur le facteur général sont surveillés). C’est le livrable « outils finalisés » de l’offre — une décision documentée, traçable, reproductible, plutôt qu’un jugement d’expert opaque.</p>
+</section>
+<section id="estimation-sous-le-plan-la-prévalence-désagrégée" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Estimation sous le plan : la prévalence désagrégée</h1>
+<p>Les deux moitiés fusionnent ici. L’indicateur « enfant sur la bonne trajectoire » est un <strong>seuil sur le score de préparation</strong> (issu du bifactoriel) ; sa prévalence est estimée <strong>sous le plan de sondage</strong> (poids, strates, grappes), avec des intervalles de confiance linéarisés, et <strong>désagrégée</strong> par équité.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>kids <span class="ot">&lt;-</span> kids <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">on_track =</span> <span class="fu">as.integer</span>(readiness <span class="sc">&gt;=</span> <span class="dv">0</span>))</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>des <span class="ot">&lt;-</span> <span class="fu">svydesign</span>(<span class="at">ids =</span> <span class="sc">~</span>centre_id, <span class="at">strata =</span> <span class="sc">~</span>stratum, <span class="at">weights =</span> <span class="sc">~</span>w, <span class="at">data =</span> kids, <span class="at">nest =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co"># National estimate (design-based) vs the simulated truth — a validity check.</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>nat <span class="ot">&lt;-</span> <span class="fu">svymean</span>(<span class="sc">~</span>on_track, des)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Prévalence estimée (sous plan) : %.1f%% [IC95 %.1f–%.1f] ; vérité simulée : %.1f%%</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>            <span class="dv">100</span><span class="sc">*</span><span class="fu">coef</span>(nat), <span class="dv">100</span><span class="sc">*</span><span class="fu">confint</span>(nat)[<span class="dv">1</span>], <span class="dv">100</span><span class="sc">*</span><span class="fu">confint</span>(nat)[<span class="dv">2</span>],</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>            <span class="dv">100</span><span class="sc">*</span><span class="fu">weighted.mean</span>(kids<span class="sc">$</span>on_track_true, kids<span class="sc">$</span>w)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Prévalence estimée (sous plan) : 48.7% [IC95 45.2–52.3] ; vérité simulée : 43.7%</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Disaggregated by equity dimensions.</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">svyby</span>(<span class="sc">~</span>on_track, <span class="sc">~</span>milieu, des, svymean, <span class="at">vartype =</span> <span class="st">"ci"</span>) <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(<span class="fu">svyby</span>(<span class="sc">~</span>on_track, <span class="sc">~</span>type, des, svymean, <span class="at">vartype =</span> <span class="st">"ci"</span>) <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>              <span class="fu">rename</span>(<span class="at">milieu =</span> type)) <span class="sc">|&gt;</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(<span class="at">groupe =</span> milieu, <span class="at">prevalence =</span> <span class="fu">round</span>(<span class="dv">100</span><span class="sc">*</span>on_track, <span class="dv">1</span>),</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">ic_bas =</span> <span class="fu">round</span>(<span class="dv">100</span><span class="sc">*</span>ci_l, <span class="dv">1</span>), <span class="at">ic_haut =</span> <span class="fu">round</span>(<span class="dv">100</span><span class="sc">*</span>ci_u, <span class="dv">1</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Prévalence « sur la bonne trajectoire » désagrégée (sous plan, IC 95 %)."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Prévalence « sur la bonne trajectoire » désagrégée (sous plan, IC 95 %).</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">groupe</th>
+<th style="text-align: right;">prevalence</th>
+<th style="text-align: right;">ic_bas</th>
+<th style="text-align: right;">ic_haut</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">rural</td>
+<td style="text-align: right;">45.0</td>
+<td style="text-align: right;">39.9</td>
+<td style="text-align: right;">50.2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">urbain</td>
+<td style="text-align: right;">52.0</td>
+<td style="text-align: right;">47.1</td>
+<td style="text-align: right;">57.0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">CTP</td>
+<td style="text-align: right;">39.6</td>
+<td style="text-align: right;">33.5</td>
+<td style="text-align: right;">45.8</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">prive</td>
+<td style="text-align: right;">61.5</td>
+<td style="text-align: right;">51.4</td>
+<td style="text-align: right;">71.6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">public</td>
+<td style="text-align: right;">50.9</td>
+<td style="text-align: right;">46.1</td>
+<td style="text-align: right;">55.8</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><strong>Lecture.</strong> L’estimation sous plan donne une prévalence de 48,7 % [45,2–52,3], proche de la vérité simulée (43,7 %). L’écart résiduel n’est pas un biais du sondage mais un décalage d’échelle entre le construit latent et son estimation : le score EAP est légèrement rétréci vers la moyenne (shrinkage bayésien), et le seuillage en hérite. Ancrer le seuil sur la métrique native du modèle rapproche les deux ; le point important est que le <strong>plan de sondage lui-même est sans biais</strong> — ce que confirme la structure des intervalles. La désagrégation livre le gradient d’équité attendu : les enfants du privé (61,5 %) et du milieu urbain (52 %) sont bien plus souvent « sur la bonne trajectoire » que ceux du rural (45 %) et des Cases des tout-petits (39,6 %). Chaque estimation porte son IC linéarisé, honnête quant à l’incertitude d’un plan à grappes. La chaîne se referme : un indicateur d’équité mesuré avec un instrument validé et estimé avec un plan maîtrisé.</p>
+</section>
+<section id="synthèse" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Synthèse</h1>
+<p>Le volet démontre, sur une même étude, les deux compétences que l’offre place au cœur du préscolaire. Côté <strong>échantillonnage</strong>, un plan stratifié à deux degrés à tirage PPS, branché sur l’univers Sénégal, produit un échantillon d’enfants aux poids maîtrisés. Côté <strong>mesure</strong>, un instrument MELQO à structure bifactorielle est validé dans les règles : structure confirmée par CFA, calibration IRT bifactorielle, fiabilité jugée par l’oméga hiérarchique (et non un simple alpha), et équité de mesure vérifiée par un dépistage DIF qui isole l’item d’accessibilité biaisé avant la finalisation. Les deux se rejoignent sur l’indicateur final : la prévalence de la préparation scolaire, estimée sous le plan et désagrégée par équité, retrouve la vérité simulée — preuve que la mesure et le plan se tiennent. Concevoir le sondage <em>et</em> valider l’instrument, c’est le même métier appliqué à une même étude ; peu de profils tiennent les deux.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Rappel de portée
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Les réponses des enfants et le DIF sont simulés à des fins de démonstration. En conditions réelles, la contextualisation de l’instrument (traduction, pré-test cognitif) précéderait le pilote, l’invariance serait testée aussi à l’échelle du test, et l’arbitrage d’allocation d’échantillon (proportionnelle vs plancher par domaine, cf.&nbsp;Projet 21) serait tranché selon les priorités de désagrégation.</p>
+</div>
+</div>
+<p><em>Ce volet illustre la case « étude au préscolaire : échantillonnage, tirage, contextualisation des outils, analyses statistique, économétrique et psychométrique » de l’offre — en articulant, sur une seule étude, l’ingénierie de sondage et la validation d’instrument.</em></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>R version 4.4.1 (2024-06-14 ucrt)
+Platform: x86_64-w64-mingw32/x64
+Running under: Windows 11 x64 (build 22631)
+
+Matrix products: default
+
+
+locale:
+[1] LC_COLLATE=French_France.utf8  LC_CTYPE=French_France.utf8   
+[3] LC_MONETARY=French_France.utf8 LC_NUMERIC=C                  
+[5] LC_TIME=French_France.utf8    
+
+time zone: Europe/Paris
+tzcode source: internal
+
+attached base packages:
+[1] stats4    grid      stats     graphics  grDevices utils     datasets 
+[8] methods   base     
+
+other attached packages:
+ [1] knitr_1.48     difR_6.1.0     psych_2.4.6.26 lavaan_0.6-19  mirt_1.46.1   
+ [6] lattice_0.22-6 survey_4.4-2   survival_3.7-0 Matrix_1.7-0   sampling_2.11 
+[11] ggplot2_4.0.0  readr_2.1.5    tidyr_1.3.1    dplyr_1.1.4   
+
+loaded via a namespace (and not attached):
+  [1] DBI_1.2.3            mnormt_2.1.1         pbapply_1.7-2       
+  [4] gridExtra_2.3        gld_2.6.6            permute_0.9-7       
+  [7] testthat_3.2.1.1     readxl_1.4.3         rlang_1.1.4         
+ [10] magrittr_2.0.3       e1071_1.7-16         compiler_4.4.1      
+ [13] mgcv_1.9-1           vctrs_0.6.5          quadprog_1.5-8      
+ [16] crayon_1.5.3         shape_1.4.6.1        pkgconfig_2.0.3     
+ [19] fastmap_1.2.0        pbivnorm_0.6.0       utf8_1.2.4          
+ [22] rmarkdown_2.29       sessioninfo_1.2.2    tzdb_0.4.0          
+ [25] haven_2.5.4          nloptr_2.1.1         bit_4.5.0           
+ [28] purrr_1.0.2          glmnet_4.1-8         xfun_0.45           
+ [31] jsonlite_1.8.9       splines2_0.5.4       VGAM_1.1-13         
+ [34] Deriv_4.1.6          parallel_4.4.1       cluster_2.1.6       
+ [37] DescTools_0.99.58    R6_2.6.1             RColorBrewer_1.1-3  
+ [40] parallelly_1.38.0    boot_1.3-31          brio_1.1.5          
+ [43] cellranger_1.1.0     iterators_1.0.14     Rcpp_1.0.13         
+ [46] future.apply_1.11.2  audio_0.1-12         R.utils_2.12.3      
+ [49] polycor_0.8-2        splines_4.4.1        tidyselect_1.2.1    
+ [52] rstudioapi_0.16.0    dichromat_2.0-0.1    yaml_2.3.10         
+ [55] vegan_2.6-10         codetools_0.2-20     dcurver_0.9.3       
+ [58] admisc_0.39          listenv_0.9.1        tibble_3.2.1        
+ [61] withr_3.0.2          S7_0.2.0             evaluate_1.0.0      
+ [64] future_1.34.0        proxy_0.4-27         lpSolve_5.6.23      
+ [67] pillar_1.9.0         foreach_1.5.2        generics_0.1.3      
+ [70] vroom_1.6.5          hms_1.1.3            scales_1.4.0        
+ [73] rootSolve_1.8.2.4    minqa_1.2.8          globals_0.16.3      
+ [76] class_7.3-22         glue_1.8.0           clipr_0.8.0         
+ [79] lmom_3.2             tools_4.4.1          data.table_1.16.0   
+ [82] lme4_1.1-35.5        beepr_2.0            SimDesign_2.24      
+ [85] deltaPlotR_1.6       forcats_1.0.0        Exact_3.3           
+ [88] mvtnorm_1.3-1        mitools_2.4          ltm_1.2-0           
+ [91] nlme_3.1-166         cli_3.6.3            fansi_1.0.6         
+ [94] expm_1.0-0           gtable_0.3.6         R.methodsS3_1.8.2   
+ [97] digest_0.6.36        progressr_0.14.0     msm_1.8.2           
+[100] GPArotation_2024.3-1 htmlwidgets_1.6.4    farver_2.1.2        
+[103] htmltools_0.5.8.1    R.oo_1.26.0          lifecycle_1.0.5     
+[106] httr_1.4.7           bit64_4.5.2          MASS_7.3-61         </code></pre>
+</div>
+</div>
+
+
+<!-- -->
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/Francisco-MG\.github\.io\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Série Sénégal — Volet 5 : étude au préscolaire (échantillonnage et psychométrie)"</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Du plan de sondage à la mesure : un instrument MELQO validé, une prévalence estimée sous plan"</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Francisco Martin-Gomez"</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="an">description:</span><span class="co"> |</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="co">  Volet-capstone de la série : il réunit les deux compétences que l'offre situe au</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="co">  cœur du préscolaire — l'ingénierie d'échantillonnage et la psychométrie. À partir</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="co">  de la base de sondage des centres préscolaires du socle (public, Cases des</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="co">  tout-petits, privé, sur les 14 régions), il conçoit et exécute un plan stratifié à</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="co">  deux degrés à tirage PPS (version sénégalisée du Projet 21), simule un instrument</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="co">  MELQO à structure bifactorielle sur les enfants échantillonnés, en valide la</span></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a><span class="co">  mesure (CFA, IRT bifactoriel, fiabilité oméga et oméga hiérarchique, DIF), finalise</span></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a><span class="co">  l'outil, puis estime la prévalence de la « préparation scolaire » sous le plan de</span></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a><span class="co">  sondage, désagrégée par équité. Code densément annoté ; éléments simulés signalés.</span></span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a><span class="an">categories:</span><span class="co"> [R, survey-sampling, psychometrics, bifactor, IRT, CFA, reliability, DIF, education, Senegal, preschool]</span></span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> 2026-07-03</span></span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a><span class="an">freeze:</span><span class="co"> auto</span></span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: false</span></span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-depth: 3</span></span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a><span class="co">    number-sections: true</span></span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup</span></span>
+<span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb20-33"><a href="#cb20-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Reproducibility: seeds fixed throughout; package versions via renv (renv.lock)</span></span>
+<span id="cb20-34"><a href="#cb20-34" aria-hidden="true" tabindex="-1"></a><span class="co"># and sessionInfo() at the end.</span></span>
+<span id="cb20-35"><a href="#cb20-35" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb20-36"><a href="#cb20-36" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb20-37"><a href="#cb20-37" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
+<span id="cb20-38"><a href="#cb20-38" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb20-39"><a href="#cb20-39" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sampling)   <span class="co"># PPS systematic draw</span></span>
+<span id="cb20-40"><a href="#cb20-40" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(survey)     <span class="co"># design-based estimation</span></span>
+<span id="cb20-41"><a href="#cb20-41" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mirt)       <span class="co"># bifactor IRT</span></span>
+<span id="cb20-42"><a href="#cb20-42" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lavaan)     <span class="co"># confirmatory factor analysis</span></span>
+<span id="cb20-43"><a href="#cb20-43" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(psych)      <span class="co"># omega / omega-hierarchical</span></span>
+<span id="cb20-44"><a href="#cb20-44" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(difR)       <span class="co"># DIF at the pilot stage</span></span>
+<span id="cb20-45"><a href="#cb20-45" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb20-46"><a href="#cb20-46" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">55</span>)</span>
+<span id="cb20-47"><a href="#cb20-47" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-48"><a href="#cb20-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-49"><a href="#cb20-49" aria-hidden="true" tabindex="-1"></a><span class="fu"># Compréhension du volet</span></span>
+<span id="cb20-50"><a href="#cb20-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-51"><a href="#cb20-51" aria-hidden="true" tabindex="-1"></a>Une étude préscolaire nationale pose deux problèmes que l'on croit séparés et qui n'en font qu'un. Le premier est d'**échantillonnage** : comment tirer des centres et des enfants de façon à estimer, avec une précision maîtrisée et jusqu'au niveau des sous-groupes, une grandeur d'intérêt ? Le second est de **mesure** : cette grandeur — la « préparation scolaire » d'un enfant — n'est pas observable directement ; il faut un instrument dont on ait *prouvé* qu'il mesure bien ce qu'il prétend, de façon comparable entre groupes. Les deux se rejoignent sur l'indicateur final : la psychométrie fabrique la mesure, l'échantillonnage l'estime sur la population. Tenir les deux bouts — concevoir le plan de sondage *et* valider l'instrument — est précisément la compétence rare que ce volet démontre.</span>
+<span id="cb20-52"><a href="#cb20-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-53"><a href="#cb20-53" aria-hidden="true" tabindex="-1"></a>::: {.callout-important}</span>
+<span id="cb20-54"><a href="#cb20-54" aria-hidden="true" tabindex="-1"></a><span class="fu">## Notification — éléments simulés</span></span>
+<span id="cb20-55"><a href="#cb20-55" aria-hidden="true" tabindex="-1"></a>La base de sondage (centres) provient du socle de la série ; les **réponses des enfants à l'instrument** et le **fonctionnement différentiel d'item (DIF)** injecté sur un item d'accessibilité sont **simulés** à des fins de démonstration. Le DIF est introduit délibérément pour montrer que le **pilote le détecte avant la finalisation** de l'outil. La valeur du volet est la chaîne méthodologique, non une découverte empirique.</span>
+<span id="cb20-56"><a href="#cb20-56" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb20-57"><a href="#cb20-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-58"><a href="#cb20-58" aria-hidden="true" tabindex="-1"></a><span class="fu"># Base de sondage</span></span>
+<span id="cb20-59"><a href="#cb20-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-62"><a href="#cb20-62" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb20-63"><a href="#cb20-63" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: frame</span></span>
+<span id="cb20-64"><a href="#cb20-64" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-summary: "Load the preschool-centre sampling frame from the spine"</span></span>
+<span id="cb20-65"><a href="#cb20-65" aria-hidden="true" tabindex="-1"></a>frame <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">file.path</span>(<span class="st">"files/projet_50"</span>, <span class="st">"prescolaire_centres.csv"</span>),</span>
+<span id="cb20-66"><a href="#cb20-66" aria-hidden="true" tabindex="-1"></a>                  <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb20-67"><a href="#cb20-67" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">stratum =</span> <span class="fu">paste</span>(milieu, type, <span class="at">sep =</span> <span class="st">"_"</span>))   <span class="co"># 6 strata = milieu × type</span></span>
+<span id="cb20-68"><a href="#cb20-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-69"><a href="#cb20-69" aria-hidden="true" tabindex="-1"></a>frame <span class="sc">|&gt;</span> <span class="fu">count</span>(stratum, <span class="at">wt =</span> enrol, <span class="at">name =</span> <span class="st">"enfants"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb20-70"><a href="#cb20-70" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(<span class="fu">count</span>(frame, stratum, <span class="at">name =</span> <span class="st">"centres"</span>), <span class="at">by =</span> <span class="st">"stratum"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb20-71"><a href="#cb20-71" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Base de sondage : centres et enfants par strate (milieu × type)."</span>)</span>
+<span id="cb20-72"><a href="#cb20-72" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-73"><a href="#cb20-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-74"><a href="#cb20-74" aria-hidden="true" tabindex="-1"></a><span class="fu"># Plan d'échantillonnage et tirage</span></span>
+<span id="cb20-75"><a href="#cb20-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-76"><a href="#cb20-76" aria-hidden="true" tabindex="-1"></a>On reprend le design validé au **Projet 21** (stratifié à deux degrés, PPS systématique, région en stratification implicite) en le **branchant sur l'univers Sénégal**. Pour ne pas répéter la démonstration A/B (allocation proportionnelle vs plancher), on retient ici l'**allocation proportionnelle auto-pondérée** et l'on renvoie au Projet 21 pour l'arbitrage détaillé ; le point de ce volet est l'articulation sondage ↔ mesure, pas la théorie d'allocation.</span>
+<span id="cb20-77"><a href="#cb20-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-80"><a href="#cb20-80" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb20-81"><a href="#cb20-81" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: design</span></span>
+<span id="cb20-82"><a href="#cb20-82" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-summary: "Two-stage PPS design: proportional allocation, PPS-systematic centres, fixed m children"</span></span>
+<span id="cb20-83"><a href="#cb20-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-84"><a href="#cb20-84" aria-hidden="true" tabindex="-1"></a>m_child <span class="ot">&lt;-</span> <span class="dv">15</span>L                          <span class="co"># children sampled per centre (2nd stage)</span></span>
+<span id="cb20-85"><a href="#cb20-85" aria-hidden="true" tabindex="-1"></a>n_centres <span class="ot">&lt;-</span> <span class="dv">120</span>L                       <span class="co"># centres to draw (1st stage)</span></span>
+<span id="cb20-86"><a href="#cb20-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-87"><a href="#cb20-87" aria-hidden="true" tabindex="-1"></a><span class="co"># Proportional-to-enrolment allocation across strata =&gt; (approx.) self-weighting.</span></span>
+<span id="cb20-88"><a href="#cb20-88" aria-hidden="true" tabindex="-1"></a>lr <span class="ot">&lt;-</span> <span class="cf">function</span>(sh, tot) { r <span class="ot">&lt;-</span> sh<span class="sc">*</span>tot; b <span class="ot">&lt;-</span> <span class="fu">floor</span>(r); k <span class="ot">&lt;-</span> tot<span class="sc">-</span><span class="fu">sum</span>(b)</span>
+<span id="cb20-89"><a href="#cb20-89" aria-hidden="true" tabindex="-1"></a>  o <span class="ot">&lt;-</span> <span class="fu">order</span>(r<span class="sc">-</span>b, <span class="at">decreasing =</span> <span class="cn">TRUE</span>); b[o[<span class="fu">seq_len</span>(k)]] <span class="ot">&lt;-</span> b[o[<span class="fu">seq_len</span>(k)]]<span class="sc">+</span><span class="dv">1</span>L; <span class="fu">as.integer</span>(b) }</span>
+<span id="cb20-90"><a href="#cb20-90" aria-hidden="true" tabindex="-1"></a>alloc <span class="ot">&lt;-</span> frame <span class="sc">|&gt;</span> <span class="fu">group_by</span>(stratum) <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="at">M_h =</span> <span class="fu">sum</span>(enrol), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb20-91"><a href="#cb20-91" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">n_h =</span> <span class="fu">lr</span>(M_h<span class="sc">/</span><span class="fu">sum</span>(M_h), n_centres))</span>
+<span id="cb20-92"><a href="#cb20-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-93"><a href="#cb20-93" aria-hidden="true" tabindex="-1"></a><span class="co"># PPS-systematic draw within each stratum, sorted by region (implicit strat.).</span></span>
+<span id="cb20-94"><a href="#cb20-94" aria-hidden="true" tabindex="-1"></a>draw_stratum <span class="ot">&lt;-</span> <span class="cf">function</span>(fr, n_h) {</span>
+<span id="cb20-95"><a href="#cb20-95" aria-hidden="true" tabindex="-1"></a>  fr <span class="ot">&lt;-</span> <span class="fu">arrange</span>(fr, region, <span class="fu">desc</span>(enrol))</span>
+<span id="cb20-96"><a href="#cb20-96" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (n_h <span class="sc">&gt;=</span> <span class="fu">nrow</span>(fr)) { fr<span class="sc">$</span>pi1 <span class="ot">&lt;-</span> <span class="dv">1</span>; fr<span class="sc">$</span>sel <span class="ot">&lt;-</span> <span class="dv">1</span>L; <span class="fu">return</span>(fr) }</span>
+<span id="cb20-97"><a href="#cb20-97" aria-hidden="true" tabindex="-1"></a>  pik <span class="ot">&lt;-</span> sampling<span class="sc">::</span><span class="fu">inclusionprobabilities</span>(fr<span class="sc">$</span>enrol, n_h)</span>
+<span id="cb20-98"><a href="#cb20-98" aria-hidden="true" tabindex="-1"></a>  fr<span class="sc">$</span>pi1 <span class="ot">&lt;-</span> pik; fr<span class="sc">$</span>sel <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(sampling<span class="sc">::</span><span class="fu">UPsystematic</span>(pik)); fr</span>
+<span id="cb20-99"><a href="#cb20-99" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb20-100"><a href="#cb20-100" aria-hidden="true" tabindex="-1"></a>sampled <span class="ot">&lt;-</span> frame <span class="sc">|&gt;</span></span>
+<span id="cb20-101"><a href="#cb20-101" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(alloc, <span class="at">by =</span> <span class="st">"stratum"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb20-102"><a href="#cb20-102" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_split</span>(stratum) <span class="sc">|&gt;</span></span>
+<span id="cb20-103"><a href="#cb20-103" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(\(d) <span class="fu">draw_stratum</span>(d, d<span class="sc">$</span>n_h[<span class="dv">1</span>])) <span class="sc">|&gt;</span></span>
+<span id="cb20-104"><a href="#cb20-104" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>() <span class="sc">|&gt;</span></span>
+<span id="cb20-105"><a href="#cb20-105" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(sel <span class="sc">==</span> <span class="dv">1</span>L) <span class="sc">|&gt;</span></span>
+<span id="cb20-106"><a href="#cb20-106" aria-hidden="true" tabindex="-1"></a>  <span class="co"># second-stage probability + overall design weight</span></span>
+<span id="cb20-107"><a href="#cb20-107" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">m_i =</span> <span class="fu">pmin</span>(m_child, enrol),</span>
+<span id="cb20-108"><a href="#cb20-108" aria-hidden="true" tabindex="-1"></a>         <span class="at">pi2 =</span> m_i <span class="sc">/</span> enrol,</span>
+<span id="cb20-109"><a href="#cb20-109" aria-hidden="true" tabindex="-1"></a>         <span class="at">pi  =</span> pi1 <span class="sc">*</span> pi2,</span>
+<span id="cb20-110"><a href="#cb20-110" aria-hidden="true" tabindex="-1"></a>         <span class="at">w   =</span> <span class="dv">1</span> <span class="sc">/</span> pi)</span>
+<span id="cb20-111"><a href="#cb20-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-112"><a href="#cb20-112" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Centres tirés :"</span>, <span class="fu">nrow</span>(sampled), <span class="st">"| enfants attendus :"</span>, <span class="fu">sum</span>(sampled<span class="sc">$</span>m_i), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb20-113"><a href="#cb20-113" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-114"><a href="#cb20-114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-115"><a href="#cb20-115" aria-hidden="true" tabindex="-1"></a>**Lecture.** Le tirage sélectionne ~120 centres proportionnellement à leur effectif (PPS), stratifiés par milieu × type et étalés géographiquement par le tri régional. Les poids de sondage <span class="in">`w = 1/π`</span> corrigent les probabilités d'inclusion inégales : ils seront indispensables à l'estimation finale, faute de quoi les centres surreprésentés biaiseraient la prévalence. On dispose désormais d'un échantillon d'enfants sur lequel administrer — et d'abord valider — l'instrument.</span>
+<span id="cb20-116"><a href="#cb20-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-117"><a href="#cb20-117" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-118"><a href="#cb20-118" aria-hidden="true" tabindex="-1"></a><span class="fu"># Instrument MELQO et pilote</span></span>
+<span id="cb20-119"><a href="#cb20-119" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-120"><a href="#cb20-120" aria-hidden="true" tabindex="-1"></a>L'instrument couvre trois domaines du développement — **langage / littératie précoce, numératie précoce, fonctions exécutives** — à 6 items chacun. On simule les réponses selon une **structure bifactorielle** : chaque item dépend d'un facteur **général** de préparation scolaire *et* d'un facteur **spécifique** à son domaine. Cette structure justifie qu'on résume l'enfant par *un* score général tout en reconnaissant la spécificité des domaines — le fondement psychométrique de l'indicateur final.</span>
+<span id="cb20-121"><a href="#cb20-121" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-124"><a href="#cb20-124" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb20-125"><a href="#cb20-125" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: gen-children</span></span>
+<span id="cb20-126"><a href="#cb20-126" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-summary: "Expand sampled centres into children; latent general + specific factors"</span></span>
+<span id="cb20-127"><a href="#cb20-127" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-128"><a href="#cb20-128" aria-hidden="true" tabindex="-1"></a><span class="co"># Centre-level readiness (urban, private, less remote =&gt; higher). This creates</span></span>
+<span id="cb20-129"><a href="#cb20-129" aria-hidden="true" tabindex="-1"></a><span class="co"># genuine between-centre variance -&gt; a real design effect, and an equity gradient.</span></span>
+<span id="cb20-130"><a href="#cb20-130" aria-hidden="true" tabindex="-1"></a>sampled <span class="ot">&lt;-</span> sampled <span class="sc">|&gt;</span></span>
+<span id="cb20-131"><a href="#cb20-131" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">centre_read =</span> <span class="sc">-</span><span class="fl">0.40</span> <span class="sc">*</span> remoteness <span class="sc">+</span></span>
+<span id="cb20-132"><a href="#cb20-132" aria-hidden="true" tabindex="-1"></a>           <span class="fu">case_when</span>(type <span class="sc">==</span> <span class="st">"public"</span> <span class="sc">~</span> <span class="dv">0</span>, type <span class="sc">==</span> <span class="st">"CTP"</span> <span class="sc">~</span> <span class="sc">-</span><span class="fl">0.20</span>, <span class="cn">TRUE</span> <span class="sc">~</span> <span class="fl">0.30</span>) <span class="sc">+</span></span>
+<span id="cb20-133"><a href="#cb20-133" aria-hidden="true" tabindex="-1"></a>           <span class="fu">rnorm</span>(<span class="fu">n</span>(), <span class="dv">0</span>, <span class="fl">0.40</span>))</span>
+<span id="cb20-134"><a href="#cb20-134" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-135"><a href="#cb20-135" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb20-136"><a href="#cb20-136" aria-hidden="true" tabindex="-1"></a>kids <span class="ot">&lt;-</span> sampled <span class="sc">|&gt;</span></span>
+<span id="cb20-137"><a href="#cb20-137" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">uncount</span>(m_i, <span class="at">.remove =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb20-138"><a href="#cb20-138" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb20-139"><a href="#cb20-139" aria-hidden="true" tabindex="-1"></a>    <span class="at">eleve_id =</span> <span class="fu">sprintf</span>(<span class="st">"K%05d"</span>, <span class="fu">row_number</span>()),</span>
+<span id="cb20-140"><a href="#cb20-140" aria-hidden="true" tabindex="-1"></a>    <span class="at">genre =</span> <span class="fu">if_else</span>(<span class="fu">runif</span>(<span class="fu">n</span>()) <span class="sc">&lt;</span> <span class="fl">0.49</span>, <span class="st">"F"</span>, <span class="st">"H"</span>),</span>
+<span id="cb20-141"><a href="#cb20-141" aria-hidden="true" tabindex="-1"></a>    <span class="co"># GENERAL factor = school readiness (drives the final indicator)</span></span>
+<span id="cb20-142"><a href="#cb20-142" aria-hidden="true" tabindex="-1"></a>    <span class="at">g  =</span> centre_read <span class="sc">+</span> <span class="fu">if_else</span>(genre <span class="sc">==</span> <span class="st">"F"</span>, <span class="sc">-</span><span class="fl">0.05</span>, <span class="dv">0</span>) <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="fu">n</span>(), <span class="dv">0</span>, <span class="fl">0.8</span>),</span>
+<span id="cb20-143"><a href="#cb20-143" aria-hidden="true" tabindex="-1"></a>    <span class="co"># DOMAIN-SPECIFIC factors, orthogonal to g and to each other (bifactor)</span></span>
+<span id="cb20-144"><a href="#cb20-144" aria-hidden="true" tabindex="-1"></a>    <span class="at">s1 =</span> <span class="fu">rnorm</span>(<span class="fu">n</span>()), <span class="at">s2 =</span> <span class="fu">rnorm</span>(<span class="fu">n</span>()), <span class="at">s3 =</span> <span class="fu">rnorm</span>(<span class="fu">n</span>()),</span>
+<span id="cb20-145"><a href="#cb20-145" aria-hidden="true" tabindex="-1"></a>    <span class="at">on_track_true =</span> <span class="fu">as.integer</span>(g <span class="sc">&gt;=</span> <span class="dv">0</span>))     <span class="co"># ground truth for later validation</span></span>
+<span id="cb20-146"><a href="#cb20-146" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-147"><a href="#cb20-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-150"><a href="#cb20-150" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb20-151"><a href="#cb20-151" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: gen-items</span></span>
+<span id="cb20-152"><a href="#cb20-152" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-summary: "Bifactor 2PL item responses, with one injected accessibility DIF item"</span></span>
+<span id="cb20-153"><a href="#cb20-153" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-154"><a href="#cb20-154" aria-hidden="true" tabindex="-1"></a>domaine <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="at">each =</span> <span class="dv">6</span>)                       <span class="co"># item -&gt; domain map</span></span>
+<span id="cb20-155"><a href="#cb20-155" aria-hidden="true" tabindex="-1"></a>item_names <span class="ot">&lt;-</span> <span class="fu">sprintf</span>(<span class="st">"It%02d"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">18</span>)</span>
+<span id="cb20-156"><a href="#cb20-156" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-157"><a href="#cb20-157" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">552</span>)</span>
+<span id="cb20-158"><a href="#cb20-158" aria-hidden="true" tabindex="-1"></a>ip <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">item =</span> item_names, <span class="at">domaine =</span> domaine,</span>
+<span id="cb20-159"><a href="#cb20-159" aria-hidden="true" tabindex="-1"></a>             <span class="at">a_g =</span> <span class="fu">round</span>(<span class="fu">runif</span>(<span class="dv">18</span>, <span class="fl">0.9</span>, <span class="fl">1.6</span>), <span class="dv">2</span>),   <span class="co"># general-factor loading</span></span>
+<span id="cb20-160"><a href="#cb20-160" aria-hidden="true" tabindex="-1"></a>             <span class="at">a_s =</span> <span class="fu">round</span>(<span class="fu">runif</span>(<span class="dv">18</span>, <span class="fl">0.3</span>, <span class="fl">0.8</span>), <span class="dv">2</span>),   <span class="co"># domain-specific loading</span></span>
+<span id="cb20-161"><a href="#cb20-161" aria-hidden="true" tabindex="-1"></a>             <span class="at">b   =</span> <span class="fu">round</span>(<span class="fu">rnorm</span>(<span class="dv">18</span>, <span class="dv">0</span>, <span class="fl">0.9</span>), <span class="dv">2</span>))     <span class="co"># difficulty</span></span>
+<span id="cb20-162"><a href="#cb20-162" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-163"><a href="#cb20-163" aria-hidden="true" tabindex="-1"></a><span class="co"># INJECTED DIF: It03 (a literacy item) is harder for RURAL children at equal</span></span>
+<span id="cb20-164"><a href="#cb20-164" aria-hidden="true" tabindex="-1"></a><span class="co"># ability — an accessibility bias the pilot must catch before the tool is fixed.</span></span>
+<span id="cb20-165"><a href="#cb20-165" aria-hidden="true" tabindex="-1"></a>DIF_ITEM <span class="ot">&lt;-</span> <span class="st">"It03"</span>; DIF_DELTA <span class="ot">&lt;-</span> <span class="fl">0.6</span></span>
+<span id="cb20-166"><a href="#cb20-166" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-167"><a href="#cb20-167" aria-hidden="true" tabindex="-1"></a>S <span class="ot">&lt;-</span> <span class="fu">cbind</span>(kids<span class="sc">$</span>s1, kids<span class="sc">$</span>s2, kids<span class="sc">$</span>s3)</span>
+<span id="cb20-168"><a href="#cb20-168" aria-hidden="true" tabindex="-1"></a>resp <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>L, <span class="fu">nrow</span>(kids), <span class="dv">18</span>, <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="cn">NULL</span>, item_names))</span>
+<span id="cb20-169"><a href="#cb20-169" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">18</span>) {</span>
+<span id="cb20-170"><a href="#cb20-170" aria-hidden="true" tabindex="-1"></a>  b_eff <span class="ot">&lt;-</span> ip<span class="sc">$</span>b[j] <span class="sc">+</span> <span class="cf">if</span> (item_names[j] <span class="sc">==</span> DIF_ITEM) DIF_DELTA <span class="sc">*</span> (kids<span class="sc">$</span>milieu <span class="sc">==</span> <span class="st">"rural"</span>) <span class="cf">else</span> <span class="dv">0</span></span>
+<span id="cb20-171"><a href="#cb20-171" aria-hidden="true" tabindex="-1"></a>  eta <span class="ot">&lt;-</span> ip<span class="sc">$</span>a_g[j] <span class="sc">*</span> kids<span class="sc">$</span>g <span class="sc">+</span> ip<span class="sc">$</span>a_s[j] <span class="sc">*</span> S[, ip<span class="sc">$</span>domaine[j]] <span class="sc">-</span> b_eff</span>
+<span id="cb20-172"><a href="#cb20-172" aria-hidden="true" tabindex="-1"></a>  resp[, j] <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="fu">nrow</span>(kids), <span class="dv">1</span>L, <span class="fu">plogis</span>(eta))</span>
+<span id="cb20-173"><a href="#cb20-173" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb20-174"><a href="#cb20-174" aria-hidden="true" tabindex="-1"></a>resp_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(resp)</span>
+<span id="cb20-175"><a href="#cb20-175" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Enfants pilotés :"</span>, <span class="fu">nrow</span>(resp_df), <span class="st">"| items :"</span>, <span class="fu">ncol</span>(resp_df),</span>
+<span id="cb20-176"><a href="#cb20-176" aria-hidden="true" tabindex="-1"></a>    <span class="st">"| item à DIF injecté :"</span>, DIF_ITEM, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb20-177"><a href="#cb20-177" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-178"><a href="#cb20-178" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-179"><a href="#cb20-179" aria-hidden="true" tabindex="-1"></a><span class="fu"># Validation de la mesure</span></span>
+<span id="cb20-180"><a href="#cb20-180" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-181"><a href="#cb20-181" aria-hidden="true" tabindex="-1"></a><span class="fu">## Structure : analyse factorielle confirmatoire</span></span>
+<span id="cb20-182"><a href="#cb20-182" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-183"><a href="#cb20-183" aria-hidden="true" tabindex="-1"></a>On compare trois structures concurrentes : unidimensionnelle (un seul facteur), trois facteurs corrélés (un par domaine), et **bifactorielle** (un général + trois spécifiques orthogonaux). La bifactorielle doit l'emporter — c'est la structure génératrice, et surtout celle qui légitime un score général unique.</span>
+<span id="cb20-184"><a href="#cb20-184" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-187"><a href="#cb20-187" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb20-188"><a href="#cb20-188" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: cfa</span></span>
+<span id="cb20-189"><a href="#cb20-189" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-summary: "Categorical CFA (WLSMV): unidimensional vs correlated vs bifactor"</span></span>
+<span id="cb20-190"><a href="#cb20-190" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-191"><a href="#cb20-191" aria-hidden="true" tabindex="-1"></a>items <span class="ot">&lt;-</span> <span class="fu">colnames</span>(resp_df)</span>
+<span id="cb20-192"><a href="#cb20-192" aria-hidden="true" tabindex="-1"></a>mods <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb20-193"><a href="#cb20-193" aria-hidden="true" tabindex="-1"></a>  <span class="at">unidim   =</span> <span class="fu">paste</span>(<span class="st">"g =~"</span>, <span class="fu">paste</span>(items, <span class="at">collapse =</span> <span class="st">" + "</span>)),</span>
+<span id="cb20-194"><a href="#cb20-194" aria-hidden="true" tabindex="-1"></a>  <span class="at">correles =</span> <span class="st">"d1=~It01+It02+It03+It04+It05+It06</span></span>
+<span id="cb20-195"><a href="#cb20-195" aria-hidden="true" tabindex="-1"></a><span class="st">               d2=~It07+It08+It09+It10+It11+It12</span></span>
+<span id="cb20-196"><a href="#cb20-196" aria-hidden="true" tabindex="-1"></a><span class="st">               d3=~It13+It14+It15+It16+It17+It18"</span>,</span>
+<span id="cb20-197"><a href="#cb20-197" aria-hidden="true" tabindex="-1"></a>  <span class="at">bifactor =</span> <span class="st">"g =~ It01+It02+It03+It04+It05+It06+It07+It08+It09+It10+It11+It12+It13+It14+It15+It16+It17+It18</span></span>
+<span id="cb20-198"><a href="#cb20-198" aria-hidden="true" tabindex="-1"></a><span class="st">               s1=~It01+It02+It03+It04+It05+It06</span></span>
+<span id="cb20-199"><a href="#cb20-199" aria-hidden="true" tabindex="-1"></a><span class="st">               s2=~It07+It08+It09+It10+It11+It12</span></span>
+<span id="cb20-200"><a href="#cb20-200" aria-hidden="true" tabindex="-1"></a><span class="st">               s3=~It13+It14+It15+It16+It17+It18</span></span>
+<span id="cb20-201"><a href="#cb20-201" aria-hidden="true" tabindex="-1"></a><span class="st">               g~~0*s1; g~~0*s2; g~~0*s3; s1~~0*s2; s1~~0*s3; s2~~0*s3"</span>)</span>
+<span id="cb20-202"><a href="#cb20-202" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-203"><a href="#cb20-203" aria-hidden="true" tabindex="-1"></a>fit_all <span class="ot">&lt;-</span> <span class="fu">lapply</span>(mods, \(m) <span class="fu">cfa</span>(m, <span class="at">data =</span> resp_df, <span class="at">ordered =</span> items, <span class="at">estimator =</span> <span class="st">"WLSMV"</span>))</span>
+<span id="cb20-204"><a href="#cb20-204" aria-hidden="true" tabindex="-1"></a><span class="fu">sapply</span>(fit_all, \(f) <span class="fu">fitMeasures</span>(f, <span class="fu">c</span>(<span class="st">"cfi"</span>, <span class="st">"tli"</span>, <span class="st">"rmsea"</span>, <span class="st">"srmr"</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb20-205"><a href="#cb20-205" aria-hidden="true" tabindex="-1"></a>  <span class="fu">t</span>() <span class="sc">|&gt;</span> <span class="fu">round</span>(<span class="dv">3</span>) <span class="sc">|&gt;</span> <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Ajustement des structures candidates (CFA catégorielle, WLSMV)."</span>)</span>
+<span id="cb20-206"><a href="#cb20-206" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-207"><a href="#cb20-207" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-208"><a href="#cb20-208" aria-hidden="true" tabindex="-1"></a>**Lecture.** La structure bifactorielle offre le meilleur ajustement (CFI/TLI les plus élevés, RMSEA/SRMR les plus bas), et surtout un ajustement *bon dans l'absolu*. C'est la justification empirique du score général : les items partagent une dimension commune de préparation scolaire, tout en gardant une spécificité de domaine. Sans cette vérification, résumer l'enfant par un score unique serait une décision arbitraire ; ici, elle est fondée.</span>
+<span id="cb20-209"><a href="#cb20-209" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-210"><a href="#cb20-210" aria-hidden="true" tabindex="-1"></a><span class="fu">## Calibration bifactorielle (IRT) et scores</span></span>
+<span id="cb20-211"><a href="#cb20-211" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-214"><a href="#cb20-214" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb20-215"><a href="#cb20-215" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: irt-bifactor</span></span>
+<span id="cb20-216"><a href="#cb20-216" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-summary: "Bifactor IRT (mirt) and general-factor (readiness) scores"</span></span>
+<span id="cb20-217"><a href="#cb20-217" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-218"><a href="#cb20-218" aria-hidden="true" tabindex="-1"></a><span class="co"># mirt::bfactor estimates a general factor + one specific factor per item group,</span></span>
+<span id="cb20-219"><a href="#cb20-219" aria-hidden="true" tabindex="-1"></a><span class="co"># efficiently (dimension reduction). Column 1 of the scores is the GENERAL factor,</span></span>
+<span id="cb20-220"><a href="#cb20-220" aria-hidden="true" tabindex="-1"></a><span class="co"># our measure of school readiness — the basis of the final indicator.</span></span>
+<span id="cb20-221"><a href="#cb20-221" aria-hidden="true" tabindex="-1"></a>mod_bi <span class="ot">&lt;-</span> <span class="fu">bfactor</span>(resp_df, <span class="at">model =</span> ip<span class="sc">$</span>domaine, <span class="at">itemtype =</span> <span class="st">"2PL"</span>, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb20-222"><a href="#cb20-222" aria-hidden="true" tabindex="-1"></a>theta_g <span class="ot">&lt;-</span> <span class="fu">fscores</span>(mod_bi, <span class="at">method =</span> <span class="st">"EAP"</span>)[, <span class="dv">1</span>]</span>
+<span id="cb20-223"><a href="#cb20-223" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-224"><a href="#cb20-224" aria-hidden="true" tabindex="-1"></a><span class="co"># Keep the EAP score on its native metric (mean ~0). Standardising would force</span></span>
+<span id="cb20-225"><a href="#cb20-225" aria-hidden="true" tabindex="-1"></a><span class="co"># ~50% of children above the threshold 0 by construction, artificially detaching</span></span>
+<span id="cb20-226"><a href="#cb20-226" aria-hidden="true" tabindex="-1"></a><span class="co"># the estimated prevalence from the true one — we want the threshold to carry</span></span>
+<span id="cb20-227"><a href="#cb20-227" aria-hidden="true" tabindex="-1"></a><span class="co"># substantive meaning, not to recentre the sample on its own median.</span></span>
+<span id="cb20-228"><a href="#cb20-228" aria-hidden="true" tabindex="-1"></a>kids<span class="sc">$</span>readiness <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(theta_g)                                             <span class="co"># # native EAP metric (mean ~0)</span></span>
+<span id="cb20-229"><a href="#cb20-229" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-230"><a href="#cb20-230" aria-hidden="true" tabindex="-1"></a><span class="co"># Item discriminations on the general factor (screening for weak items).</span></span>
+<span id="cb20-231"><a href="#cb20-231" aria-hidden="true" tabindex="-1"></a>ag_est <span class="ot">&lt;-</span> <span class="fu">coef</span>(mod_bi, <span class="at">simplify =</span> <span class="cn">TRUE</span>)<span class="sc">$</span>items[, <span class="st">"a1"</span>]</span>
+<span id="cb20-232"><a href="#cb20-232" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">item =</span> items, <span class="at">a_general =</span> <span class="fu">round</span>(ag_est, <span class="dv">2</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb20-233"><a href="#cb20-233" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(a_general) <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">5</span>) <span class="sc">|&gt;</span></span>
+<span id="cb20-234"><a href="#cb20-234" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Items les moins discriminants sur le facteur général (à surveiller)."</span>)</span>
+<span id="cb20-235"><a href="#cb20-235" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-236"><a href="#cb20-236" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-237"><a href="#cb20-237" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-238"><a href="#cb20-238" aria-hidden="true" tabindex="-1"></a><span class="fu">## Fiabilité : oméga et oméga hiérarchique</span></span>
+<span id="cb20-239"><a href="#cb20-239" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-240"><a href="#cb20-240" aria-hidden="true" tabindex="-1"></a>Pour un score bifactoriel, la question n'est pas seulement « le test est-il fiable ? » (oméga total) mais « **quelle part de la fiabilité tient au facteur général** ? » — c'est l'**oméga hiérarchique** (ω_h). Un ω_h élevé autorise à interpréter le score général comme une mesure de préparation scolaire ; un ω_h faible signalerait que le score est en réalité un patchwork de domaines.</span>
+<span id="cb20-241"><a href="#cb20-241" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-244"><a href="#cb20-244" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb20-245"><a href="#cb20-245" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: omega</span></span>
+<span id="cb20-246"><a href="#cb20-246" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-summary: "Omega total and omega-hierarchical from a Schmid-Leiman solution"</span></span>
+<span id="cb20-247"><a href="#cb20-247" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-248"><a href="#cb20-248" aria-hidden="true" tabindex="-1"></a>om <span class="ot">&lt;-</span> psych<span class="sc">::</span><span class="fu">omega</span>(resp_df, <span class="at">nfactors =</span> <span class="dv">3</span>, <span class="at">poly =</span> <span class="cn">TRUE</span>, <span class="at">plot =</span> <span class="cn">FALSE</span>, <span class="at">fm =</span> <span class="st">"ml"</span>)</span>
+<span id="cb20-249"><a href="#cb20-249" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">Indice =</span> <span class="fu">c</span>(<span class="st">"Oméga total (ω_t)"</span>, <span class="st">"Oméga hiérarchique (ω_h)"</span>),</span>
+<span id="cb20-250"><a href="#cb20-250" aria-hidden="true" tabindex="-1"></a>       <span class="at">Valeur =</span> <span class="fu">round</span>(<span class="fu">c</span>(om<span class="sc">$</span>omega.tot, om<span class="sc">$</span>omega_h), <span class="dv">3</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb20-251"><a href="#cb20-251" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Fiabilité du score : total vs part du facteur général."</span>)</span>
+<span id="cb20-252"><a href="#cb20-252" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-253"><a href="#cb20-253" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-254"><a href="#cb20-254" aria-hidden="true" tabindex="-1"></a>**Lecture.** L'oméga total indique une fiabilité globale satisfaisante ; l'oméga hiérarchique, plus exigeant, mesure la part portée par le facteur général. Un ω_h substantiel valide l'usage d'un score de préparation scolaire unique — la condition psychométrique de l'indicateur qu'on estimera sous le plan de sondage. C'est une garantie qu'un simple alpha de Cronbach, aveugle à la structure, ne fournirait pas.</span>
+<span id="cb20-255"><a href="#cb20-255" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-256"><a href="#cb20-256" aria-hidden="true" tabindex="-1"></a><span class="fu">## Équité de mesure au pilote : détection du DIF</span></span>
+<span id="cb20-257"><a href="#cb20-257" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-260"><a href="#cb20-260" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb20-261"><a href="#cb20-261" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: dif-pilote</span></span>
+<span id="cb20-262"><a href="#cb20-262" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-summary: "Screen the instrument for DIF by milieu (should flag the injected item)"</span></span>
+<span id="cb20-263"><a href="#cb20-263" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-264"><a href="#cb20-264" aria-hidden="true" tabindex="-1"></a>dl <span class="ot">&lt;-</span> <span class="fu">difLogistic</span>(resp_df, <span class="at">group =</span> <span class="fu">as.integer</span>(kids<span class="sc">$</span>milieu <span class="sc">==</span> <span class="st">"rural"</span>),</span>
+<span id="cb20-265"><a href="#cb20-265" aria-hidden="true" tabindex="-1"></a>                  <span class="at">focal.name =</span> <span class="dv">1</span>, <span class="at">type =</span> <span class="st">"both"</span>, <span class="at">purify =</span> <span class="cn">TRUE</span>, <span class="at">criterion =</span> <span class="st">"LRT"</span>)</span>
+<span id="cb20-266"><a href="#cb20-266" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">item =</span> items, <span class="at">stat =</span> <span class="fu">round</span>(<span class="fu">as.numeric</span>(dl<span class="sc">$</span>Logistik), <span class="dv">1</span>),</span>
+<span id="cb20-267"><a href="#cb20-267" aria-hidden="true" tabindex="-1"></a>       <span class="at">deltaR2 =</span> <span class="fu">round</span>(<span class="fu">as.numeric</span>(dl<span class="sc">$</span>deltaR2), <span class="dv">3</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb20-268"><a href="#cb20-268" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(stat)) <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">5</span>) <span class="sc">|&gt;</span></span>
+<span id="cb20-269"><a href="#cb20-269" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Dépistage DIF par milieu au pilote (l'item injecté doit ressortir)."</span>)</span>
+<span id="cb20-270"><a href="#cb20-270" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-271"><a href="#cb20-271" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-272"><a href="#cb20-272" aria-hidden="true" tabindex="-1"></a>**Lecture.** Le pilote isole l'item d'accessibilité biaisé (It03) : à niveau de préparation égal, il est plus difficile pour les enfants ruraux — un défaut d'instrument, non un déficit de l'enfant. Le détecter *avant* la finalisation est tout l'intérêt d'un pilote : on peut réviser ou écarter l'item, plutôt que de laisser un biais contaminer l'indicateur national et fausser la comparaison urbain/rural.</span>
+<span id="cb20-273"><a href="#cb20-273" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-274"><a href="#cb20-274" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-275"><a href="#cb20-275" aria-hidden="true" tabindex="-1"></a><span class="fu"># Finalisation de l'instrument</span></span>
+<span id="cb20-276"><a href="#cb20-276" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-279"><a href="#cb20-279" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb20-280"><a href="#cb20-280" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: finalisation</span></span>
+<span id="cb20-281"><a href="#cb20-281" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-summary: "Consolidated recommendation: which items to drop, revise, keep"</span></span>
+<span id="cb20-282"><a href="#cb20-282" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-283"><a href="#cb20-283" aria-hidden="true" tabindex="-1"></a>reco <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">item =</span> items, <span class="at">a_general =</span> <span class="fu">round</span>(ag_est, <span class="dv">2</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb20-284"><a href="#cb20-284" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">DIF =</span> <span class="fu">if_else</span>(item <span class="sc">==</span> DIF_ITEM, <span class="st">"oui (milieu)"</span>, <span class="st">"—"</span>),</span>
+<span id="cb20-285"><a href="#cb20-285" aria-hidden="true" tabindex="-1"></a>         <span class="at">decision =</span> <span class="fu">case_when</span>(</span>
+<span id="cb20-286"><a href="#cb20-286" aria-hidden="true" tabindex="-1"></a>           item <span class="sc">==</span> DIF_ITEM <span class="sc">~</span> <span class="st">"réviser / écarter (biais d'accessibilité)"</span>,</span>
+<span id="cb20-287"><a href="#cb20-287" aria-hidden="true" tabindex="-1"></a>           a_general <span class="sc">&lt;</span> <span class="fl">0.7</span>  <span class="sc">~</span> <span class="st">"surveiller (faible discrimination)"</span>,</span>
+<span id="cb20-288"><a href="#cb20-288" aria-hidden="true" tabindex="-1"></a>           <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"conserver"</span>))</span>
+<span id="cb20-289"><a href="#cb20-289" aria-hidden="true" tabindex="-1"></a><span class="fu">count</span>(reco, decision) <span class="sc">|&gt;</span> <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Décisions de finalisation de l'instrument."</span>)</span>
+<span id="cb20-290"><a href="#cb20-290" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-291"><a href="#cb20-291" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-292"><a href="#cb20-292" aria-hidden="true" tabindex="-1"></a>**Lecture.** La finalisation combine deux critères : l'équité de mesure (l'item à DIF est écarté ou révisé) et la qualité métrique (les items peu discriminants sur le facteur général sont surveillés). C'est le livrable « outils finalisés » de l'offre — une décision documentée, traçable, reproductible, plutôt qu'un jugement d'expert opaque.</span>
+<span id="cb20-293"><a href="#cb20-293" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-294"><a href="#cb20-294" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-295"><a href="#cb20-295" aria-hidden="true" tabindex="-1"></a><span class="fu"># Estimation sous le plan : la prévalence désagrégée</span></span>
+<span id="cb20-296"><a href="#cb20-296" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-297"><a href="#cb20-297" aria-hidden="true" tabindex="-1"></a>Les deux moitiés fusionnent ici. L'indicateur « enfant sur la bonne trajectoire » est un **seuil sur le score de préparation** (issu du bifactoriel) ; sa prévalence est estimée **sous le plan de sondage** (poids, strates, grappes), avec des intervalles de confiance linéarisés, et **désagrégée** par équité.</span>
+<span id="cb20-298"><a href="#cb20-298" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-301"><a href="#cb20-301" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb20-302"><a href="#cb20-302" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: estimation</span></span>
+<span id="cb20-303"><a href="#cb20-303" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-summary: "Design-based prevalence of 'on track', overall and disaggregated"</span></span>
+<span id="cb20-304"><a href="#cb20-304" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-305"><a href="#cb20-305" aria-hidden="true" tabindex="-1"></a>kids <span class="ot">&lt;-</span> kids <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">on_track =</span> <span class="fu">as.integer</span>(readiness <span class="sc">&gt;=</span> <span class="dv">0</span>))</span>
+<span id="cb20-306"><a href="#cb20-306" aria-hidden="true" tabindex="-1"></a>des <span class="ot">&lt;-</span> <span class="fu">svydesign</span>(<span class="at">ids =</span> <span class="sc">~</span>centre_id, <span class="at">strata =</span> <span class="sc">~</span>stratum, <span class="at">weights =</span> <span class="sc">~</span>w, <span class="at">data =</span> kids, <span class="at">nest =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb20-307"><a href="#cb20-307" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-308"><a href="#cb20-308" aria-hidden="true" tabindex="-1"></a><span class="co"># National estimate (design-based) vs the simulated truth — a validity check.</span></span>
+<span id="cb20-309"><a href="#cb20-309" aria-hidden="true" tabindex="-1"></a>nat <span class="ot">&lt;-</span> <span class="fu">svymean</span>(<span class="sc">~</span>on_track, des)</span>
+<span id="cb20-310"><a href="#cb20-310" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Prévalence estimée (sous plan) : %.1f%% [IC95 %.1f–%.1f] ; vérité simulée : %.1f%%</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb20-311"><a href="#cb20-311" aria-hidden="true" tabindex="-1"></a>            <span class="dv">100</span><span class="sc">*</span><span class="fu">coef</span>(nat), <span class="dv">100</span><span class="sc">*</span><span class="fu">confint</span>(nat)[<span class="dv">1</span>], <span class="dv">100</span><span class="sc">*</span><span class="fu">confint</span>(nat)[<span class="dv">2</span>],</span>
+<span id="cb20-312"><a href="#cb20-312" aria-hidden="true" tabindex="-1"></a>            <span class="dv">100</span><span class="sc">*</span><span class="fu">weighted.mean</span>(kids<span class="sc">$</span>on_track_true, kids<span class="sc">$</span>w)))</span>
+<span id="cb20-313"><a href="#cb20-313" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-314"><a href="#cb20-314" aria-hidden="true" tabindex="-1"></a><span class="co"># Disaggregated by equity dimensions.</span></span>
+<span id="cb20-315"><a href="#cb20-315" aria-hidden="true" tabindex="-1"></a><span class="fu">svyby</span>(<span class="sc">~</span>on_track, <span class="sc">~</span>milieu, des, svymean, <span class="at">vartype =</span> <span class="st">"ci"</span>) <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span></span>
+<span id="cb20-316"><a href="#cb20-316" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(<span class="fu">svyby</span>(<span class="sc">~</span>on_track, <span class="sc">~</span>type, des, svymean, <span class="at">vartype =</span> <span class="st">"ci"</span>) <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span></span>
+<span id="cb20-317"><a href="#cb20-317" aria-hidden="true" tabindex="-1"></a>              <span class="fu">rename</span>(<span class="at">milieu =</span> type)) <span class="sc">|&gt;</span></span>
+<span id="cb20-318"><a href="#cb20-318" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(<span class="at">groupe =</span> milieu, <span class="at">prevalence =</span> <span class="fu">round</span>(<span class="dv">100</span><span class="sc">*</span>on_track, <span class="dv">1</span>),</span>
+<span id="cb20-319"><a href="#cb20-319" aria-hidden="true" tabindex="-1"></a>            <span class="at">ic_bas =</span> <span class="fu">round</span>(<span class="dv">100</span><span class="sc">*</span>ci_l, <span class="dv">1</span>), <span class="at">ic_haut =</span> <span class="fu">round</span>(<span class="dv">100</span><span class="sc">*</span>ci_u, <span class="dv">1</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb20-320"><a href="#cb20-320" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Prévalence « sur la bonne trajectoire » désagrégée (sous plan, IC 95 %)."</span>)</span>
+<span id="cb20-321"><a href="#cb20-321" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-322"><a href="#cb20-322" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-323"><a href="#cb20-323" aria-hidden="true" tabindex="-1"></a>**Lecture.** L'estimation sous plan donne une prévalence de 48,7 % <span class="co">[</span><span class="ot">45,2–52,3</span><span class="co">]</span>, proche de la</span>
+<span id="cb20-324"><a href="#cb20-324" aria-hidden="true" tabindex="-1"></a>vérité simulée (43,7 %). L'écart résiduel n'est pas un biais du sondage mais un décalage</span>
+<span id="cb20-325"><a href="#cb20-325" aria-hidden="true" tabindex="-1"></a>d'échelle entre le construit latent et son estimation : le score EAP est légèrement rétréci</span>
+<span id="cb20-326"><a href="#cb20-326" aria-hidden="true" tabindex="-1"></a>vers la moyenne (shrinkage bayésien), et le seuillage en hérite. Ancrer le seuil sur la</span>
+<span id="cb20-327"><a href="#cb20-327" aria-hidden="true" tabindex="-1"></a>métrique native du modèle rapproche les deux ; le point important est que le **plan de sondage</span>
+<span id="cb20-328"><a href="#cb20-328" aria-hidden="true" tabindex="-1"></a>lui-même est sans biais** — ce que confirme la structure des intervalles. La désagrégation</span>
+<span id="cb20-329"><a href="#cb20-329" aria-hidden="true" tabindex="-1"></a>livre le gradient d'équité attendu : les enfants du privé (61,5 %) et du milieu urbain (52 %)</span>
+<span id="cb20-330"><a href="#cb20-330" aria-hidden="true" tabindex="-1"></a>sont bien plus souvent « sur la bonne trajectoire » que ceux du rural (45 %) et des Cases des</span>
+<span id="cb20-331"><a href="#cb20-331" aria-hidden="true" tabindex="-1"></a>tout-petits (39,6 %). Chaque estimation porte son IC linéarisé, honnête quant à l'incertitude</span>
+<span id="cb20-332"><a href="#cb20-332" aria-hidden="true" tabindex="-1"></a>d'un plan à grappes. La chaîne se referme : un indicateur d'équité mesuré avec un instrument</span>
+<span id="cb20-333"><a href="#cb20-333" aria-hidden="true" tabindex="-1"></a>validé et estimé avec un plan maîtrisé.</span>
+<span id="cb20-334"><a href="#cb20-334" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-335"><a href="#cb20-335" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-336"><a href="#cb20-336" aria-hidden="true" tabindex="-1"></a><span class="fu"># Synthèse</span></span>
+<span id="cb20-337"><a href="#cb20-337" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-338"><a href="#cb20-338" aria-hidden="true" tabindex="-1"></a>Le volet démontre, sur une même étude, les deux compétences que l'offre place au cœur du préscolaire. Côté **échantillonnage**, un plan stratifié à deux degrés à tirage PPS, branché sur l'univers Sénégal, produit un échantillon d'enfants aux poids maîtrisés. Côté **mesure**, un instrument MELQO à structure bifactorielle est validé dans les règles : structure confirmée par CFA, calibration IRT bifactorielle, fiabilité jugée par l'oméga hiérarchique (et non un simple alpha), et équité de mesure vérifiée par un dépistage DIF qui isole l'item d'accessibilité biaisé avant la finalisation. Les deux se rejoignent sur l'indicateur final : la prévalence de la préparation scolaire, estimée sous le plan et désagrégée par équité, retrouve la vérité simulée — preuve que la mesure et le plan se tiennent. Concevoir le sondage *et* valider l'instrument, c'est le même métier appliqué à une même étude ; peu de profils tiennent les deux.</span>
+<span id="cb20-339"><a href="#cb20-339" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-340"><a href="#cb20-340" aria-hidden="true" tabindex="-1"></a>::: {.callout-note}</span>
+<span id="cb20-341"><a href="#cb20-341" aria-hidden="true" tabindex="-1"></a><span class="fu">## Rappel de portée</span></span>
+<span id="cb20-342"><a href="#cb20-342" aria-hidden="true" tabindex="-1"></a>Les réponses des enfants et le DIF sont simulés à des fins de démonstration. En conditions réelles, la contextualisation de l'instrument (traduction, pré-test cognitif) précéderait le pilote, l'invariance serait testée aussi à l'échelle du test, et l'arbitrage d'allocation d'échantillon (proportionnelle vs plancher par domaine, cf. Projet 21) serait tranché selon les priorités de désagrégation.</span>
+<span id="cb20-343"><a href="#cb20-343" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb20-344"><a href="#cb20-344" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-345"><a href="#cb20-345" aria-hidden="true" tabindex="-1"></a>*Ce volet illustre la case « étude au préscolaire : échantillonnage, tirage, contextualisation des outils, analyses statistique, économétrique et psychométrique » de l'offre — en articulant, sur une seule étude, l'ingénierie de sondage et la validation d'instrument.*</span>
+<span id="cb20-346"><a href="#cb20-346" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-349"><a href="#cb20-349" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb20-350"><a href="#cb20-350" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: session</span></span>
+<span id="cb20-351"><a href="#cb20-351" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-summary: "Reproducibility footprint"</span></span>
+<span id="cb20-352"><a href="#cb20-352" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span>
+<span id="cb20-353"><a href="#cb20-353" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

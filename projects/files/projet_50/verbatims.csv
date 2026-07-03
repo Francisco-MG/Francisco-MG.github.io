@@ -1,0 +1,801 @@
+id,ia_id,g_ia,texte
+V0001,IA06,-0.09886818526410894,Les décisions d'affectation sont notifiées beaucoup trop tard.
+V0002,IA04,1.050436228132796,Des classes entières demeurent sans titulaire une bonne partie de l'année.
+V0003,IA08,-0.5589055756131087,Le remplacement des maîtres laissent des classes sans enseignant.
+V0004,IA08,-0.5589055756131087,Les mouvements de personnel arrivent bien après la rentrée.
+V0005,IA02,-0.6770804424361538,Le dialogue avec l'IEF manque de transparence.
+V0006,IA12,0.8036427494500231,Le redéploiement des enseignants se fait de façon fluide.
+V0007,IA09,1.508379536169013,Les remplacements laissent des classes sans enseignant.
+V0008,IA11,0.5436260064330518,Plusieurs postes demeurent sans titulaire une bonne partie de l'année.
+V0009,IA01,1.1358119908378483,Le remplacement des maîtres ne sont jamais assurés à temps.
+V0010,IA10,-1.7249192939776967,Le dialogue avec l'IEF est lent et peu lisible.
+V0011,IA08,-0.5589055756131087,Les remplacements sont assurés rapidement.
+V0012,IA13,-0.5950300302811243,Les affectations d'enseignants sont notifiées beaucoup trop tard.
+V0013,IA09,1.508379536169013,Le dialogue avec l'IEF est lent et peu lisible.
+V0014,IA10,-1.7249192939776967,Le remplacement des maîtres dépendent du bon vouloir local.
+V0015,IA03,0.4625650775900469,Les mouvements de personnel sont notifiées beaucoup trop tard.
+V0016,IA11,0.5436260064330518,Plusieurs postes ne sont pas pourvus avant des mois.
+V0017,IA04,1.050436228132796,Le redéploiement des enseignants répond vite aux besoins.
+V0018,IA02,-0.6770804424361538,Le pilotage déconcentré se perd en circuits interminables.
+V0019,IA02,-0.6770804424361538,Les mouvements de personnel traînent chaque année en longueur.
+V0020,IA11,0.5436260064330518,La couverture des absences sont assurés rapidement.
+V0021,IA01,1.1358119908378483,Les mouvements de personnel sont traitées rapidement.
+V0022,IA10,-1.7249192939776967,Le pilotage déconcentré manque de transparence.
+V0023,IA06,-0.09886818526410894,Les remplacements dépendent du bon vouloir local.
+V0024,IA12,0.8036427494500231,Des classes entières demeurent sans titulaire une bonne partie de l'année.
+V0025,IA11,0.5436260064330518,La réaffectation des maîtres répond vite aux besoins.
+V0026,IA01,1.1358119908378483,Les décisions d'affectation sont traitées rapidement.
+V0027,IA11,0.5436260064330518,La couverture des absences ne sont jamais assurés à temps.
+V0028,IA02,-0.6770804424361538,La réaffectation des maîtres répond vite aux besoins.
+V0029,IA09,1.508379536169013,La coordination avec l'IEF s'est nettement améliorée.
+V0030,IA12,0.8036427494500231,Les remplacements ne sont jamais assurés à temps.
+V0031,IA05,-1.961883486465059,Les remplacements sont organisés sans retard.
+V0032,IA09,1.508379536169013,Les décisions d'affectation sont notifiées beaucoup trop tard.
+V0033,IA01,1.1358119908378483,La coordination avec l'IEF est claire et efficace.
+V0034,IA04,1.050436228132796,Les affectations sont traitées rapidement.
+V0035,IA01,1.1358119908378483,Le remplacement des maîtres dépendent du bon vouloir local.
+V0036,IA13,-0.5950300302811243,Le remplacement des maîtres dépendent du bon vouloir local.
+V0037,IA14,0.361886464303974,La couverture des absences sont assurés rapidement.
+V0038,IA10,-1.7249192939776967,La réaffectation des maîtres répond vite aux besoins.
+V0039,IA11,0.5436260064330518,Les affectations arrivent désormais avant la rentrée.
+V0040,IA13,-0.5950300302811243,Le dialogue avec l'inspection est claire et efficace.
+V0041,IA13,-0.5950300302811243,Des classes entières restent vacants faute de redéploiement.
+V0042,IA04,1.050436228132796,La coordination avec l'inspection est lent et peu lisible.
+V0043,IA15,-0.5128143979953421,Plusieurs postes ne sont pas pourvus avant des mois.
+V0044,IA09,1.508379536169013,Les décisions d'affectation sont traitées rapidement.
+V0045,IA08,-0.5589055756131087,Les mouvements de personnel arrivent désormais avant la rentrée.
+V0046,IA16,-0.4962851679537585,Les remplacements ne sont jamais assurés à temps.
+V0047,IA05,-1.961883486465059,Le remplacement des maîtres dépendent du bon vouloir local.
+V0048,IA08,-0.5589055756131087,Le redéploiement des enseignants se fait de façon fluide.
+V0049,IA05,-1.961883486465059,Le remplacement des maîtres ne sont jamais assurés à temps.
+V0050,IA15,-0.5128143979953421,Le pilotage déconcentré se perd en circuits interminables.
+V0051,IA10,-1.7249192939776967,De nombreux postes ouverts restent vacants faute de redéploiement.
+V0052,IA01,1.1358119908378483,La coordination avec l'IEF est claire et efficace.
+V0053,IA04,1.050436228132796,Les décisions d'affectation traînent chaque année en longueur.
+V0054,IA01,1.1358119908378483,Le dialogue avec l'inspection est claire et efficace.
+V0055,IA06,-0.09886818526410894,Les remplacements sont organisés sans retard.
+V0056,IA02,-0.6770804424361538,Les décisions d'affectation sont anticipées et expliquées.
+V0057,IA08,-0.5589055756131087,Le remplacement des maîtres laissent des classes sans enseignant.
+V0058,IA05,-1.961883486465059,Des classes entières restent vacants faute de redéploiement.
+V0059,IA07,0.7594385270695994,Le dialogue avec l'IEF est lent et peu lisible.
+V0060,IA16,-0.4962851679537585,La couverture des absences dépendent du bon vouloir local.
+V0061,IA12,0.8036427494500231,Le pilotage déconcentré manque de transparence.
+V0062,IA10,-1.7249192939776967,La coordination avec l'inspection est lent et peu lisible.
+V0063,IA06,-0.09886818526410894,La couverture des absences dépendent du bon vouloir local.
+V0064,IA14,0.361886464303974,Le dialogue avec l'IEF se perd en circuits interminables.
+V0065,IA06,-0.09886818526410894,Les remplacements ne sont jamais assurés à temps.
+V0066,IA11,0.5436260064330518,Les décisions d'affectation arrivent désormais avant la rentrée.
+V0067,IA16,-0.4962851679537585,Des classes entières restent vacants faute de redéploiement.
+V0068,IA06,-0.09886818526410894,Plusieurs postes demeurent sans titulaire une bonne partie de l'année.
+V0069,IA02,-0.6770804424361538,Le dialogue avec l'IEF est lent et peu lisible.
+V0070,IA14,0.361886464303974,Les décisions d'affectation sont traitées rapidement.
+V0071,IA08,-0.5589055756131087,Les remplacements sont assurés rapidement.
+V0072,IA15,-0.5128143979953421,Les remplacements ne sont jamais assurés à temps.
+V0073,IA07,0.7594385270695994,Les décisions d'affectation sont anticipées et expliquées.
+V0074,IA12,0.8036427494500231,La couverture des absences ne sont jamais assurés à temps.
+V0075,IA04,1.050436228132796,Les décisions d'affectation sont traitées rapidement.
+V0076,IA12,0.8036427494500231,Le suivi des postes vacants répond vite aux besoins.
+V0077,IA10,-1.7249192939776967,Les remplacements ne sont jamais assurés à temps.
+V0078,IA14,0.361886464303974,La couverture des absences sont organisés sans retard.
+V0079,IA03,0.4625650775900469,Les remplacements sont organisés sans retard.
+V0080,IA08,-0.5589055756131087,La coordination avec l'inspection est lent et peu lisible.
+V0081,IA16,-0.4962851679537585,Les affectations d'enseignants traînent chaque année en longueur.
+V0082,IA12,0.8036427494500231,Le dialogue avec l'inspection est claire et efficace.
+V0083,IA10,-1.7249192939776967,Le pilotage déconcentré se perd en circuits interminables.
+V0084,IA09,1.508379536169013,Le redéploiement des enseignants se fait de façon fluide.
+V0085,IA11,0.5436260064330518,Les remplacements sont organisés sans retard.
+V0086,IA15,-0.5128143979953421,Les décisions d'affectation arrivent désormais avant la rentrée.
+V0087,IA03,0.4625650775900469,La coordination avec l'IEF est claire et efficace.
+V0088,IA09,1.508379536169013,Le redéploiement des enseignants se fait de façon fluide.
+V0089,IA06,-0.09886818526410894,Les affectations d'enseignants traînent chaque année en longueur.
+V0090,IA04,1.050436228132796,Le dialogue avec l'inspection s'est nettement améliorée.
+V0091,IA08,-0.5589055756131087,Plusieurs postes restent vacants faute de redéploiement.
+V0092,IA13,-0.5950300302811243,Le pilotage déconcentré manque de transparence.
+V0093,IA09,1.508379536169013,Le dialogue avec l'inspection s'est nettement améliorée.
+V0094,IA10,-1.7249192939776967,Les affectations d'enseignants sont notifiées beaucoup trop tard.
+V0095,IA03,0.4625650775900469,Le pilotage déconcentré se perd en circuits interminables.
+V0096,IA09,1.508379536169013,Le dialogue avec l'inspection est claire et efficace.
+V0097,IA12,0.8036427494500231,Plusieurs postes ne sont pas pourvus avant des mois.
+V0098,IA06,-0.09886818526410894,La coordination avec l'IEF s'est nettement améliorée.
+V0099,IA02,-0.6770804424361538,Le remplacement des maîtres laissent des classes sans enseignant.
+V0100,IA12,0.8036427494500231,Des classes entières restent vacants faute de redéploiement.
+V0101,IA01,1.1358119908378483,Le suivi des postes vacants se fait de façon fluide.
+V0102,IA11,0.5436260064330518,La réaffectation des maîtres se fait de façon fluide.
+V0103,IA04,1.050436228132796,Les décisions d'affectation arrivent bien après la rentrée.
+V0104,IA14,0.361886464303974,La réaffectation des maîtres est réactif et transparent.
+V0105,IA09,1.508379536169013,Les affectations sont traitées rapidement.
+V0106,IA16,-0.4962851679537585,Des classes entières demeurent sans titulaire une bonne partie de l'année.
+V0107,IA10,-1.7249192939776967,Plusieurs postes ne sont pas pourvus avant des mois.
+V0108,IA02,-0.6770804424361538,Le remplacement des maîtres ne sont jamais assurés à temps.
+V0109,IA04,1.050436228132796,Le redéploiement des enseignants répond vite aux besoins.
+V0110,IA03,0.4625650775900469,Les affectations sont traitées rapidement.
+V0111,IA07,0.7594385270695994,Les affectations arrivent désormais avant la rentrée.
+V0112,IA15,-0.5128143979953421,Le dialogue avec l'IEF se perd en circuits interminables.
+V0113,IA02,-0.6770804424361538,La couverture des absences dépendent du bon vouloir local.
+V0114,IA04,1.050436228132796,Les mouvements de personnel sont traitées rapidement.
+V0115,IA07,0.7594385270695994,Les décisions d'affectation sont anticipées et expliquées.
+V0116,IA10,-1.7249192939776967,Le pilotage déconcentré se perd en circuits interminables.
+V0117,IA06,-0.09886818526410894,Le redéploiement des enseignants est réactif et transparent.
+V0118,IA03,0.4625650775900469,Le suivi des postes vacants répond vite aux besoins.
+V0119,IA10,-1.7249192939776967,Les décisions d'affectation arrivent bien après la rentrée.
+V0120,IA04,1.050436228132796,Le suivi des postes vacants répond vite aux besoins.
+V0121,IA02,-0.6770804424361538,Le pilotage déconcentré est lent et peu lisible.
+V0122,IA01,1.1358119908378483,Les affectations d'enseignants traînent chaque année en longueur.
+V0123,IA11,0.5436260064330518,Les affectations d'enseignants traînent chaque année en longueur.
+V0124,IA09,1.508379536169013,Le dialogue avec l'inspection est claire et efficace.
+V0125,IA14,0.361886464303974,Le pilotage déconcentré se perd en circuits interminables.
+V0126,IA02,-0.6770804424361538,De nombreux postes ouverts ne sont pas pourvus avant des mois.
+V0127,IA07,0.7594385270695994,Les remplacements sont assurés rapidement.
+V0128,IA02,-0.6770804424361538,Plusieurs postes ne sont pas pourvus avant des mois.
+V0129,IA11,0.5436260064330518,Les décisions d'affectation sont traitées rapidement.
+V0130,IA04,1.050436228132796,Le redéploiement des enseignants est réactif et transparent.
+V0131,IA03,0.4625650775900469,Les décisions d'affectation arrivent désormais avant la rentrée.
+V0132,IA08,-0.5589055756131087,La couverture des absences sont organisés sans retard.
+V0133,IA13,-0.5950300302811243,La couverture des absences sont organisés sans retard.
+V0134,IA14,0.361886464303974,Les affectations d'enseignants arrivent bien après la rentrée.
+V0135,IA16,-0.4962851679537585,Le dialogue avec l'inspection s'est nettement améliorée.
+V0136,IA16,-0.4962851679537585,Les remplacements ne sont jamais assurés à temps.
+V0137,IA06,-0.09886818526410894,Les remplacements ne sont jamais assurés à temps.
+V0138,IA05,-1.961883486465059,La couverture des absences sont organisés sans retard.
+V0139,IA05,-1.961883486465059,Des classes entières demeurent sans titulaire une bonne partie de l'année.
+V0140,IA05,-1.961883486465059,Les remplacements ne sont jamais assurés à temps.
+V0141,IA04,1.050436228132796,Plusieurs postes demeurent sans titulaire une bonne partie de l'année.
+V0142,IA07,0.7594385270695994,Les affectations sont traitées rapidement.
+V0143,IA15,-0.5128143979953421,Les affectations sont traitées rapidement.
+V0144,IA10,-1.7249192939776967,Les mouvements de personnel traînent chaque année en longueur.
+V0145,IA10,-1.7249192939776967,La réaffectation des maîtres se fait de façon fluide.
+V0146,IA09,1.508379536169013,Le dialogue avec l'inspection est claire et efficace.
+V0147,IA04,1.050436228132796,La coordination avec l'IEF est claire et efficace.
+V0148,IA06,-0.09886818526410894,La couverture des absences sont organisés sans retard.
+V0149,IA16,-0.4962851679537585,Le suivi des postes vacants est réactif et transparent.
+V0150,IA06,-0.09886818526410894,Les affectations d'enseignants sont notifiées beaucoup trop tard.
+V0151,IA14,0.361886464303974,La réaffectation des maîtres répond vite aux besoins.
+V0152,IA09,1.508379536169013,Les remplacements sont organisés sans retard.
+V0153,IA05,-1.961883486465059,Le dialogue avec l'IEF est lent et peu lisible.
+V0154,IA11,0.5436260064330518,La couverture des absences sont organisés sans retard.
+V0155,IA07,0.7594385270695994,Le suivi des postes vacants se fait de façon fluide.
+V0156,IA02,-0.6770804424361538,Le dialogue avec l'inspection s'est nettement améliorée.
+V0157,IA15,-0.5128143979953421,Les mouvements de personnel sont anticipées et expliquées.
+V0158,IA16,-0.4962851679537585,La couverture des absences ne sont jamais assurés à temps.
+V0159,IA12,0.8036427494500231,Le redéploiement des enseignants est réactif et transparent.
+V0160,IA14,0.361886464303974,De nombreux postes ouverts restent vacants faute de redéploiement.
+V0161,IA10,-1.7249192939776967,Les mouvements de personnel sont notifiées beaucoup trop tard.
+V0162,IA08,-0.5589055756131087,Des classes entières ne sont pas pourvus avant des mois.
+V0163,IA04,1.050436228132796,Des classes entières ne sont pas pourvus avant des mois.
+V0164,IA08,-0.5589055756131087,La couverture des absences sont organisés sans retard.
+V0165,IA15,-0.5128143979953421,La couverture des absences sont organisés sans retard.
+V0166,IA06,-0.09886818526410894,De nombreux postes ouverts restent vacants faute de redéploiement.
+V0167,IA03,0.4625650775900469,Le dialogue avec l'IEF manque de transparence.
+V0168,IA11,0.5436260064330518,Le redéploiement des enseignants se fait de façon fluide.
+V0169,IA16,-0.4962851679537585,Le pilotage déconcentré est lent et peu lisible.
+V0170,IA01,1.1358119908378483,Le dialogue avec l'inspection s'est nettement améliorée.
+V0171,IA11,0.5436260064330518,Le redéploiement des enseignants répond vite aux besoins.
+V0172,IA07,0.7594385270695994,Des classes entières restent vacants faute de redéploiement.
+V0173,IA04,1.050436228132796,La couverture des absences sont organisés sans retard.
+V0174,IA04,1.050436228132796,Le redéploiement des enseignants se fait de façon fluide.
+V0175,IA13,-0.5950300302811243,La coordination avec l'inspection se perd en circuits interminables.
+V0176,IA09,1.508379536169013,Les décisions d'affectation arrivent désormais avant la rentrée.
+V0177,IA15,-0.5128143979953421,Les mouvements de personnel sont traitées rapidement.
+V0178,IA09,1.508379536169013,Les affectations d'enseignants sont notifiées beaucoup trop tard.
+V0179,IA07,0.7594385270695994,Les affectations sont traitées rapidement.
+V0180,IA04,1.050436228132796,Plusieurs postes ne sont pas pourvus avant des mois.
+V0181,IA01,1.1358119908378483,La couverture des absences sont organisés sans retard.
+V0182,IA11,0.5436260064330518,Le remplacement des maîtres dépendent du bon vouloir local.
+V0183,IA04,1.050436228132796,Les affectations sont traitées rapidement.
+V0184,IA06,-0.09886818526410894,Les remplacements sont assurés rapidement.
+V0185,IA11,0.5436260064330518,La couverture des absences sont organisés sans retard.
+V0186,IA13,-0.5950300302811243,Le dialogue avec l'IEF est lent et peu lisible.
+V0187,IA03,0.4625650775900469,Les mouvements de personnel arrivent désormais avant la rentrée.
+V0188,IA09,1.508379536169013,Les décisions d'affectation arrivent désormais avant la rentrée.
+V0189,IA10,-1.7249192939776967,Les remplacements laissent des classes sans enseignant.
+V0190,IA10,-1.7249192939776967,La couverture des absences sont organisés sans retard.
+V0191,IA13,-0.5950300302811243,Le dialogue avec l'inspection est claire et efficace.
+V0192,IA02,-0.6770804424361538,Les affectations sont anticipées et expliquées.
+V0193,IA09,1.508379536169013,La coordination avec l'inspection se perd en circuits interminables.
+V0194,IA09,1.508379536169013,Le dialogue avec l'inspection est claire et efficace.
+V0195,IA13,-0.5950300302811243,Les remplacements sont assurés rapidement.
+V0196,IA06,-0.09886818526410894,La couverture des absences sont organisés sans retard.
+V0197,IA04,1.050436228132796,De nombreux postes ouverts ne sont pas pourvus avant des mois.
+V0198,IA16,-0.4962851679537585,Le remplacement des maîtres laissent des classes sans enseignant.
+V0199,IA13,-0.5950300302811243,Plusieurs postes restent vacants faute de redéploiement.
+V0200,IA04,1.050436228132796,La coordination avec l'IEF est claire et efficace.
+V0201,IA07,0.7594385270695994,La couverture des absences sont organisés sans retard.
+V0202,IA07,0.7594385270695994,La réaffectation des maîtres se fait de façon fluide.
+V0203,IA15,-0.5128143979953421,Le remplacement des maîtres ne sont jamais assurés à temps.
+V0204,IA14,0.361886464303974,Les décisions d'affectation sont anticipées et expliquées.
+V0205,IA03,0.4625650775900469,La réaffectation des maîtres est réactif et transparent.
+V0206,IA07,0.7594385270695994,Le suivi des postes vacants se fait de façon fluide.
+V0207,IA12,0.8036427494500231,Les remplacements sont assurés rapidement.
+V0208,IA05,-1.961883486465059,La couverture des absences laissent des classes sans enseignant.
+V0209,IA16,-0.4962851679537585,Le suivi des postes vacants se fait de façon fluide.
+V0210,IA10,-1.7249192939776967,Les mouvements de personnel sont notifiées beaucoup trop tard.
+V0211,IA04,1.050436228132796,Les remplacements sont organisés sans retard.
+V0212,IA09,1.508379536169013,Des classes entières ne sont pas pourvus avant des mois.
+V0213,IA10,-1.7249192939776967,Les décisions d'affectation traînent chaque année en longueur.
+V0214,IA15,-0.5128143979953421,Le redéploiement des enseignants se fait de façon fluide.
+V0215,IA13,-0.5950300302811243,La coordination avec l'IEF s'est nettement améliorée.
+V0216,IA11,0.5436260064330518,Les remplacements sont assurés rapidement.
+V0217,IA04,1.050436228132796,Les décisions d'affectation arrivent bien après la rentrée.
+V0218,IA07,0.7594385270695994,Le dialogue avec l'inspection est claire et efficace.
+V0219,IA12,0.8036427494500231,La couverture des absences sont organisés sans retard.
+V0220,IA08,-0.5589055756131087,Des classes entières restent vacants faute de redéploiement.
+V0221,IA02,-0.6770804424361538,Le pilotage déconcentré est lent et peu lisible.
+V0222,IA09,1.508379536169013,La couverture des absences sont organisés sans retard.
+V0223,IA04,1.050436228132796,La couverture des absences dépendent du bon vouloir local.
+V0224,IA06,-0.09886818526410894,Le dialogue avec l'IEF est lent et peu lisible.
+V0225,IA16,-0.4962851679537585,Des classes entières demeurent sans titulaire une bonne partie de l'année.
+V0226,IA06,-0.09886818526410894,Le redéploiement des enseignants est réactif et transparent.
+V0227,IA01,1.1358119908378483,La réaffectation des maîtres se fait de façon fluide.
+V0228,IA07,0.7594385270695994,Le dialogue avec l'inspection est claire et efficace.
+V0229,IA09,1.508379536169013,La coordination avec l'IEF est claire et efficace.
+V0230,IA07,0.7594385270695994,La réaffectation des maîtres répond vite aux besoins.
+V0231,IA11,0.5436260064330518,Des classes entières ne sont pas pourvus avant des mois.
+V0232,IA05,-1.961883486465059,De nombreux postes ouverts restent vacants faute de redéploiement.
+V0233,IA14,0.361886464303974,Les décisions d'affectation arrivent désormais avant la rentrée.
+V0234,IA12,0.8036427494500231,Les décisions d'affectation traînent chaque année en longueur.
+V0235,IA01,1.1358119908378483,Les mouvements de personnel sont anticipées et expliquées.
+V0236,IA14,0.361886464303974,Le pilotage déconcentré est lent et peu lisible.
+V0237,IA04,1.050436228132796,La réaffectation des maîtres répond vite aux besoins.
+V0238,IA02,-0.6770804424361538,Plusieurs postes restent vacants faute de redéploiement.
+V0239,IA11,0.5436260064330518,Les affectations arrivent désormais avant la rentrée.
+V0240,IA09,1.508379536169013,Les remplacements sont assurés rapidement.
+V0241,IA11,0.5436260064330518,Des classes entières ne sont pas pourvus avant des mois.
+V0242,IA12,0.8036427494500231,Les remplacements sont assurés rapidement.
+V0243,IA02,-0.6770804424361538,Le redéploiement des enseignants répond vite aux besoins.
+V0244,IA08,-0.5589055756131087,Les remplacements sont assurés rapidement.
+V0245,IA05,-1.961883486465059,De nombreux postes ouverts restent vacants faute de redéploiement.
+V0246,IA13,-0.5950300302811243,La couverture des absences sont organisés sans retard.
+V0247,IA15,-0.5128143979953421,Le pilotage déconcentré se perd en circuits interminables.
+V0248,IA12,0.8036427494500231,La réaffectation des maîtres est réactif et transparent.
+V0249,IA12,0.8036427494500231,De nombreux postes ouverts demeurent sans titulaire une bonne partie de l'année.
+V0250,IA08,-0.5589055756131087,Les affectations d'enseignants arrivent bien après la rentrée.
+V0251,IA06,-0.09886818526410894,Les affectations sont anticipées et expliquées.
+V0252,IA08,-0.5589055756131087,Les remplacements dépendent du bon vouloir local.
+V0253,IA01,1.1358119908378483,Les affectations d'enseignants traînent chaque année en longueur.
+V0254,IA12,0.8036427494500231,La réaffectation des maîtres répond vite aux besoins.
+V0255,IA15,-0.5128143979953421,Les mouvements de personnel sont notifiées beaucoup trop tard.
+V0256,IA12,0.8036427494500231,La coordination avec l'IEF est claire et efficace.
+V0257,IA14,0.361886464303974,Les mouvements de personnel traînent chaque année en longueur.
+V0258,IA11,0.5436260064330518,Le dialogue avec l'inspection s'est nettement améliorée.
+V0259,IA03,0.4625650775900469,Les remplacements sont assurés rapidement.
+V0260,IA05,-1.961883486465059,Les décisions d'affectation arrivent bien après la rentrée.
+V0261,IA02,-0.6770804424361538,La coordination avec l'IEF est claire et efficace.
+V0262,IA15,-0.5128143979953421,La couverture des absences ne sont jamais assurés à temps.
+V0263,IA10,-1.7249192939776967,Le redéploiement des enseignants est réactif et transparent.
+V0264,IA09,1.508379536169013,Le suivi des postes vacants répond vite aux besoins.
+V0265,IA07,0.7594385270695994,Les décisions d'affectation arrivent désormais avant la rentrée.
+V0266,IA05,-1.961883486465059,Les décisions d'affectation traînent chaque année en longueur.
+V0267,IA10,-1.7249192939776967,Les remplacements laissent des classes sans enseignant.
+V0268,IA15,-0.5128143979953421,Les affectations sont traitées rapidement.
+V0269,IA09,1.508379536169013,La couverture des absences sont assurés rapidement.
+V0270,IA14,0.361886464303974,Les décisions d'affectation sont traitées rapidement.
+V0271,IA15,-0.5128143979953421,Les décisions d'affectation arrivent désormais avant la rentrée.
+V0272,IA11,0.5436260064330518,La couverture des absences sont organisés sans retard.
+V0273,IA14,0.361886464303974,Les décisions d'affectation traînent chaque année en longueur.
+V0274,IA09,1.508379536169013,Les remplacements sont assurés rapidement.
+V0275,IA09,1.508379536169013,Le redéploiement des enseignants répond vite aux besoins.
+V0276,IA04,1.050436228132796,Les remplacements sont assurés rapidement.
+V0277,IA03,0.4625650775900469,De nombreux postes ouverts demeurent sans titulaire une bonne partie de l'année.
+V0278,IA01,1.1358119908378483,Les remplacements sont organisés sans retard.
+V0279,IA09,1.508379536169013,Les remplacements sont organisés sans retard.
+V0280,IA08,-0.5589055756131087,Le redéploiement des enseignants répond vite aux besoins.
+V0281,IA07,0.7594385270695994,La couverture des absences ne sont jamais assurés à temps.
+V0282,IA03,0.4625650775900469,Le redéploiement des enseignants est réactif et transparent.
+V0283,IA01,1.1358119908378483,Les remplacements laissent des classes sans enseignant.
+V0284,IA03,0.4625650775900469,Le suivi des postes vacants répond vite aux besoins.
+V0285,IA02,-0.6770804424361538,La coordination avec l'inspection manque de transparence.
+V0286,IA15,-0.5128143979953421,Les affectations d'enseignants traînent chaque année en longueur.
+V0287,IA10,-1.7249192939776967,Le redéploiement des enseignants répond vite aux besoins.
+V0288,IA13,-0.5950300302811243,De nombreux postes ouverts demeurent sans titulaire une bonne partie de l'année.
+V0289,IA10,-1.7249192939776967,Les affectations sont anticipées et expliquées.
+V0290,IA08,-0.5589055756131087,Le dialogue avec l'inspection s'est nettement améliorée.
+V0291,IA03,0.4625650775900469,Le remplacement des maîtres ne sont jamais assurés à temps.
+V0292,IA10,-1.7249192939776967,Le pilotage déconcentré se perd en circuits interminables.
+V0293,IA01,1.1358119908378483,La couverture des absences sont assurés rapidement.
+V0294,IA13,-0.5950300302811243,Les affectations arrivent désormais avant la rentrée.
+V0295,IA07,0.7594385270695994,Les décisions d'affectation sont traitées rapidement.
+V0296,IA08,-0.5589055756131087,Le dialogue avec l'inspection s'est nettement améliorée.
+V0297,IA13,-0.5950300302811243,Des classes entières demeurent sans titulaire une bonne partie de l'année.
+V0298,IA12,0.8036427494500231,Les affectations arrivent désormais avant la rentrée.
+V0299,IA06,-0.09886818526410894,La réaffectation des maîtres est réactif et transparent.
+V0300,IA11,0.5436260064330518,La coordination avec l'IEF s'est nettement améliorée.
+V0301,IA08,-0.5589055756131087,Le pilotage déconcentré est lent et peu lisible.
+V0302,IA08,-0.5589055756131087,Le redéploiement des enseignants est réactif et transparent.
+V0303,IA11,0.5436260064330518,La réaffectation des maîtres est réactif et transparent.
+V0304,IA09,1.508379536169013,Les décisions d'affectation sont traitées rapidement.
+V0305,IA08,-0.5589055756131087,Les mouvements de personnel traînent chaque année en longueur.
+V0306,IA04,1.050436228132796,Les remplacements sont organisés sans retard.
+V0307,IA10,-1.7249192939776967,Des classes entières restent vacants faute de redéploiement.
+V0308,IA08,-0.5589055756131087,La coordination avec l'IEF s'est nettement améliorée.
+V0309,IA11,0.5436260064330518,Les mouvements de personnel sont traitées rapidement.
+V0310,IA08,-0.5589055756131087,Des classes entières demeurent sans titulaire une bonne partie de l'année.
+V0311,IA14,0.361886464303974,La réaffectation des maîtres est réactif et transparent.
+V0312,IA02,-0.6770804424361538,Les remplacements ne sont jamais assurés à temps.
+V0313,IA13,-0.5950300302811243,Les affectations sont anticipées et expliquées.
+V0314,IA03,0.4625650775900469,Le remplacement des maîtres dépendent du bon vouloir local.
+V0315,IA11,0.5436260064330518,Les affectations d'enseignants arrivent bien après la rentrée.
+V0316,IA12,0.8036427494500231,La réaffectation des maîtres se fait de façon fluide.
+V0317,IA11,0.5436260064330518,De nombreux postes ouverts restent vacants faute de redéploiement.
+V0318,IA03,0.4625650775900469,Le remplacement des maîtres laissent des classes sans enseignant.
+V0319,IA14,0.361886464303974,Le pilotage déconcentré manque de transparence.
+V0320,IA06,-0.09886818526410894,Le remplacement des maîtres laissent des classes sans enseignant.
+V0321,IA13,-0.5950300302811243,Le remplacement des maîtres laissent des classes sans enseignant.
+V0322,IA10,-1.7249192939776967,Les affectations d'enseignants traînent chaque année en longueur.
+V0323,IA03,0.4625650775900469,Les remplacements sont organisés sans retard.
+V0324,IA05,-1.961883486465059,Les remplacements sont assurés rapidement.
+V0325,IA02,-0.6770804424361538,Les remplacements sont organisés sans retard.
+V0326,IA06,-0.09886818526410894,La couverture des absences ne sont jamais assurés à temps.
+V0327,IA05,-1.961883486465059,Plusieurs postes ne sont pas pourvus avant des mois.
+V0328,IA04,1.050436228132796,La couverture des absences sont assurés rapidement.
+V0329,IA01,1.1358119908378483,Le redéploiement des enseignants est réactif et transparent.
+V0330,IA01,1.1358119908378483,La couverture des absences sont assurés rapidement.
+V0331,IA02,-0.6770804424361538,Le redéploiement des enseignants répond vite aux besoins.
+V0332,IA16,-0.4962851679537585,Plusieurs postes ne sont pas pourvus avant des mois.
+V0333,IA10,-1.7249192939776967,La couverture des absences dépendent du bon vouloir local.
+V0334,IA11,0.5436260064330518,Les mouvements de personnel arrivent désormais avant la rentrée.
+V0335,IA09,1.508379536169013,La couverture des absences sont assurés rapidement.
+V0336,IA07,0.7594385270695994,Les mouvements de personnel arrivent désormais avant la rentrée.
+V0337,IA09,1.508379536169013,Le redéploiement des enseignants répond vite aux besoins.
+V0338,IA14,0.361886464303974,La coordination avec l'IEF s'est nettement améliorée.
+V0339,IA16,-0.4962851679537585,Des classes entières demeurent sans titulaire une bonne partie de l'année.
+V0340,IA11,0.5436260064330518,La coordination avec l'IEF est claire et efficace.
+V0341,IA03,0.4625650775900469,De nombreux postes ouverts restent vacants faute de redéploiement.
+V0342,IA11,0.5436260064330518,Le pilotage déconcentré est lent et peu lisible.
+V0343,IA15,-0.5128143979953421,Le redéploiement des enseignants répond vite aux besoins.
+V0344,IA04,1.050436228132796,Le dialogue avec l'inspection est claire et efficace.
+V0345,IA06,-0.09886818526410894,La couverture des absences sont assurés rapidement.
+V0346,IA01,1.1358119908378483,Le dialogue avec l'inspection s'est nettement améliorée.
+V0347,IA06,-0.09886818526410894,Les mouvements de personnel arrivent bien après la rentrée.
+V0348,IA04,1.050436228132796,Le dialogue avec l'inspection s'est nettement améliorée.
+V0349,IA16,-0.4962851679537585,La couverture des absences dépendent du bon vouloir local.
+V0350,IA12,0.8036427494500231,Les mouvements de personnel arrivent bien après la rentrée.
+V0351,IA04,1.050436228132796,Les mouvements de personnel sont traitées rapidement.
+V0352,IA01,1.1358119908378483,La coordination avec l'IEF est claire et efficace.
+V0353,IA10,-1.7249192939776967,Plusieurs postes restent vacants faute de redéploiement.
+V0354,IA05,-1.961883486465059,Le pilotage déconcentré manque de transparence.
+V0355,IA13,-0.5950300302811243,La coordination avec l'inspection manque de transparence.
+V0356,IA15,-0.5128143979953421,La coordination avec l'IEF est claire et efficace.
+V0357,IA15,-0.5128143979953421,La couverture des absences sont assurés rapidement.
+V0358,IA03,0.4625650775900469,La coordination avec l'inspection est lent et peu lisible.
+V0359,IA10,-1.7249192939776967,De nombreux postes ouverts ne sont pas pourvus avant des mois.
+V0360,IA07,0.7594385270695994,Les remplacements sont assurés rapidement.
+V0361,IA05,-1.961883486465059,Plusieurs postes restent vacants faute de redéploiement.
+V0362,IA12,0.8036427494500231,La coordination avec l'IEF est claire et efficace.
+V0363,IA05,-1.961883486465059,De nombreux postes ouverts demeurent sans titulaire une bonne partie de l'année.
+V0364,IA15,-0.5128143979953421,Le remplacement des maîtres dépendent du bon vouloir local.
+V0365,IA14,0.361886464303974,De nombreux postes ouverts ne sont pas pourvus avant des mois.
+V0366,IA10,-1.7249192939776967,Le redéploiement des enseignants répond vite aux besoins.
+V0367,IA02,-0.6770804424361538,La couverture des absences ne sont jamais assurés à temps.
+V0368,IA06,-0.09886818526410894,Les remplacements ne sont jamais assurés à temps.
+V0369,IA15,-0.5128143979953421,Des classes entières ne sont pas pourvus avant des mois.
+V0370,IA02,-0.6770804424361538,Plusieurs postes ne sont pas pourvus avant des mois.
+V0371,IA12,0.8036427494500231,La réaffectation des maîtres se fait de façon fluide.
+V0372,IA09,1.508379536169013,La couverture des absences sont organisés sans retard.
+V0373,IA09,1.508379536169013,La couverture des absences sont assurés rapidement.
+V0374,IA15,-0.5128143979953421,La coordination avec l'IEF est claire et efficace.
+V0375,IA08,-0.5589055756131087,Les remplacements sont organisés sans retard.
+V0376,IA04,1.050436228132796,Le dialogue avec l'inspection est claire et efficace.
+V0377,IA14,0.361886464303974,Les mouvements de personnel sont traitées rapidement.
+V0378,IA03,0.4625650775900469,Le dialogue avec l'inspection s'est nettement améliorée.
+V0379,IA07,0.7594385270695994,Les décisions d'affectation arrivent désormais avant la rentrée.
+V0380,IA14,0.361886464303974,Le redéploiement des enseignants se fait de façon fluide.
+V0381,IA07,0.7594385270695994,La coordination avec l'inspection est lent et peu lisible.
+V0382,IA15,-0.5128143979953421,Les affectations d'enseignants sont notifiées beaucoup trop tard.
+V0383,IA15,-0.5128143979953421,De nombreux postes ouverts demeurent sans titulaire une bonne partie de l'année.
+V0384,IA15,-0.5128143979953421,Les affectations d'enseignants traînent chaque année en longueur.
+V0385,IA02,-0.6770804424361538,Le remplacement des maîtres ne sont jamais assurés à temps.
+V0386,IA09,1.508379536169013,Les remplacements sont organisés sans retard.
+V0387,IA14,0.361886464303974,Les affectations d'enseignants traînent chaque année en longueur.
+V0388,IA09,1.508379536169013,Le remplacement des maîtres ne sont jamais assurés à temps.
+V0389,IA04,1.050436228132796,Les affectations d'enseignants arrivent bien après la rentrée.
+V0390,IA05,-1.961883486465059,Le pilotage déconcentré est lent et peu lisible.
+V0391,IA05,-1.961883486465059,Les remplacements sont assurés rapidement.
+V0392,IA05,-1.961883486465059,Le remplacement des maîtres laissent des classes sans enseignant.
+V0393,IA16,-0.4962851679537585,La coordination avec l'inspection est lent et peu lisible.
+V0394,IA05,-1.961883486465059,Les mouvements de personnel traînent chaque année en longueur.
+V0395,IA06,-0.09886818526410894,Des classes entières ne sont pas pourvus avant des mois.
+V0396,IA08,-0.5589055756131087,Le suivi des postes vacants se fait de façon fluide.
+V0397,IA02,-0.6770804424361538,Les mouvements de personnel arrivent désormais avant la rentrée.
+V0398,IA13,-0.5950300302811243,De nombreux postes ouverts demeurent sans titulaire une bonne partie de l'année.
+V0399,IA11,0.5436260064330518,Les décisions d'affectation sont notifiées beaucoup trop tard.
+V0400,IA03,0.4625650775900469,Les affectations sont traitées rapidement.
+V0401,IA04,1.050436228132796,Les remplacements sont organisés sans retard.
+V0402,IA09,1.508379536169013,Les remplacements sont organisés sans retard.
+V0403,IA09,1.508379536169013,De nombreux postes ouverts demeurent sans titulaire une bonne partie de l'année.
+V0404,IA01,1.1358119908378483,Le dialogue avec l'inspection s'est nettement améliorée.
+V0405,IA05,-1.961883486465059,Les affectations d'enseignants sont notifiées beaucoup trop tard.
+V0406,IA01,1.1358119908378483,Le dialogue avec l'inspection s'est nettement améliorée.
+V0407,IA01,1.1358119908378483,Plusieurs postes restent vacants faute de redéploiement.
+V0408,IA15,-0.5128143979953421,De nombreux postes ouverts restent vacants faute de redéploiement.
+V0409,IA14,0.361886464303974,Le pilotage déconcentré manque de transparence.
+V0410,IA01,1.1358119908378483,Les mouvements de personnel traînent chaque année en longueur.
+V0411,IA06,-0.09886818526410894,Le suivi des postes vacants répond vite aux besoins.
+V0412,IA10,-1.7249192939776967,De nombreux postes ouverts demeurent sans titulaire une bonne partie de l'année.
+V0413,IA07,0.7594385270695994,Les remplacements sont organisés sans retard.
+V0414,IA06,-0.09886818526410894,La couverture des absences ne sont jamais assurés à temps.
+V0415,IA08,-0.5589055756131087,Plusieurs postes demeurent sans titulaire une bonne partie de l'année.
+V0416,IA09,1.508379536169013,La couverture des absences sont organisés sans retard.
+V0417,IA04,1.050436228132796,Le dialogue avec l'inspection est claire et efficace.
+V0418,IA04,1.050436228132796,La couverture des absences sont assurés rapidement.
+V0419,IA05,-1.961883486465059,La coordination avec l'IEF s'est nettement améliorée.
+V0420,IA13,-0.5950300302811243,Les décisions d'affectation sont anticipées et expliquées.
+V0421,IA11,0.5436260064330518,Les remplacements sont organisés sans retard.
+V0422,IA10,-1.7249192939776967,Plusieurs postes restent vacants faute de redéploiement.
+V0423,IA12,0.8036427494500231,Le dialogue avec l'inspection s'est nettement améliorée.
+V0424,IA01,1.1358119908378483,Les décisions d'affectation sont traitées rapidement.
+V0425,IA02,-0.6770804424361538,Les affectations d'enseignants arrivent bien après la rentrée.
+V0426,IA02,-0.6770804424361538,Les remplacements ne sont jamais assurés à temps.
+V0427,IA03,0.4625650775900469,La couverture des absences sont assurés rapidement.
+V0428,IA16,-0.4962851679537585,La coordination avec l'inspection manque de transparence.
+V0429,IA01,1.1358119908378483,Le redéploiement des enseignants se fait de façon fluide.
+V0430,IA02,-0.6770804424361538,Les remplacements sont organisés sans retard.
+V0431,IA01,1.1358119908378483,Le pilotage déconcentré est lent et peu lisible.
+V0432,IA11,0.5436260064330518,Les remplacements sont organisés sans retard.
+V0433,IA09,1.508379536169013,La coordination avec l'IEF s'est nettement améliorée.
+V0434,IA14,0.361886464303974,Les mouvements de personnel arrivent désormais avant la rentrée.
+V0435,IA14,0.361886464303974,Les affectations d'enseignants traînent chaque année en longueur.
+V0436,IA05,-1.961883486465059,Le remplacement des maîtres ne sont jamais assurés à temps.
+V0437,IA07,0.7594385270695994,Plusieurs postes restent vacants faute de redéploiement.
+V0438,IA07,0.7594385270695994,Les décisions d'affectation sont traitées rapidement.
+V0439,IA10,-1.7249192939776967,La coordination avec l'IEF s'est nettement améliorée.
+V0440,IA01,1.1358119908378483,La couverture des absences sont organisés sans retard.
+V0441,IA04,1.050436228132796,Le pilotage déconcentré se perd en circuits interminables.
+V0442,IA06,-0.09886818526410894,La réaffectation des maîtres est réactif et transparent.
+V0443,IA02,-0.6770804424361538,La réaffectation des maîtres est réactif et transparent.
+V0444,IA16,-0.4962851679537585,La réaffectation des maîtres est réactif et transparent.
+V0445,IA15,-0.5128143979953421,Le pilotage déconcentré est lent et peu lisible.
+V0446,IA14,0.361886464303974,Les remplacements ne sont jamais assurés à temps.
+V0447,IA09,1.508379536169013,Le suivi des postes vacants est réactif et transparent.
+V0448,IA11,0.5436260064330518,La couverture des absences laissent des classes sans enseignant.
+V0449,IA05,-1.961883486465059,Les remplacements ne sont jamais assurés à temps.
+V0450,IA04,1.050436228132796,La couverture des absences ne sont jamais assurés à temps.
+V0451,IA13,-0.5950300302811243,Le dialogue avec l'inspection s'est nettement améliorée.
+V0452,IA03,0.4625650775900469,La coordination avec l'IEF s'est nettement améliorée.
+V0453,IA12,0.8036427494500231,De nombreux postes ouverts restent vacants faute de redéploiement.
+V0454,IA08,-0.5589055756131087,La coordination avec l'IEF s'est nettement améliorée.
+V0455,IA16,-0.4962851679537585,Les remplacements laissent des classes sans enseignant.
+V0456,IA02,-0.6770804424361538,Les décisions d'affectation arrivent désormais avant la rentrée.
+V0457,IA12,0.8036427494500231,La réaffectation des maîtres est réactif et transparent.
+V0458,IA03,0.4625650775900469,Le pilotage déconcentré manque de transparence.
+V0459,IA10,-1.7249192939776967,La couverture des absences sont organisés sans retard.
+V0460,IA02,-0.6770804424361538,Les remplacements sont organisés sans retard.
+V0461,IA03,0.4625650775900469,Les décisions d'affectation traînent chaque année en longueur.
+V0462,IA14,0.361886464303974,Les décisions d'affectation arrivent désormais avant la rentrée.
+V0463,IA12,0.8036427494500231,La coordination avec l'IEF est claire et efficace.
+V0464,IA08,-0.5589055756131087,Des classes entières ne sont pas pourvus avant des mois.
+V0465,IA04,1.050436228132796,Le suivi des postes vacants se fait de façon fluide.
+V0466,IA04,1.050436228132796,Les affectations arrivent désormais avant la rentrée.
+V0467,IA05,-1.961883486465059,Les décisions d'affectation traînent chaque année en longueur.
+V0468,IA14,0.361886464303974,La coordination avec l'IEF est claire et efficace.
+V0469,IA07,0.7594385270695994,Les décisions d'affectation traînent chaque année en longueur.
+V0470,IA15,-0.5128143979953421,Les affectations d'enseignants sont notifiées beaucoup trop tard.
+V0471,IA03,0.4625650775900469,Les mouvements de personnel arrivent bien après la rentrée.
+V0472,IA11,0.5436260064330518,Les décisions d'affectation sont anticipées et expliquées.
+V0473,IA05,-1.961883486465059,Les remplacements sont assurés rapidement.
+V0474,IA05,-1.961883486465059,La coordination avec l'inspection est lent et peu lisible.
+V0475,IA06,-0.09886818526410894,Les mouvements de personnel sont anticipées et expliquées.
+V0476,IA15,-0.5128143979953421,Les remplacements sont assurés rapidement.
+V0477,IA15,-0.5128143979953421,Les décisions d'affectation arrivent bien après la rentrée.
+V0478,IA03,0.4625650775900469,Les remplacements sont organisés sans retard.
+V0479,IA07,0.7594385270695994,Plusieurs postes ne sont pas pourvus avant des mois.
+V0480,IA16,-0.4962851679537585,Les affectations d'enseignants arrivent bien après la rentrée.
+V0481,IA08,-0.5589055756131087,Le pilotage déconcentré se perd en circuits interminables.
+V0482,IA09,1.508379536169013,Le suivi des postes vacants se fait de façon fluide.
+V0483,IA07,0.7594385270695994,Les remplacements sont organisés sans retard.
+V0484,IA08,-0.5589055756131087,Le suivi des postes vacants répond vite aux besoins.
+V0485,IA01,1.1358119908378483,Les affectations sont anticipées et expliquées.
+V0486,IA05,-1.961883486465059,Le remplacement des maîtres dépendent du bon vouloir local.
+V0487,IA05,-1.961883486465059,Des classes entières demeurent sans titulaire une bonne partie de l'année.
+V0488,IA06,-0.09886818526410894,La coordination avec l'IEF est claire et efficace.
+V0489,IA01,1.1358119908378483,Les décisions d'affectation arrivent bien après la rentrée.
+V0490,IA12,0.8036427494500231,Les remplacements sont assurés rapidement.
+V0491,IA16,-0.4962851679537585,Des classes entières demeurent sans titulaire une bonne partie de l'année.
+V0492,IA09,1.508379536169013,La couverture des absences sont assurés rapidement.
+V0493,IA11,0.5436260064330518,Le remplacement des maîtres ne sont jamais assurés à temps.
+V0494,IA13,-0.5950300302811243,La couverture des absences sont organisés sans retard.
+V0495,IA14,0.361886464303974,Des classes entières restent vacants faute de redéploiement.
+V0496,IA14,0.361886464303974,La couverture des absences sont assurés rapidement.
+V0497,IA11,0.5436260064330518,La coordination avec l'inspection se perd en circuits interminables.
+V0498,IA09,1.508379536169013,La couverture des absences sont assurés rapidement.
+V0499,IA09,1.508379536169013,Le pilotage déconcentré manque de transparence.
+V0500,IA05,-1.961883486465059,Le remplacement des maîtres dépendent du bon vouloir local.
+V0501,IA09,1.508379536169013,La coordination avec l'IEF est claire et efficace.
+V0502,IA04,1.050436228132796,La couverture des absences sont organisés sans retard.
+V0503,IA10,-1.7249192939776967,Les remplacements sont assurés rapidement.
+V0504,IA09,1.508379536169013,Les remplacements sont assurés rapidement.
+V0505,IA10,-1.7249192939776967,Le dialogue avec l'IEF est lent et peu lisible.
+V0506,IA07,0.7594385270695994,Les remplacements sont organisés sans retard.
+V0507,IA07,0.7594385270695994,Le dialogue avec l'inspection est claire et efficace.
+V0508,IA03,0.4625650775900469,Les affectations d'enseignants arrivent bien après la rentrée.
+V0509,IA16,-0.4962851679537585,La couverture des absences laissent des classes sans enseignant.
+V0510,IA16,-0.4962851679537585,Les décisions d'affectation sont anticipées et expliquées.
+V0511,IA08,-0.5589055756131087,Le dialogue avec l'IEF se perd en circuits interminables.
+V0512,IA10,-1.7249192939776967,Les décisions d'affectation arrivent bien après la rentrée.
+V0513,IA02,-0.6770804424361538,Le pilotage déconcentré manque de transparence.
+V0514,IA04,1.050436228132796,Le remplacement des maîtres dépendent du bon vouloir local.
+V0515,IA14,0.361886464303974,Le dialogue avec l'IEF est lent et peu lisible.
+V0516,IA12,0.8036427494500231,Le redéploiement des enseignants se fait de façon fluide.
+V0517,IA15,-0.5128143979953421,Des classes entières ne sont pas pourvus avant des mois.
+V0518,IA03,0.4625650775900469,Des classes entières ne sont pas pourvus avant des mois.
+V0519,IA06,-0.09886818526410894,Les mouvements de personnel sont traitées rapidement.
+V0520,IA06,-0.09886818526410894,Le pilotage déconcentré manque de transparence.
+V0521,IA07,0.7594385270695994,Le redéploiement des enseignants est réactif et transparent.
+V0522,IA13,-0.5950300302811243,Le pilotage déconcentré manque de transparence.
+V0523,IA08,-0.5589055756131087,Les décisions d'affectation traînent chaque année en longueur.
+V0524,IA06,-0.09886818526410894,Les remplacements sont assurés rapidement.
+V0525,IA12,0.8036427494500231,Le dialogue avec l'inspection est claire et efficace.
+V0526,IA09,1.508379536169013,Les décisions d'affectation arrivent désormais avant la rentrée.
+V0527,IA12,0.8036427494500231,La couverture des absences sont organisés sans retard.
+V0528,IA09,1.508379536169013,Les affectations sont traitées rapidement.
+V0529,IA09,1.508379536169013,La coordination avec l'IEF s'est nettement améliorée.
+V0530,IA04,1.050436228132796,Le dialogue avec l'inspection est claire et efficace.
+V0531,IA01,1.1358119908378483,Les mouvements de personnel sont anticipées et expliquées.
+V0532,IA05,-1.961883486465059,Les affectations d'enseignants arrivent bien après la rentrée.
+V0533,IA08,-0.5589055756131087,Le dialogue avec l'inspection est claire et efficace.
+V0534,IA11,0.5436260064330518,Des classes entières restent vacants faute de redéploiement.
+V0535,IA15,-0.5128143979953421,Les remplacements sont organisés sans retard.
+V0536,IA05,-1.961883486465059,Le dialogue avec l'IEF manque de transparence.
+V0537,IA11,0.5436260064330518,Le suivi des postes vacants est réactif et transparent.
+V0538,IA05,-1.961883486465059,Les mouvements de personnel traînent chaque année en longueur.
+V0539,IA02,-0.6770804424361538,De nombreux postes ouverts restent vacants faute de redéploiement.
+V0540,IA13,-0.5950300302811243,Le remplacement des maîtres dépendent du bon vouloir local.
+V0541,IA13,-0.5950300302811243,La coordination avec l'inspection manque de transparence.
+V0542,IA04,1.050436228132796,Les affectations d'enseignants sont notifiées beaucoup trop tard.
+V0543,IA06,-0.09886818526410894,Des classes entières ne sont pas pourvus avant des mois.
+V0544,IA06,-0.09886818526410894,Le dialogue avec l'IEF est lent et peu lisible.
+V0545,IA04,1.050436228132796,La réaffectation des maîtres répond vite aux besoins.
+V0546,IA08,-0.5589055756131087,Le redéploiement des enseignants se fait de façon fluide.
+V0547,IA12,0.8036427494500231,Le redéploiement des enseignants répond vite aux besoins.
+V0548,IA11,0.5436260064330518,Les mouvements de personnel sont anticipées et expliquées.
+V0549,IA15,-0.5128143979953421,La coordination avec l'IEF est claire et efficace.
+V0550,IA16,-0.4962851679537585,Les décisions d'affectation sont notifiées beaucoup trop tard.
+V0551,IA14,0.361886464303974,Les affectations d'enseignants traînent chaque année en longueur.
+V0552,IA06,-0.09886818526410894,Le dialogue avec l'inspection s'est nettement améliorée.
+V0553,IA08,-0.5589055756131087,Plusieurs postes restent vacants faute de redéploiement.
+V0554,IA03,0.4625650775900469,La coordination avec l'inspection manque de transparence.
+V0555,IA15,-0.5128143979953421,Le pilotage déconcentré manque de transparence.
+V0556,IA05,-1.961883486465059,Plusieurs postes ne sont pas pourvus avant des mois.
+V0557,IA14,0.361886464303974,Le redéploiement des enseignants est réactif et transparent.
+V0558,IA13,-0.5950300302811243,La couverture des absences dépendent du bon vouloir local.
+V0559,IA09,1.508379536169013,Les affectations sont traitées rapidement.
+V0560,IA03,0.4625650775900469,La coordination avec l'IEF s'est nettement améliorée.
+V0561,IA13,-0.5950300302811243,Les remplacements dépendent du bon vouloir local.
+V0562,IA04,1.050436228132796,Les affectations sont traitées rapidement.
+V0563,IA03,0.4625650775900469,Le dialogue avec l'inspection s'est nettement améliorée.
+V0564,IA06,-0.09886818526410894,Les mouvements de personnel sont traitées rapidement.
+V0565,IA15,-0.5128143979953421,Le dialogue avec l'inspection s'est nettement améliorée.
+V0566,IA12,0.8036427494500231,Les remplacements sont organisés sans retard.
+V0567,IA04,1.050436228132796,Les remplacements sont organisés sans retard.
+V0568,IA13,-0.5950300302811243,La coordination avec l'inspection manque de transparence.
+V0569,IA07,0.7594385270695994,Les mouvements de personnel sont traitées rapidement.
+V0570,IA04,1.050436228132796,Les mouvements de personnel traînent chaque année en longueur.
+V0571,IA01,1.1358119908378483,La coordination avec l'IEF s'est nettement améliorée.
+V0572,IA07,0.7594385270695994,Le dialogue avec l'inspection s'est nettement améliorée.
+V0573,IA04,1.050436228132796,Les mouvements de personnel traînent chaque année en longueur.
+V0574,IA01,1.1358119908378483,La coordination avec l'IEF s'est nettement améliorée.
+V0575,IA10,-1.7249192939776967,Les mouvements de personnel sont notifiées beaucoup trop tard.
+V0576,IA11,0.5436260064330518,Les remplacements sont assurés rapidement.
+V0577,IA13,-0.5950300302811243,La couverture des absences dépendent du bon vouloir local.
+V0578,IA08,-0.5589055756131087,Plusieurs postes demeurent sans titulaire une bonne partie de l'année.
+V0579,IA12,0.8036427494500231,La couverture des absences sont organisés sans retard.
+V0580,IA16,-0.4962851679537585,Le remplacement des maîtres laissent des classes sans enseignant.
+V0581,IA09,1.508379536169013,Les remplacements ne sont jamais assurés à temps.
+V0582,IA15,-0.5128143979953421,La couverture des absences sont assurés rapidement.
+V0583,IA03,0.4625650775900469,Les remplacements sont assurés rapidement.
+V0584,IA14,0.361886464303974,Plusieurs postes ne sont pas pourvus avant des mois.
+V0585,IA04,1.050436228132796,De nombreux postes ouverts ne sont pas pourvus avant des mois.
+V0586,IA02,-0.6770804424361538,Le remplacement des maîtres dépendent du bon vouloir local.
+V0587,IA03,0.4625650775900469,Les décisions d'affectation sont anticipées et expliquées.
+V0588,IA05,-1.961883486465059,La coordination avec l'inspection manque de transparence.
+V0589,IA08,-0.5589055756131087,Les affectations d'enseignants traînent chaque année en longueur.
+V0590,IA14,0.361886464303974,Les décisions d'affectation arrivent désormais avant la rentrée.
+V0591,IA13,-0.5950300302811243,La coordination avec l'inspection manque de transparence.
+V0592,IA05,-1.961883486465059,Plusieurs postes restent vacants faute de redéploiement.
+V0593,IA03,0.4625650775900469,Les affectations d'enseignants sont notifiées beaucoup trop tard.
+V0594,IA12,0.8036427494500231,La réaffectation des maîtres se fait de façon fluide.
+V0595,IA04,1.050436228132796,Le dialogue avec l'inspection s'est nettement améliorée.
+V0596,IA01,1.1358119908378483,La couverture des absences sont organisés sans retard.
+V0597,IA12,0.8036427494500231,Les remplacements ne sont jamais assurés à temps.
+V0598,IA01,1.1358119908378483,Les mouvements de personnel sont traitées rapidement.
+V0599,IA06,-0.09886818526410894,La couverture des absences laissent des classes sans enseignant.
+V0600,IA01,1.1358119908378483,Le dialogue avec l'inspection est claire et efficace.
+V0601,IA02,-0.6770804424361538,Des classes entières ne sont pas pourvus avant des mois.
+V0602,IA06,-0.09886818526410894,Les affectations sont anticipées et expliquées.
+V0603,IA04,1.050436228132796,La couverture des absences laissent des classes sans enseignant.
+V0604,IA14,0.361886464303974,La réaffectation des maîtres se fait de façon fluide.
+V0605,IA11,0.5436260064330518,Le dialogue avec l'inspection est claire et efficace.
+V0606,IA15,-0.5128143979953421,Les décisions d'affectation sont anticipées et expliquées.
+V0607,IA02,-0.6770804424361538,Les décisions d'affectation sont notifiées beaucoup trop tard.
+V0608,IA06,-0.09886818526410894,Le dialogue avec l'IEF manque de transparence.
+V0609,IA14,0.361886464303974,Le suivi des postes vacants se fait de façon fluide.
+V0610,IA06,-0.09886818526410894,Le redéploiement des enseignants est réactif et transparent.
+V0611,IA06,-0.09886818526410894,Le redéploiement des enseignants répond vite aux besoins.
+V0612,IA02,-0.6770804424361538,La coordination avec l'inspection manque de transparence.
+V0613,IA03,0.4625650775900469,La réaffectation des maîtres est réactif et transparent.
+V0614,IA16,-0.4962851679537585,Le pilotage déconcentré manque de transparence.
+V0615,IA05,-1.961883486465059,Les remplacements ne sont jamais assurés à temps.
+V0616,IA09,1.508379536169013,Les remplacements dépendent du bon vouloir local.
+V0617,IA08,-0.5589055756131087,Le redéploiement des enseignants est réactif et transparent.
+V0618,IA02,-0.6770804424361538,Le remplacement des maîtres ne sont jamais assurés à temps.
+V0619,IA16,-0.4962851679537585,Des classes entières restent vacants faute de redéploiement.
+V0620,IA04,1.050436228132796,Les remplacements sont organisés sans retard.
+V0621,IA08,-0.5589055756131087,Les décisions d'affectation arrivent bien après la rentrée.
+V0622,IA16,-0.4962851679537585,Le dialogue avec l'inspection est claire et efficace.
+V0623,IA05,-1.961883486465059,Des classes entières restent vacants faute de redéploiement.
+V0624,IA02,-0.6770804424361538,Le pilotage déconcentré se perd en circuits interminables.
+V0625,IA16,-0.4962851679537585,La coordination avec l'IEF est claire et efficace.
+V0626,IA05,-1.961883486465059,La couverture des absences ne sont jamais assurés à temps.
+V0627,IA14,0.361886464303974,La couverture des absences sont assurés rapidement.
+V0628,IA11,0.5436260064330518,La coordination avec l'IEF s'est nettement améliorée.
+V0629,IA14,0.361886464303974,Les mouvements de personnel sont anticipées et expliquées.
+V0630,IA01,1.1358119908378483,Le suivi des postes vacants se fait de façon fluide.
+V0631,IA06,-0.09886818526410894,Le suivi des postes vacants répond vite aux besoins.
+V0632,IA05,-1.961883486465059,La coordination avec l'inspection manque de transparence.
+V0633,IA05,-1.961883486465059,La coordination avec l'inspection se perd en circuits interminables.
+V0634,IA12,0.8036427494500231,Les remplacements ne sont jamais assurés à temps.
+V0635,IA11,0.5436260064330518,Les mouvements de personnel sont anticipées et expliquées.
+V0636,IA07,0.7594385270695994,Le suivi des postes vacants se fait de façon fluide.
+V0637,IA07,0.7594385270695994,La réaffectation des maîtres est réactif et transparent.
+V0638,IA03,0.4625650775900469,Le remplacement des maîtres dépendent du bon vouloir local.
+V0639,IA04,1.050436228132796,Le dialogue avec l'inspection est claire et efficace.
+V0640,IA11,0.5436260064330518,Le dialogue avec l'inspection s'est nettement améliorée.
+V0641,IA16,-0.4962851679537585,Les remplacements sont organisés sans retard.
+V0642,IA10,-1.7249192939776967,Le pilotage déconcentré est lent et peu lisible.
+V0643,IA07,0.7594385270695994,Le redéploiement des enseignants se fait de façon fluide.
+V0644,IA02,-0.6770804424361538,De nombreux postes ouverts restent vacants faute de redéploiement.
+V0645,IA09,1.508379536169013,La couverture des absences sont organisés sans retard.
+V0646,IA05,-1.961883486465059,Des classes entières restent vacants faute de redéploiement.
+V0647,IA15,-0.5128143979953421,La couverture des absences sont assurés rapidement.
+V0648,IA01,1.1358119908378483,La coordination avec l'IEF s'est nettement améliorée.
+V0649,IA01,1.1358119908378483,La coordination avec l'inspection est lent et peu lisible.
+V0650,IA09,1.508379536169013,La couverture des absences laissent des classes sans enseignant.
+V0651,IA15,-0.5128143979953421,Des classes entières ne sont pas pourvus avant des mois.
+V0652,IA06,-0.09886818526410894,La coordination avec l'IEF s'est nettement améliorée.
+V0653,IA15,-0.5128143979953421,Les remplacements dépendent du bon vouloir local.
+V0654,IA13,-0.5950300302811243,La couverture des absences laissent des classes sans enseignant.
+V0655,IA02,-0.6770804424361538,De nombreux postes ouverts ne sont pas pourvus avant des mois.
+V0656,IA11,0.5436260064330518,Les affectations d'enseignants sont notifiées beaucoup trop tard.
+V0657,IA12,0.8036427494500231,Les décisions d'affectation sont traitées rapidement.
+V0658,IA09,1.508379536169013,Le redéploiement des enseignants se fait de façon fluide.
+V0659,IA13,-0.5950300302811243,Le remplacement des maîtres ne sont jamais assurés à temps.
+V0660,IA11,0.5436260064330518,Les affectations d'enseignants sont notifiées beaucoup trop tard.
+V0661,IA04,1.050436228132796,La couverture des absences sont organisés sans retard.
+V0662,IA06,-0.09886818526410894,La coordination avec l'inspection se perd en circuits interminables.
+V0663,IA01,1.1358119908378483,Le redéploiement des enseignants répond vite aux besoins.
+V0664,IA16,-0.4962851679537585,Le dialogue avec l'IEF est lent et peu lisible.
+V0665,IA04,1.050436228132796,Les décisions d'affectation arrivent bien après la rentrée.
+V0666,IA12,0.8036427494500231,La couverture des absences sont assurés rapidement.
+V0667,IA03,0.4625650775900469,La coordination avec l'inspection manque de transparence.
+V0668,IA08,-0.5589055756131087,Les remplacements dépendent du bon vouloir local.
+V0669,IA15,-0.5128143979953421,La coordination avec l'inspection se perd en circuits interminables.
+V0670,IA02,-0.6770804424361538,Le redéploiement des enseignants est réactif et transparent.
+V0671,IA12,0.8036427494500231,Les remplacements sont assurés rapidement.
+V0672,IA12,0.8036427494500231,Le suivi des postes vacants se fait de façon fluide.
+V0673,IA03,0.4625650775900469,Les affectations d'enseignants sont notifiées beaucoup trop tard.
+V0674,IA10,-1.7249192939776967,Les affectations d'enseignants sont notifiées beaucoup trop tard.
+V0675,IA08,-0.5589055756131087,Les affectations d'enseignants traînent chaque année en longueur.
+V0676,IA03,0.4625650775900469,Le suivi des postes vacants répond vite aux besoins.
+V0677,IA11,0.5436260064330518,Plusieurs postes demeurent sans titulaire une bonne partie de l'année.
+V0678,IA12,0.8036427494500231,Le suivi des postes vacants répond vite aux besoins.
+V0679,IA06,-0.09886818526410894,La réaffectation des maîtres se fait de façon fluide.
+V0680,IA04,1.050436228132796,Les mouvements de personnel arrivent bien après la rentrée.
+V0681,IA03,0.4625650775900469,Les mouvements de personnel sont anticipées et expliquées.
+V0682,IA03,0.4625650775900469,La réaffectation des maîtres est réactif et transparent.
+V0683,IA03,0.4625650775900469,Le dialogue avec l'inspection s'est nettement améliorée.
+V0684,IA05,-1.961883486465059,Les remplacements ne sont jamais assurés à temps.
+V0685,IA13,-0.5950300302811243,La couverture des absences sont organisés sans retard.
+V0686,IA11,0.5436260064330518,Les décisions d'affectation sont traitées rapidement.
+V0687,IA06,-0.09886818526410894,Les mouvements de personnel traînent chaque année en longueur.
+V0688,IA11,0.5436260064330518,La réaffectation des maîtres est réactif et transparent.
+V0689,IA15,-0.5128143979953421,Le dialogue avec l'IEF est lent et peu lisible.
+V0690,IA08,-0.5589055756131087,Les mouvements de personnel sont traitées rapidement.
+V0691,IA02,-0.6770804424361538,Le redéploiement des enseignants est réactif et transparent.
+V0692,IA02,-0.6770804424361538,Des classes entières demeurent sans titulaire une bonne partie de l'année.
+V0693,IA12,0.8036427494500231,Les mouvements de personnel arrivent désormais avant la rentrée.
+V0694,IA07,0.7594385270695994,Les remplacements sont assurés rapidement.
+V0695,IA09,1.508379536169013,Les affectations arrivent désormais avant la rentrée.
+V0696,IA14,0.361886464303974,Le dialogue avec l'inspection s'est nettement améliorée.
+V0697,IA08,-0.5589055756131087,Les affectations d'enseignants arrivent bien après la rentrée.
+V0698,IA11,0.5436260064330518,Les mouvements de personnel arrivent bien après la rentrée.
+V0699,IA10,-1.7249192939776967,Les remplacements laissent des classes sans enseignant.
+V0700,IA04,1.050436228132796,Le dialogue avec l'inspection s'est nettement améliorée.
+V0701,IA13,-0.5950300302811243,La coordination avec l'IEF s'est nettement améliorée.
+V0702,IA14,0.361886464303974,Le redéploiement des enseignants se fait de façon fluide.
+V0703,IA13,-0.5950300302811243,Le dialogue avec l'IEF se perd en circuits interminables.
+V0704,IA09,1.508379536169013,Les décisions d'affectation arrivent désormais avant la rentrée.
+V0705,IA10,-1.7249192939776967,De nombreux postes ouverts restent vacants faute de redéploiement.
+V0706,IA15,-0.5128143979953421,Les décisions d'affectation arrivent désormais avant la rentrée.
+V0707,IA07,0.7594385270695994,Le remplacement des maîtres laissent des classes sans enseignant.
+V0708,IA04,1.050436228132796,Le dialogue avec l'inspection s'est nettement améliorée.
+V0709,IA09,1.508379536169013,La couverture des absences sont assurés rapidement.
+V0710,IA08,-0.5589055756131087,Le redéploiement des enseignants se fait de façon fluide.
+V0711,IA03,0.4625650775900469,Les mouvements de personnel sont traitées rapidement.
+V0712,IA14,0.361886464303974,Les décisions d'affectation sont traitées rapidement.
+V0713,IA03,0.4625650775900469,Le pilotage déconcentré se perd en circuits interminables.
+V0714,IA15,-0.5128143979953421,La réaffectation des maîtres répond vite aux besoins.
+V0715,IA08,-0.5589055756131087,Plusieurs postes ne sont pas pourvus avant des mois.
+V0716,IA10,-1.7249192939776967,La couverture des absences ne sont jamais assurés à temps.
+V0717,IA04,1.050436228132796,La coordination avec l'IEF s'est nettement améliorée.
+V0718,IA12,0.8036427494500231,Le redéploiement des enseignants est réactif et transparent.
+V0719,IA03,0.4625650775900469,La couverture des absences sont assurés rapidement.
+V0720,IA10,-1.7249192939776967,De nombreux postes ouverts restent vacants faute de redéploiement.
+V0721,IA09,1.508379536169013,De nombreux postes ouverts ne sont pas pourvus avant des mois.
+V0722,IA09,1.508379536169013,Le dialogue avec l'inspection s'est nettement améliorée.
+V0723,IA07,0.7594385270695994,Les affectations sont anticipées et expliquées.
+V0724,IA03,0.4625650775900469,Les décisions d'affectation sont traitées rapidement.
+V0725,IA13,-0.5950300302811243,Plusieurs postes demeurent sans titulaire une bonne partie de l'année.
+V0726,IA03,0.4625650775900469,Les remplacements sont assurés rapidement.
+V0727,IA07,0.7594385270695994,Le dialogue avec l'inspection est claire et efficace.
+V0728,IA16,-0.4962851679537585,Plusieurs postes demeurent sans titulaire une bonne partie de l'année.
+V0729,IA15,-0.5128143979953421,Les remplacements sont assurés rapidement.
+V0730,IA03,0.4625650775900469,La couverture des absences dépendent du bon vouloir local.
+V0731,IA10,-1.7249192939776967,La coordination avec l'inspection se perd en circuits interminables.
+V0732,IA11,0.5436260064330518,Les affectations arrivent désormais avant la rentrée.
+V0733,IA11,0.5436260064330518,Les mouvements de personnel sont anticipées et expliquées.
+V0734,IA09,1.508379536169013,Les remplacements sont organisés sans retard.
+V0735,IA13,-0.5950300302811243,Le dialogue avec l'inspection s'est nettement améliorée.
+V0736,IA14,0.361886464303974,Les mouvements de personnel arrivent désormais avant la rentrée.
+V0737,IA11,0.5436260064330518,Les affectations d'enseignants arrivent bien après la rentrée.
+V0738,IA04,1.050436228132796,La couverture des absences sont organisés sans retard.
+V0739,IA04,1.050436228132796,Les mouvements de personnel sont anticipées et expliquées.
+V0740,IA12,0.8036427494500231,La couverture des absences dépendent du bon vouloir local.
+V0741,IA10,-1.7249192939776967,De nombreux postes ouverts demeurent sans titulaire une bonne partie de l'année.
+V0742,IA10,-1.7249192939776967,De nombreux postes ouverts restent vacants faute de redéploiement.
+V0743,IA03,0.4625650775900469,Les remplacements sont organisés sans retard.
+V0744,IA14,0.361886464303974,Le dialogue avec l'inspection est claire et efficace.
+V0745,IA14,0.361886464303974,La couverture des absences laissent des classes sans enseignant.
+V0746,IA01,1.1358119908378483,La couverture des absences sont organisés sans retard.
+V0747,IA07,0.7594385270695994,La coordination avec l'inspection se perd en circuits interminables.
+V0748,IA05,-1.961883486465059,Les remplacements laissent des classes sans enseignant.
+V0749,IA12,0.8036427494500231,Le dialogue avec l'inspection s'est nettement améliorée.
+V0750,IA03,0.4625650775900469,La coordination avec l'IEF s'est nettement améliorée.
+V0751,IA03,0.4625650775900469,Les affectations sont traitées rapidement.
+V0752,IA09,1.508379536169013,Les mouvements de personnel sont anticipées et expliquées.
+V0753,IA14,0.361886464303974,Le dialogue avec l'inspection s'est nettement améliorée.
+V0754,IA14,0.361886464303974,Les remplacements laissent des classes sans enseignant.
+V0755,IA09,1.508379536169013,Le suivi des postes vacants se fait de façon fluide.
+V0756,IA13,-0.5950300302811243,De nombreux postes ouverts ne sont pas pourvus avant des mois.
+V0757,IA14,0.361886464303974,Le redéploiement des enseignants est réactif et transparent.
+V0758,IA05,-1.961883486465059,De nombreux postes ouverts restent vacants faute de redéploiement.
+V0759,IA02,-0.6770804424361538,Les remplacements sont assurés rapidement.
+V0760,IA14,0.361886464303974,Les remplacements sont assurés rapidement.
+V0761,IA10,-1.7249192939776967,Les remplacements ne sont jamais assurés à temps.
+V0762,IA03,0.4625650775900469,Des classes entières demeurent sans titulaire une bonne partie de l'année.
+V0763,IA15,-0.5128143979953421,La coordination avec l'inspection se perd en circuits interminables.
+V0764,IA02,-0.6770804424361538,De nombreux postes ouverts ne sont pas pourvus avant des mois.
+V0765,IA07,0.7594385270695994,Les décisions d'affectation sont anticipées et expliquées.
+V0766,IA10,-1.7249192939776967,Le redéploiement des enseignants se fait de façon fluide.
+V0767,IA03,0.4625650775900469,Les remplacements sont assurés rapidement.
+V0768,IA09,1.508379536169013,La couverture des absences dépendent du bon vouloir local.
+V0769,IA02,-0.6770804424361538,Le pilotage déconcentré manque de transparence.
+V0770,IA07,0.7594385270695994,La réaffectation des maîtres répond vite aux besoins.
+V0771,IA03,0.4625650775900469,La coordination avec l'IEF s'est nettement améliorée.
+V0772,IA08,-0.5589055756131087,Le dialogue avec l'IEF se perd en circuits interminables.
+V0773,IA08,-0.5589055756131087,Le remplacement des maîtres dépendent du bon vouloir local.
+V0774,IA04,1.050436228132796,Le dialogue avec l'inspection s'est nettement améliorée.
+V0775,IA09,1.508379536169013,Les remplacements sont assurés rapidement.
+V0776,IA01,1.1358119908378483,De nombreux postes ouverts restent vacants faute de redéploiement.
+V0777,IA09,1.508379536169013,Les remplacements sont organisés sans retard.
+V0778,IA11,0.5436260064330518,La coordination avec l'IEF s'est nettement améliorée.
+V0779,IA06,-0.09886818526410894,Le dialogue avec l'IEF est lent et peu lisible.
+V0780,IA10,-1.7249192939776967,Les affectations d'enseignants arrivent bien après la rentrée.
+V0781,IA10,-1.7249192939776967,Les affectations d'enseignants traînent chaque année en longueur.
+V0782,IA03,0.4625650775900469,Le dialogue avec l'IEF se perd en circuits interminables.
+V0783,IA03,0.4625650775900469,La réaffectation des maîtres se fait de façon fluide.
+V0784,IA01,1.1358119908378483,La couverture des absences sont organisés sans retard.
+V0785,IA07,0.7594385270695994,La réaffectation des maîtres est réactif et transparent.
+V0786,IA09,1.508379536169013,Le redéploiement des enseignants est réactif et transparent.
+V0787,IA01,1.1358119908378483,La coordination avec l'IEF s'est nettement améliorée.
+V0788,IA01,1.1358119908378483,Le remplacement des maîtres ne sont jamais assurés à temps.
+V0789,IA04,1.050436228132796,Les affectations arrivent désormais avant la rentrée.
+V0790,IA14,0.361886464303974,Le dialogue avec l'IEF est lent et peu lisible.
+V0791,IA11,0.5436260064330518,Les affectations arrivent désormais avant la rentrée.
+V0792,IA03,0.4625650775900469,Les remplacements sont organisés sans retard.
+V0793,IA16,-0.4962851679537585,La réaffectation des maîtres se fait de façon fluide.
+V0794,IA02,-0.6770804424361538,La coordination avec l'IEF s'est nettement améliorée.
+V0795,IA15,-0.5128143979953421,Les décisions d'affectation sont anticipées et expliquées.
+V0796,IA16,-0.4962851679537585,Les décisions d'affectation sont anticipées et expliquées.
+V0797,IA11,0.5436260064330518,Les mouvements de personnel arrivent bien après la rentrée.
+V0798,IA16,-0.4962851679537585,Les remplacements ne sont jamais assurés à temps.
+V0799,IA04,1.050436228132796,La couverture des absences dépendent du bon vouloir local.
+V0800,IA12,0.8036427494500231,Les affectations sont traitées rapidement.

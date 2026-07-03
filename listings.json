@@ -2,6 +2,16 @@
   {
     "listing": "/data-science.html",
     "items": [
+      "/projects/DMP.html",
+      "/projects/50_senegal_00_index.html",
+      "/projects/50_senegal_v5_prescolaire.html",
+      "/projects/50_senegal_v3_presence_panel.html",
+      "/projects/50_senegal_v4_acquis_dif.html",
+      "/projects/50_senegal_v1_allocation.html",
+      "/projects/50_senegal_v2_decentralisation.html",
+      "/projects/50_senegal_spine_data.html",
+      "/projects/50_senegal_tx_outils_indicateurs.html",
+      "/projects/21_survey_sampling_design.html",
       "/projects/projet25b_feature_extraction.html",
       "/projects/projet25c_modelling_v2.html",
       "/projects/projet25d_power_simulation_HT.html",
